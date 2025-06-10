@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom'
 
 const Signup = () => {
   return (
-    <div className='flex flex-col h-screen items-center justify-center'>
-      <div className='bg-gray-200 py-10 mt-18 sm:mt-0 p-6 w-11/12 md:w-1/3'>
+    <div className='flex flex-col h-full items-center justify-center mt-10 min-h-screen'>
+      <div className='bg-gray-200 py-10 mt-18 sm:mt-0 p-5 w-11/12 md:w-1/3'>
 
         <form>
           <div className='flex items-center justify-center'>
@@ -30,6 +30,11 @@ const Signup = () => {
           <div>
             <label className='block font-semibold py-2'>NRC</label>
             <input type="text" placeholder="Enter your NRC" className=' w-full input input-borded focus:outline-offset-0'/>
+          </div>
+
+          <div>
+            <label className='block font-semibold py-2'>Phone Number</label>
+            <input type="text" placeholder="Enter your phone number" className=' w-full input input-borded focus:outline-offset-0'/>
           </div>
           
           <div className='flex items-center gap-3'>

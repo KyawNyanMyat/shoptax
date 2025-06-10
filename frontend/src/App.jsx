@@ -9,6 +9,8 @@ import DashboardHome from "./pages/userDashboard/DashboardHome"
 import WarningMessages from "./pages/userDashboard/WarningMessages"
 import Receipts from "./pages/userDashboard/Receipts"
 import SubmitPaymentProof from "./pages/userDashboard/SubmitPaymentProof"
+import AdminLogin from "./adminpages/login/AdminLogin"
+import AdminSignup from "./adminpages/login/AdminSignup"
 function App() {
 
   return (
@@ -16,6 +18,7 @@ function App() {
       <div className="flex flex-col min-h-screen">
         <main className="bg-base-100">
           <Routes>
+            {/* User */}
             <Route path="/" element={<Home />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/about" element={<About/>} />
@@ -26,6 +29,10 @@ function App() {
             <Route path="/user/warningmessage" element={<WarningMessages />} />
             <Route path="/user/receipt" element={<Receipts />} />
             <Route path="/user/paymentproof" element={<SubmitPaymentProof />} />
+
+            {/* Admin */}
+            <Route path="/admin" element={<AdminLogin />} />
+            <Route path="/admin/signup" element={<AdminSignup />} />
           </Routes>
         </main>
       </div>

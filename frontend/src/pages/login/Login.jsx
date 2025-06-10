@@ -6,7 +6,7 @@ const Login = () => {
     e.preventDefault()
   }
   return (
-    <div className='flex flex-col h-screen items-center justify-center'>
+    <div className='flex flex-col items-center justify-center min-h-screen'>
       <div className='bg-gray-200 p-6 w-11/12 md:w-1/3'>
 
         <form onSubmit={handleSubmit}>
