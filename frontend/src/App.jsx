@@ -11,6 +11,7 @@ import Receipts from "./pages/userDashboard/Receipts"
 import SubmitPaymentProof from "./pages/userDashboard/SubmitPaymentProof"
 import AdminLogin from "./adminpages/login/AdminLogin"
 import AdminSignup from "./adminpages/login/AdminSignup"
+import AdminDashboardHome from "./adminpages/adminDashboard/AdminDashboardHome"
 function App() {
 
   return (
@@ -33,6 +34,7 @@ function App() {
             {/* Admin */}
             <Route path="/admin" element={<AdminLogin />} />
             <Route path="/admin/signup" element={<AdminSignup />} />
+            <Route path="/admin/dashboard" element={<AdminDashboardHome />} />
           </Routes>
         </main>
       </div>

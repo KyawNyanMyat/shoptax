@@ -50,7 +50,7 @@ const AdminSignup = () => {
               />
             </div>
 
-            <div>
+            {/* <div>
               <label className='block font-medium text-gray-700 mb-1'>Enter Rank</label>
               <select className='w-full select select-bordered focus:ring-2 focus:ring-blue-500'>
                 <option disabled selected>Select Rank</option>
@@ -59,7 +59,7 @@ const AdminSignup = () => {
                 <option>System Security</option>
                 <option>Operations</option>
               </select>
-            </div>
+            </div> */}
 
             <div>
               <label className='block font-medium text-gray-700 mb-1'>Department*</label>
