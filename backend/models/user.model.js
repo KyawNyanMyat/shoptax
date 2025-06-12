@@ -23,12 +23,7 @@ const userSchema = new mongoose.Schema({
         enum: ['Male', 'Female'], 
         required: true 
     },
-    occupancyStatus: { 
-        type: String, 
-        enum: ['current', 'past'], 
-        default: 'current' 
-    },
-    ownShop: {
+    shopId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Shop',
         require: true

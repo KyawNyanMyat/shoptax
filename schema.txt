@@ -5,7 +5,6 @@
     NRC
     PhoneNo
     Gender
-    occupancyStatus
     ShopId[Foreign Key to Shop Table(ref)]
     createdAt
     updatedAt
@@ -55,3 +54,13 @@
     UserId[Foreign key to UserTable(ref)]
     IssueDate
     isRead
+
+
+#ShopHistory Table(Schema)
+    _id(PK)
+    UserId[Foreign Key to UserTable(ref)]
+    MarketHallNo
+    ShopNo
+    AssignedDate
+    ReleaseDate
+
