@@ -7,15 +7,12 @@ const paymentSchema = new mongoose.Schema({
         ref: 'User', 
         required: true 
     },
+    shopId: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Shop', 
+        required: true 
+    },
     paymentType: { 
-        type: String, 
-        required: true 
-    },
-    marketHallNo: { 
-        type: String, 
-        required: true 
-    },
-    shopNo: { 
         type: String, 
         required: true 
     },

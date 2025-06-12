@@ -32,9 +32,8 @@
 #Payment Table(Schema)
     _id(PK)
     UserId[foreign key to User Table(ref)]
+    ShopId[Foreign key to Shop Table(ref)]
     PaymentType(eg.NRC register cost or lend rent cost )
-    MarketHallNo
-    ShopNo
     PaymentPhoto
     PaidDate
     NextPaymentDueDate
