@@ -40,7 +40,7 @@ const SubmitPaymentProof = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="label">Building No</label>
+                <label className="label">Market Hall No</label>
                 <input type="text" className="input input-bordered w-full focus:outline-offset-0" required />
               </div>
               <div>

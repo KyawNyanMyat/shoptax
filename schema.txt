@@ -1,0 +1,58 @@
+#User Table(Schema)
+    _id(PK)
+    Username
+    Password
+    NRC
+    PhoneNo
+    Gender
+    occupancyStatus
+    ShopId[Foreign Key to Shop Table(ref)]
+    createdAt
+    updatedAt
+
+
+#Admin Table(Schema)
+    _id(PK)
+    AdminName
+    Password
+    PhoneNo
+    Department
+    AdminSignaturePhoto
+    createdAt
+    updatedAt
+
+
+#Shop Table(Schema)
+    _id(PK)
+    MarketHallNo
+    ShopNo
+    Status
+
+
+#Payment Table(Schema)
+    _id(PK)
+    UserId[foreign key to User Table(ref)]
+    PaymentType(eg.NRC register cost or lend rent cost )
+    MarketHallNo
+    ShopNo
+    PaymentPhoto
+    PaidDate
+    NextPaymentDueDate
+    Status (Pending or finished)
+
+
+#Receipt Table(Schema)
+    _id(PK)
+    PaymentId[Foreign Key to Payment Table(ref)]
+    AdminId[Foreign Key to Admin Table(ref)]
+    SuperAdminSignaturePhoto(default)
+    IssueDate
+    isRead
+
+
+#Warning Table(Schema)
+    _id(PK)
+    WarningContent
+    UserId[Foreign key to UserTable(ref)]
+    IssueDate
+    isRead

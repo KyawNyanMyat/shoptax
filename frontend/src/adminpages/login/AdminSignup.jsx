@@ -20,7 +20,7 @@ const AdminSignup = () => {
           <div className='space-y-4'>
 
             <div>
-              <label className='block font-medium text-gray-700 mb-1'>Full Name</label>
+              <label className='block font-medium text-gray-700 mb-1'>UserName</label>
               <input 
                 type="text" 
                 placeholder="Enter name" 
@@ -41,10 +41,10 @@ const AdminSignup = () => {
             </div>
 
             <div>
-              <label className='block font-medium text-gray-700 mb-1'>Official Email</label>
+              <label className='block font-medium text-gray-700 mb-1'>Phone no</label>
               <input 
-                type="email" 
-                placeholder="organization@domain.com" 
+                type="text" 
+                placeholder="09974337432" 
                 className='w-full input input-bordered focus:ring-2 focus:ring-blue-500'
                 required
               />
