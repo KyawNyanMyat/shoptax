@@ -1,0 +1,87 @@
+import Receipt from '../models/receipt.model.js';
+
+// Create a new receipt
+export const createReceipt = async (req, res) => {
+  try {
+    const { paymentId, adminId } = req.body;
+
+    const newReceipt = new Receipt({
+      paymentId,
+      adminId
+    });
+
+    await newReceipt.save();
+    res.status(201).json(newReceipt);
+  } catch (error) {
+    console.error("Create Receipt Error:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// Get all receipts
+export const getAllReceipts = async (req, res) => {
+  try {
+    const receipts = await Receipt.find()
+      .populate('paymentId')
+      .populate('adminId', 'adminName');
+
+    res.status(200).json(receipts);
+  } catch (error) {
+    console.error("Get Receipts Error:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// Get one receipt by ID
+export const getReceiptById = async (req, res) => {
+  try {
+    const receipt = await Receipt.findById(req.params.id)
+      .populate('paymentId')
+      .populate('adminId', 'adminName');
+
+    if (!receipt) {
+      return res.status(404).json({ message: "Receipt not found" });
+    }
+
+    res.status(200).json(receipt);
+  } catch (error) {
+    console.error("Get Receipt Error:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// Update receipt
+export const updateReceipt = async (req, res) => {
+  try {
+    const updatedReceipt = await Receipt.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+
+    if (!updatedReceipt) {
+      return res.status(404).json({ message: "Receipt not found" });
+    }
+
+    res.status(200).json(updatedReceipt);
+  } catch (error) {
+    console.error("Update Receipt Error:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// Delete receipt
+export const deleteReceipt = async (req, res) => {
+  try {
+    const deletedReceipt = await Receipt.findByIdAndDelete(req.params.id);
+
+    if (!deletedReceipt) {
+      return res.status(404).json({ message: "Receipt not found" });
+    }
+
+    res.status(200).json({ message: "Receipt deleted successfully" });
+  } catch (error) {
+    console.error("Delete Receipt Error:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};

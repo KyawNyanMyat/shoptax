@@ -13,7 +13,8 @@ const paymentSchema = new mongoose.Schema({
         required: true 
     },
     paymentType: { 
-        type: String, 
+        type: String,
+        enum: ["NRC Register Cost", "Land Rent Cost"],
         required: true 
     },
     paymentPhoto: { 
@@ -28,7 +29,7 @@ const paymentSchema = new mongoose.Schema({
     },
     status: { 
         type: String, 
-        enum: ['Pending', 'Finished'], 
+        enum: ['Pending', 'Finished', 'Rejected'], 
         default: 'Pending' 
     }
 });

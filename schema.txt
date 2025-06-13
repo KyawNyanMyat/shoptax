@@ -2,6 +2,7 @@
     _id(PK)
     Username
     Password
+    ProfilePhoto
     NRC
     PhoneNo
     Gender
@@ -14,6 +15,7 @@
     _id(PK)
     AdminName
     Password
+    ProfilePhoto
     PhoneNo
     Department
     AdminSignaturePhoto

@@ -1,4 +1,3 @@
-// models/Admin.js
 import mongoose from 'mongoose';
 
 const adminSchema = new mongoose.Schema({
@@ -8,6 +7,10 @@ const adminSchema = new mongoose.Schema({
     },
     password: { 
         type: String, 
+        required: true 
+    },
+    profilePhoto: {
+        type: String,
         required: true 
     },
     phoneNo: { 

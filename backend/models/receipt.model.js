@@ -14,7 +14,7 @@ const receiptSchema = new mongoose.Schema({
     },
     superAdminSignaturePhoto: {
         type: String,
-        default: '/images/default_signature.png' // adjust this path based on your setup
+        default: '/images/SuperAdminSignature.png' // adjust this path based on your setup
     },
     issueDate: { 
         type: Date, 

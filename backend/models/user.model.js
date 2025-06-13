@@ -10,6 +10,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true 
     },
+    profilePhoto: {
+        type: String,
+        required: true 
+    },
     NRC: { 
         type: String, 
         required: true 
