@@ -16,7 +16,10 @@ export const createAdmin = async (req, res) => {
     });
 
     await newAdmin.save();
-    res.status(201).json(newAdmin);
+    const adminObj = newAdmin.toObject();
+    delete adminObj.password;
+
+    res.status(201).json(adminObj);
   } catch (error) {
     console.error("Create Admin Error:", error);
     res.status(500).json({ message: "Server Error" });
@@ -52,7 +55,7 @@ export const updateAdmin = async (req, res) => {
   try {
     const updatedAdmin = await Admin.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
-    });
+    }).select("-password");
     if (!updatedAdmin) return res.status(404).json({ message: "Admin not found" });
 
     res.status(200).json(updatedAdmin);

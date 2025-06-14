@@ -20,6 +20,10 @@ const paymentSchema = new mongoose.Schema({
     paymentPhoto: { 
         type: String 
     }, 
+    amount: {
+        type: Number,
+        required: true
+    },
     paidDate: { 
         type: Date, 
         required: true 

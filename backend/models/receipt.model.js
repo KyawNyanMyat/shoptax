@@ -16,6 +16,10 @@ const receiptSchema = new mongoose.Schema({
         type: String,
         default: '/images/SuperAdminSignature.png' // adjust this path based on your setup
     },
+    amount: {
+        type: Number,
+        required: true
+    },      
     issueDate: { 
         type: Date, 
         default: Date.now 

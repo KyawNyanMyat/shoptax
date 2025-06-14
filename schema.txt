@@ -36,6 +36,7 @@
     ShopId[Foreign key to Shop Table(ref)]
     PaymentType(eg.NRC register cost or lend rent cost )
     PaymentPhoto
+    Amount
     PaidDate
     NextPaymentDueDate
     Status (Pending or finished)
@@ -46,6 +47,7 @@
     PaymentId[Foreign Key to Payment Table(ref)]
     AdminId[Foreign Key to Admin Table(ref)]
     SuperAdminSignaturePhoto(default)
+    Amount
     IssueDate
     isRead
 
@@ -63,6 +65,7 @@
     UserId[Foreign Key to UserTable(ref)]
     MarketHallNo
     ShopNo
+    TotalPaid
     AssignedDate
     ReleaseDate
 

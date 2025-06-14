@@ -15,13 +15,16 @@ const ShopHistorySchema = new mongoose.Schema({
         type: String, 
         required: true 
     },
+    totalPaid: {
+        type: Number,
+    },
     assignedDate: {
         type: Date,
         required: true,
     },
     releasedDate: {
         type: Date,
-        default: null,
+        required: true
     }
 });
 

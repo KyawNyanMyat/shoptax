@@ -3,11 +3,12 @@ import Receipt from '../models/receipt.model.js';
 // Create a new receipt
 export const createReceipt = async (req, res) => {
   try {
-    const { paymentId, adminId } = req.body;
+    const { paymentId, adminId, amount } = req.body;
 
     const newReceipt = new Receipt({
       paymentId,
-      adminId
+      adminId,
+      amount
     });
 
     await newReceipt.save();

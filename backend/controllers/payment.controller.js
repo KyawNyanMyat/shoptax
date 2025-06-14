@@ -8,6 +8,7 @@ export const createPayment = async (req, res) => {
       shopId,
       paymentType,
       paymentPhoto,
+      amount,
       paidDate,
       nextPaymentDueDate,
       status
@@ -18,6 +19,7 @@ export const createPayment = async (req, res) => {
       shopId,
       paymentType,
       paymentPhoto,
+      amount,
       paidDate,
       nextPaymentDueDate,
       status

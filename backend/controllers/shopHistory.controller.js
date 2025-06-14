@@ -1,9 +1,9 @@
-import ShopHistory from '../models/shopHistory.js';
+import ShopHistory from '../models/shopHistory.model.js';
 
 // Create a new shop occupancy record
 export const createShopHistory = async (req, res) => {
   try {
-    const { userId, marketHallNo, shopNo, assignedDate } = req.body;
+    const { userId, marketHallNo, shopNo, assignedDate, releasedDate } = req.body;
 
     if (!userId || !marketHallNo || !shopNo || !assignedDate) {
       return res.status(400).json({ message: "Missing required fields" });
@@ -14,6 +14,7 @@ export const createShopHistory = async (req, res) => {
       marketHallNo,
       shopNo,
       assignedDate,
+      releasedDate
     });
 
     await newHistory.save();

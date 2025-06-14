@@ -21,13 +21,12 @@ app.use(cookieParser())
 
 app.use('/api/shops',ShopRoutes);
 app.use('/api/users', UserRoutes);
-
-//neet to test
 app.use('/api/admins', AdminRoutes);
 app.use('/api/payments', PaymentRoutes);
 app.use('/api/receipts', ReceiptRoutes);
+app.use('/api/warnings', WarningRoutes);
 app.use('/api/shopHistories', ShopHistoryRoutes);
-app.use('/api/warnings', WarningRoutes)
+
 
 connectToDB()
 .then(()=>{
