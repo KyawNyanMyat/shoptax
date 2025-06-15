@@ -6,7 +6,7 @@ const AdminDashboardHeader = () => {
       {/* Left - Title */}
       <div>
         <h1 className="text-xl font-bold">TDD Admin Dashboard</h1>
-        <p className="text-sm text-amber-100">Oversee and manage township operations</p>
+        <p className="text-sm text-amber-100">Oversee haah and manage township operations</p>
       </div>
 
       {/* Right - Bell & Profile */}

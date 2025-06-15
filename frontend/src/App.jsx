@@ -12,12 +12,14 @@ import SubmitPaymentProof from "./pages/userDashboard/SubmitPaymentProof"
 import AdminLogin from "./adminpages/login/AdminLogin"
 import AdminSignup from "./adminpages/login/AdminSignup"
 import AdminDashboardHome from "./adminpages/adminDashboard/AdminDashboardHome"
+import { Toaster } from "react-hot-toast"
 function App() {
 
   return (
     <>
       <div className="flex flex-col min-h-screen">
         <main className="bg-base-100">
+          {/* In the future Add auth */}
           <Routes>
             {/* User */}
             <Route path="/" element={<Home />} />
@@ -26,7 +28,7 @@ function App() {
             <Route path="/login" element={<Login/>} />
             <Route path="/signup" element={<Signup/>} />
 
-            <Route path="/user/" element={<DashboardHome/>} />
+            <Route path="/user" element={<DashboardHome/>} />
             <Route path="/user/warningmessage" element={<WarningMessages />} />
             <Route path="/user/receipt" element={<Receipts />} />
             <Route path="/user/paymentproof" element={<SubmitPaymentProof />} />
@@ -36,6 +38,7 @@ function App() {
             <Route path="/admin/signup" element={<AdminSignup />} />
             <Route path="/admin/dashboard" element={<AdminDashboardHome />} />
           </Routes>
+          <Toaster/>
         </main>
       </div>
     </>

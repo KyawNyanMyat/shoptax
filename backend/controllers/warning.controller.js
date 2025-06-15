@@ -72,3 +72,21 @@ export const deleteWarning = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+
+
+export const getUnreadWarningsByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const unreadWarnings = await Warning.find({
+      userId,
+      isRead: true,
+    }).sort({ date: -1 });
+
+    res.status(200).json(unreadWarnings);
+  } catch (error) {
+    console.error("Error fetching unread warnings:", error);
+    res.status(500).json({ message: "Server error while fetching warnings." });
+  }
+};

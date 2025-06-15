@@ -99,3 +99,20 @@ export const deletePayment = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+
+
+export const getPaymentByUserId = async (req, res) => {
+  try {
+    const { id } = req.params
+    const user = await Payment.findOne({userId: id}).sort({paidDate: -1})
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Get Payment Error:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};

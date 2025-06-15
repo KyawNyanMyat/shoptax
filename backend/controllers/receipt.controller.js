@@ -1,3 +1,4 @@
+import Payment from '../models/payment.model.js';
 import Receipt from '../models/receipt.model.js';
 
 // Create a new receipt
@@ -84,5 +85,79 @@ export const deleteReceipt = async (req, res) => {
   } catch (error) {
     console.error("Delete Receipt Error:", error);
     res.status(500).json({ message: "Server Error" });
+  }
+};
+
+
+export const getReceiptsByUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const payments = await Payment.find({ userId }).select("_id");
+
+    const paymentIds = payments.map((p) => p._id);
+    const receipts = await Receipt.find({ paymentId: { $in: paymentIds } })
+      .populate({
+        path: "paymentId",
+        populate: [
+          { path: "shopId", select: "marketHallNo shopNo" },
+          { path: "userId", select: "username" },
+        ]        
+      })
+      .populate("adminId", "adminName adminSignaturePhoto")
+      .sort({ issueDate: -1 });
+
+    res.status(200).json(receipts);
+  } catch (error) {
+    console.error("Error fetching receipts:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+export const getAllUnreadReceiptsByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const payments = await Payment.find({ userId }).select("_id");
+
+    //In the future
+    // if (!payments.length) {
+    //   return res.status(200).json([]); // No payments = no receipts
+    // }
+    const paymentIds = payments.map((p) => p._id);
+
+    const allUnreadReceipts = await Receipt.find({ paymentId: {$in: paymentIds},isRead: true});
+
+    if (!allUnreadReceipts) {
+      return res.status(404).json({ message: "Read Receipt not found" });
+    }
+
+    res.status(200).json(allUnreadReceipts);
+  } catch (error) {
+    console.error("Error in getAllUnreadReceipts:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+export const markReceiptAsRead = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const updatedReceipt = await Receipt.findByIdAndUpdate(
+      id,
+      { isRead: true },
+      { new: true }
+    );
+
+    if (!updatedReceipt) {
+      return res.status(404).json({ message: "Receipt not found" });
+    }
+
+    res.status(200).json(updatedReceipt);
+  } catch (error) {
+    console.error("Error in markReceiptAsRead:", error);
+    res.status(500).json({ message: "Server error while marking receipt as read" });
   }
 };

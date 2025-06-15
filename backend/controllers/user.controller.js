@@ -5,7 +5,7 @@ import Shop from "../models/shop.model.js";
 export const createUser = async (req, res) => {
   try {
     const {
-      username, password, NRC,
+      username, password, confirmPassword, NRC,
       phoneNo, gender, shopId
     } = req.body;
 
@@ -90,5 +90,25 @@ export const deleteUser = async (req, res) => {
   } catch (error) {
     console.error("Delete User Error:", error);
     res.status(500).json({ message: "Server Error" });
+  }
+};
+
+
+export const loginUser = async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const user = await User.findOne({ username });
+    if (!user || user.password !== password) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    const userObj = user.toObject();
+    delete userObj.password;
+
+    res.status(200).json(userObj);
+  } catch (error) {
+    console.error("Login error:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
