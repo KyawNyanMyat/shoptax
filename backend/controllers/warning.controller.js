@@ -3,13 +3,13 @@ import Warning from '../models/warning.model.js';
 // Create a new warning
 export const createWarning = async (req, res) => {
   try {
-    const { warningContent, userId } = req.body;
+    const { warningTitle ,warningContent, userId } = req.body;
 
-    if (!warningContent || !userId) {
-      return res.status(400).json({ message: "warningContent and userId are required" });
+    if (!warningContent || !userId || !warningTitle) {
+      return res.status(400).json({ message: "Fill All required field" });
     }
 
-    const newWarning = new Warning({ warningContent, userId });
+    const newWarning = new Warning({ warningTitle, warningContent, userId });
     await newWarning.save();
 
     res.status(201).json(newWarning);
@@ -81,12 +81,51 @@ export const getUnreadWarningsByUserId = async (req, res) => {
 
     const unreadWarnings = await Warning.find({
       userId,
-      isRead: true,
+      isRead: false,
     }).sort({ date: -1 });
 
     res.status(200).json(unreadWarnings);
   } catch (error) {
     console.error("Error fetching unread warnings:", error);
     res.status(500).json({ message: "Server error while fetching warnings." });
+  }
+};
+
+
+export const getWarningsByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const allwarningByUser = await Warning.find({userId})
+
+    res.status(200).json(allwarningByUser);
+  } catch (error) {
+    console.error("Error in getWarningsByUserId:", error.message);
+    res.status(500).json({ message: "Server error getting warnings" });
+  }
+};
+
+
+// controllers/warning.controller.js
+
+export const updateWarningIsRead = async (req, res) => {
+  try {
+    const { warningId } = req.params;
+    const { isRead } = req.body;
+
+    const updated = await Warning.findByIdAndUpdate(
+      warningId,
+      { isRead },
+      { new: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ message: "Warning not found" });
+    }
+
+    res.status(200).json(updated);
+  } catch (error) {
+    console.error("Error updating warning:", error.message);
+    res.status(500).json({ message: "Server error" });
   }
 };

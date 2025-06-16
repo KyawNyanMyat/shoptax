@@ -1,11 +1,16 @@
 // routes/payment.routes.js
 import express from 'express';
-import { createPayment, deletePayment, getAllPayments, getPaymentById, getPaymentByUserId, updatePayment } from '../controllers/payment.controller.js';
+import { 
+    createPayment, deletePayment, 
+    getAllPayments, getPaymentById, 
+    getPaymentByUserId, updatePayment 
+} from '../controllers/payment.controller.js';
+import upload from '../middleware/upload.js';
 
 
 const router = express.Router();
 
-router.post('/', createPayment);
+router.post('/',upload.single("paymentPhoto"), createPayment);
 
 router.get('/', getAllPayments);
 

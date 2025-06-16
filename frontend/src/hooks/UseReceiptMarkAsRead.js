@@ -3,7 +3,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 
 const UseReceiptMarkAsRead = () => {
-  const [loadingId, setLoadingId] = useState(null);
+  const [loadingId, setLoadingId] = useState(true);
 
   const markAsRead = async (receiptId) => {
     setLoadingId(receiptId);
@@ -19,7 +19,7 @@ const UseReceiptMarkAsRead = () => {
     } catch (err) {
       toast.error(err.message);
     } finally {
-      setLoadingId(null);
+      setLoadingId(false);
     }
   };
 

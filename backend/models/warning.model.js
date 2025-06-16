@@ -2,6 +2,10 @@
 import mongoose from 'mongoose';
 
 const warningSchema = new mongoose.Schema({
+    warningTitle: {
+        type: String, 
+        required: true 
+    },
     warningContent: { 
         type: String, 
         required: true 

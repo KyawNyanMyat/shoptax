@@ -38,9 +38,9 @@ const DashboardHome = () => {
   ];
 
   const regulations = [
-    "All shop owners must renew their monthly shop tax by the 15th of each month.",
+    "All shop owners must renew their monthly shop tax by the 10th of each month.",
     "Unauthorized disposal of waste in public areas is strictly prohibited.",
-    "Water usage beyond allocated hours may result in additional charges.",
+    // "Water usage beyond allocated hours may result in additional charges.",
   ];
   
 
@@ -63,7 +63,7 @@ const DashboardHome = () => {
 
         setUnReadWarning(warningData)
 
-        if(!res.ok || !receiptRes) {
+        if(!res.ok || !receiptRes || !warningRes) {
           throw new Error(data.message)
         }
       } catch (error) {

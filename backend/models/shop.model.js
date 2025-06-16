@@ -10,11 +10,11 @@ const shopSchema = new mongoose.Schema({
         type: String, 
         required: true 
     },
-    status: {
-        type: String,
-        enum: ["Usable", "Not Usable"],
-        default: "Usable"
-    }
+    // status: {
+    //     type: String,
+    //     enum: ["Usable", "Not Usable"],
+    //     default: "Usable"
+    // }
 });
 
 export default mongoose.model('Shop', shopSchema);

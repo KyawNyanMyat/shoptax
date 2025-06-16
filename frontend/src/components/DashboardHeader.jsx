@@ -5,8 +5,8 @@ const DashboardHeader = () => {
     <header className="bg-primary text-white px-6 py-4 shadow flex justify-between items-center">
       {/* Left - Title */}
       <div>
-        <h1 className="text-xl font-bold">TDD User Dashboard</h1>
-        <p className="text-sm text-gray-200">Manage your township services</p>
+        <h1 className="text-xl font-bold">User Dashboard</h1>
+        <p className="text-sm text-gray-200">Manage your own account</p>
       </div>
 
       {/* Right - Bell & Profile */}

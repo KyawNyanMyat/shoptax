@@ -1,39 +1,35 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FiAlertCircle } from "react-icons/fi";
 import DashboardSidebar from "../../components/DashboardSidebar";
 import DashboardHeader from "../../components/DashboardHeader";
+import useMarkWarningAsRead from "../../hooks/useMarkWarningAsRead";
 
-const warnings = [
-  {
-    id: 1,
-    title: "Late Payment Notice",
-    date: "June 5, 2025",
-    description:
-      "You have missed your shop tax payment due date. Please settle it as soon as possible to avoid penalties.",
-    type: "danger",
-  },
-  {
-    id: 2,
-    title: "Water Service Interruption",
-    date: "June 3, 2025",
-    description:
-      "Water supply will be temporarily suspended in your area due to maintenance on June 10.",
-    type: "warning",
-  },
-];
-
-const getTypeColor = (type) => {
-  switch (type) {
-    case "danger":
-      return "bg-red-100 text-red-800 border-red-200";
-    case "warning":
-      return "bg-yellow-100 text-yellow-800 border-yellow-200";
-    default:
-      return "bg-gray-100 text-gray-800 border-gray-200";
-  }
-};
 
 const WarningMessages = () => {
+  const userId = "684c2b1ec0a2a3d814a8d2ca"; // in the future
+  const [warnings, setWarnings] = useState([])
+  const { markAsRead, loadingId } = useMarkWarningAsRead() 
+
+  useEffect(() => {
+    const getWarning = async () => {
+      try {
+        const res = await fetch(`/api/warnings/user/${userId}`);
+        const data = await res.json();
+  
+        if (!res.ok) throw new Error(data.message || "Something went wrong");
+        setWarnings(data);
+      } catch (error) {
+        console.log("Error in Receipt.jsx", error.message);
+      }
+    };
+  
+    getWarning();
+  }, []);
+
+  const handleMarkAsRead = async (e) => {
+    await markAsRead(e.target.value)
+    //In the future # socket io
+  }
     return (
         <div className="flex min-h-screen">
           <DashboardSidebar />
@@ -46,17 +42,29 @@ const WarningMessages = () => {
                 <div className="space-y-6">
                     {warnings.map((warn) => (
                     <div
-                        key={warn.id}
-                        className={`border-l-4 p-4 rounded-xl shadow-sm ${getTypeColor(
-                        warn.type
-                        )}`}
+                        key={warn._id}
+                        className={`border-l-4 p-4 rounded-xl shadow-sm bg-red-100 text-red-800 border-red-200`}
                     >
                         <div className="flex items-start gap-3">
                         <FiAlertCircle className="text-xl mt-1" />
                         <div>
-                            <h3 className="font-semibold">{warn.title}</h3>
-                            <p className="text-sm mb-1">{warn.description}</p>
-                            <p className="text-xs text-gray-500">Issued: {warn.date}</p>
+                            <h3 className="font-semibold">{warn.warningTitle}</h3>
+                            <p className="text-sm mb-1">{warn.warningContent}</p>
+                            <p className="text-xs text-gray-500">Issued: {warn.issueDate}</p>
+                            <button
+                              className="btn btn-success mt-4"
+                              disabled={warn.isRead || loadingId == warn._id}
+                              onClick={handleMarkAsRead}
+                              value={warn._id}
+                            >
+                              {loadingId == warn._id ? (
+                                <span className="loading loading-spinner loading-sm"></span>
+                              ) : warn.isRead ? (
+                                "Already Read"
+                              ) : (
+                                "Mark as Read"
+                              )}
+                            </button>
                         </div>
                         </div>
                     </div>

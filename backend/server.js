@@ -9,11 +9,14 @@ import PaymentRoutes from "./routes/payment.route.js"
 import ReceiptRoutes from "./routes/receipt.route.js"
 import WarningRoutes from "./routes/warning.route.js"
 import ShopHistoryRoutes from "./routes/shopHistory.route.js"
+import path from 'path';
 
 dotenv.config()
 
 const port = process.env.PORT || 5000
 const app = express()
+
+app.use("/uploads", express.static(path.join(path.resolve(),"backend", "uploads")));
 
 app.use(express.json())
 app.use(cookieParser())

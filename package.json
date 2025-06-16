@@ -17,6 +17,7 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.15.1",
+    "multer": "^2.0.1",
     "react-hot-toast": "^2.5.2",
     "socket-io": "^1.0.0",
     "vite": "^6.3.5"

@@ -7,22 +7,19 @@ export const createPayment = async (req, res) => {
       userId,
       shopId,
       paymentType,
-      paymentPhoto,
       amount,
-      paidDate,
       nextPaymentDueDate,
-      status
     } = req.body;
 
+    const paymentPhoto = req.file ? `/uploads/${req.file.filename}` : null;
+    
     const newPayment = new Payment({
       userId,
       shopId,
       paymentType,
       paymentPhoto,
       amount,
-      paidDate,
       nextPaymentDueDate,
-      status
     });
 
     await newPayment.save();

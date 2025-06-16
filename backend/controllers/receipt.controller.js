@@ -127,7 +127,7 @@ export const getAllUnreadReceiptsByUserId = async (req, res) => {
     // }
     const paymentIds = payments.map((p) => p._id);
 
-    const allUnreadReceipts = await Receipt.find({ paymentId: {$in: paymentIds},isRead: true});
+    const allUnreadReceipts = await Receipt.find({ paymentId: {$in: paymentIds},isRead: false});
 
     if (!allUnreadReceipts) {
       return res.status(404).json({ message: "Read Receipt not found" });

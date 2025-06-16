@@ -27,7 +27,7 @@
     _id(PK)
     MarketHallNo
     ShopNo
-    Status
+    //Status(Don't add this for now)
 
 
 #Payment Table(Schema)
@@ -54,6 +54,7 @@
 
 #Warning Table(Schema)
     _id(PK)
+    WarningTitle
     WarningContent
     UserId[Foreign key to UserTable(ref)]
     IssueDate

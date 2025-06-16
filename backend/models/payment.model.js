@@ -18,7 +18,8 @@ const paymentSchema = new mongoose.Schema({
         required: true 
     },
     paymentPhoto: { 
-        type: String 
+        type: String,
+        required: true
     }, 
     amount: {
         type: Number,
@@ -26,7 +27,8 @@ const paymentSchema = new mongoose.Schema({
     },
     paidDate: { 
         type: Date, 
-        required: true 
+        required: true,
+        default: Date.now 
     },
     nextPaymentDueDate: { 
         type: Date 
