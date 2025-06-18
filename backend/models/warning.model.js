@@ -19,6 +19,10 @@ const warningSchema = new mongoose.Schema({
         type: Date, 
         default: Date.now 
     },
+    overdueFee: {
+        type: Number,
+        default: 0
+    },
     isRead: { 
         type: Boolean, 
         default: false 

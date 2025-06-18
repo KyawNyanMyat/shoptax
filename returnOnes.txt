@@ -1,0 +1,37 @@
+| Method                | Returns                   | Notes                                                  |
+| --------------------- | ------------------------- | ------------------------------------------------------ |
+| `find()`              | `Array of documents`      | Can be empty array `[]`                                |
+| `findOne()`           | `Single document or null` | First matching document                                |
+| `findById()`          | `Single document or null` | Finds by `_id` only                                    |
+| `findOneAndUpdate()`  | `Single document or null` | Before or after update depending on `new: true` option |
+| `findByIdAndUpdate()` | `Single document or null` | Same as above, but by ID                               |
+| `findOneAndDelete()`  | `Single document or null` | Returns deleted document                               |
+| `findByIdAndDelete()` | `Single document or null` | Same as above                                          |
+
+
+| Method                     | Returns                                         | Notes                              |
+| -------------------------- | ----------------------------------------------- | ---------------------------------- |
+| `updateOne()`              | `{ acknowledged, matchedCount, modifiedCount }` | Affects one document               |
+| `updateMany()`             | `{ acknowledged, matchedCount, modifiedCount }` | Affects many                       |
+| `deleteOne()`              | `{ acknowledged, deletedCount }`                | Deletes first match                |
+| `deleteMany()`             | `{ acknowledged, deletedCount }`                | Deletes all matches                |
+| `replaceOne()`             | `{ acknowledged, matchedCount, modifiedCount }` | Replaces entire doc                |
+| `countDocuments()`         | `Number`                                        | Count of matching docs             |
+| `estimatedDocumentCount()` | `Number`                                        | Estimated total count              |
+| `exists()`                 | `null` or `{ _id: ... }`                        | Useful for checking existence only |
+
+
+| Method         | Returns               | Notes                                                  |
+| -------------- | --------------------- | ------------------------------------------------------ |
+| `save()`       | `Saved document`      | For single document (used with new instance)           |
+| `create()`     | `Document` or `Array` | Auto-saves; returns single or array depending on input |
+| `insertMany()` | `Array of documents`  | Returns inserted docs                                  |
+
+
+| Type              | Method                   | Returns                  |
+| ----------------- | ------------------------ | ------------------------ |
+| ✅ One Doc         | `findOne`, `findById`    | Object or `null`         |
+| ✅ Many Docs       | `find`, `insertMany`     | Array                    |
+| ✅ Update & Return | `findOneAndUpdate`       | Updated doc or `null`    |
+| ❌ Only Status     | `updateOne`, `deleteOne` | Result object            |
+| ❓ Exists?         | `exists()`               | `null` or `{ _id: ... }` |

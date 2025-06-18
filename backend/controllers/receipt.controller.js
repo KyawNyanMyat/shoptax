@@ -5,7 +5,7 @@ import Receipt from '../models/receipt.model.js';
 export const createReceipt = async (req, res) => {
   try {
     const { paymentId, adminId, amount } = req.body;
-
+    //In the future (filter department)
     const newReceipt = new Receipt({
       paymentId,
       adminId,

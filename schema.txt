@@ -14,11 +14,11 @@
 #Admin Table(Schema)
     _id(PK)
     AdminName
-    Password
+    adminPassword
     ProfilePhoto
     PhoneNo
-    Department
-    AdminSignaturePhoto
+    Division
+    //AdminSignaturePhoto(Don't add this for now)
     createdAt
     updatedAt
 
@@ -27,6 +27,7 @@
     _id(PK)
     MarketHallNo
     ShopNo
+    ChargeRate
     //Status(Don't add this for now)
 
 
@@ -58,6 +59,7 @@
     WarningContent
     UserId[Foreign key to UserTable(ref)]
     IssueDate
+    OverdueFee
     isRead
 
 

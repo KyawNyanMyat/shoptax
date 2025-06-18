@@ -10,6 +10,10 @@ const shopSchema = new mongoose.Schema({
         type: String, 
         required: true 
     },
+    chargeRate:{
+        type: Number,
+        required: true
+    }
     // status: {
     //     type: String,
     //     enum: ["Usable", "Not Usable"],

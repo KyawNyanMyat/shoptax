@@ -7,7 +7,7 @@ router.post('/', createUser);
 
 router.post('/login', loginUser);
 
-router.get('/', getAllUsers);
+router.get('/', getAllUsers); // used by admin
 
 router.get('/:id', getUserById);
 

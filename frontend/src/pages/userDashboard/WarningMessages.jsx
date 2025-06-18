@@ -48,6 +48,7 @@ const WarningMessages = () => {
                         <div className="flex items-start gap-3">
                         <FiAlertCircle className="text-xl mt-1" />
                         <div>
+                          {/* In the future, add penalty fee */}
                             <h3 className="font-semibold">{warn.warningTitle}</h3>
                             <p className="text-sm mb-1">{warn.warningContent}</p>
                             <p className="text-xs text-gray-500">Issued: {warn.issueDate}</p>

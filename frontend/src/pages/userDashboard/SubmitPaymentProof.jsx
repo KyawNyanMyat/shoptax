@@ -86,7 +86,7 @@ const SubmitPaymentProof = () => {
         <div className="p-6 max-w-2xl mx-auto">
           <h2 className="text-2xl font-bold mb-2">Submit Payment Proof</h2>
           <p className="text-sm text-gray-600 mb-6">
-            Upload a screenshot of your payment (e.g., KBZPay, WavePay). Please ensure the date and amount are clearly visible.
+            Upload a screenshot of your payment (e.g., KBZPay, WavePay). Please ensure to select Cost Type and enter amount.
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -131,14 +131,14 @@ const SubmitPaymentProof = () => {
                 onChange={(e) => setPaymentType(e.target.value)}
                 required
               >
-                <option value="" disabled>Select payment type</option>
+                <option value="" disabled>Select Payment Type</option>
                 <option value="NRC Register Cost">NRC Register Cost</option>
                 <option value="Land Rent Cost">Land Rent Cost</option>
               </select>
             </div>
 
             <div>
-              <label className="label">Upload Screenshot</label>
+              <label className="label">Upload Screenshot(eg.KBZPay screenshot)</label>
               <input
                 type="file"
                 accept="image/*"
@@ -149,13 +149,12 @@ const SubmitPaymentProof = () => {
             </div>
 
             <div>
-              <label className="label">Amount</label>
+              <label className="label">Confirm Amount</label>
               <input
                 type="number"
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={(e) => e.target.value > 0 ? setAmount(e.target.value) : setAmount("")}
                 className="input input-bordered w-full focus:outline-offset-0"
-                required
               />
             </div>
 

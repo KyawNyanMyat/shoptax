@@ -10,17 +10,25 @@ import ReceiptRoutes from "./routes/receipt.route.js"
 import WarningRoutes from "./routes/warning.route.js"
 import ShopHistoryRoutes from "./routes/shopHistory.route.js"
 import path from 'path';
+import cors from "cors";
+
 
 dotenv.config()
 
 const port = process.env.PORT || 5000
 const app = express()
 
+// app.use(cors({
+//     origin: "http://localhost:3000",
+//     credentials: true // optional, needed if you're using cookies/auth
+// }));
+
 app.use("/uploads", express.static(path.join(path.resolve(),"backend", "uploads")));
 
 app.use(express.json())
 app.use(cookieParser())
 
+//In the future(make 404 when user enter invalid url)
 
 app.use('/api/shops',ShopRoutes);
 app.use('/api/users', UserRoutes);

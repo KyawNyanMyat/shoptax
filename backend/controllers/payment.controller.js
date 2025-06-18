@@ -36,6 +36,10 @@ export const getAllPayments = async (req, res) => {
     const payments = await Payment.find()
       .populate('userId', 'username')
       .populate('shopId', 'marketHallNo shopNo');
+
+    if(!payments) {
+      return res.status(404).json({message:[]})
+    }
     res.status(200).json(payments);
   } catch (error) {
     console.error("Get Payments Error:", error);
@@ -110,6 +114,46 @@ export const getPaymentByUserId = async (req, res) => {
     res.status(200).json(user);
   } catch (error) {
     console.error("Get Payment Error:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+
+export const getPendingPayments = async (req, res) => {
+  try {
+    const pendingPayments = await Payment.find({ status: "Pending" })
+    .populate("userId", "username shopId")
+    .populate("shopId")
+
+    if(!pendingPayments) {
+      return res.status(404).json({message: "No pending Payment is found"})
+    }
+
+    res.status(200).json(pendingPayments);
+  } catch (error) {
+    console.error("Error fetching pending payments:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+
+// controllers/paymentController.js
+export const getOverdueUsers = async (req, res) => {
+  try {
+    const today = new Date();
+
+    const overduePayments = await Payment.find({
+      nextPaymentDueDate: { $lt: today },
+      status: "Pending"
+    }).populate("userId", "username shopId").populate("shopId");
+
+    if (!overduePayments.length) {
+      return res.status(200).json([]); // return empty array
+    }
+
+    res.status(200).json(overduePayments);
+  } catch (error) {
+    console.error("Error fetching overdue payments:", error);
     res.status(500).json({ message: "Server Error" });
   }
 };

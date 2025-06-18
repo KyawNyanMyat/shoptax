@@ -14,6 +14,8 @@ export const createUser = async (req, res) => {
       return res.status(404).json({ message: "Shop not found" });
     }
 
+    //In the future(password != confirmPassword)
+
     const profilePhoto = `https://avatar.iran.liara.run/username?username=${username}`
     
     const newUser = new User({
@@ -41,7 +43,7 @@ export const createUser = async (req, res) => {
 // Get all users
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find().populate('shopId').select("-password");
+    const users = await User.find().populate('shopId')
     res.status(200).json(users);
   } catch (error) {
     console.error("Get Users Error:", error);

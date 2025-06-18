@@ -3,7 +3,7 @@ import Shop from '../models/shop.model.js';
 // Create a new shop
 export const createShop = async (req, res) => {
   try {
-    const { marketHallNo, shopNo } = req.body;
+    const { _id,marketHallNo, shopNo, chargeRate } = req.body;
 
     if(!marketHallNo || !shopNo){
         return res.status(400).json({ message:"Fill the required field"})
@@ -15,7 +15,7 @@ export const createShop = async (req, res) => {
         return res.status(400).json({ message: "Shop already exists in this hall" });
     }
 
-    const newShop = new Shop({ marketHallNo, shopNo });
+    const newShop = new Shop({ _id,marketHallNo, shopNo , chargeRate});
     await newShop.save();
 
     res.status(201).json(newShop);

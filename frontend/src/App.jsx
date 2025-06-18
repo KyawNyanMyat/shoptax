@@ -13,6 +13,10 @@ import AdminLogin from "./adminpages/login/AdminLogin"
 import AdminSignup from "./adminpages/login/AdminSignup"
 import AdminDashboardHome from "./adminpages/adminDashboard/AdminDashboardHome"
 import { Toaster } from "react-hot-toast"
+import ManageAdmins from "./adminpages/adminDashboard/ManageAdmins"
+import AdminManageUsers from "./adminpages/adminDashboard/ManageUsers"
+import AdminManageShops from "./adminpages/adminDashboard/AdminManageShops"
+import AdminManagePayments from "./adminpages/adminDashboard/AdminManagePayment"
 function App() {
 
   return (
@@ -37,6 +41,10 @@ function App() {
             <Route path="/admin" element={<AdminLogin />} />
             <Route path="/admin/signup" element={<AdminSignup />} />
             <Route path="/admin/dashboard" element={<AdminDashboardHome />} />
+            <Route path="/admin/manageuser" element={<AdminManageUsers />} />
+            <Route path="/admin/manageadmin" element={<ManageAdmins />} />
+            <Route path="/admin/manageshop" element={<AdminManageShops />} />
+            <Route path="/admin/managepayment" element={<AdminManagePayments />} />
           </Routes>
           <Toaster/>
         </main>

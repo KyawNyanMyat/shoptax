@@ -5,7 +5,7 @@ const adminSchema = new mongoose.Schema({
         type: String, 
         required: true 
     },
-    password: { 
+    adminPassword: { 
         type: String, 
         required: true 
     },
@@ -17,13 +17,13 @@ const adminSchema = new mongoose.Schema({
         type: String, 
         required: true 
     },
-    department: { 
+    division: { 
         type: String, 
         required: true 
     },
-    adminSignaturePhoto: { 
-        type: String 
-    }
+    // adminSignaturePhoto: { 
+    //     type: String 
+    // }
 }, {timestamps: true});
 
 export default mongoose.model('Admin', adminSchema);

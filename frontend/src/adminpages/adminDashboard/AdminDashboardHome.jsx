@@ -1,16 +1,47 @@
+import React, { useEffect, useState } from "react";
 import AdminDashboardHeader from "../../components/AdminDashboardHeader";
 import AdminDashboardSidebar from "../../components/AdminDashboardSidebar";
 import { FiUsers, FiFileText, FiAlertCircle, FiCheckCircle } from "react-icons/fi";
-import { IoWalletOutline } from "react-icons/io5";
+import { FaUserShield } from "react-icons/fa";
 
 const AdminDashboardHome = () => {
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [totalAdmins, setTotalAdmins] = useState(0);
+  const [pendingPayment, setPendingPayments] = useState(0);
+  const [overdueUsers, setOverdueUsers] = useState(0);
+
+  useEffect(() => {
+    const fetchCounts = async () => {
+      try {
+        const userRes = await fetch("/api/users");
+        const users = await userRes.json();
+        setTotalUsers(users.length);
+
+        const overdueRes = await fetch("/api/payments/user/overdue");
+        const overdue = await overdueRes.json();
+        setOverdueUsers(overdue.length);
+
+        const adminRes = await fetch("/api/admins");
+        const admins = await adminRes.json();
+        setTotalAdmins(admins.length);
+
+        const pendingRes = await fetch("/api/payments/pending");
+        const pending = await pendingRes.json();
+        setPendingPayments(pending.length);
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      }
+    };
+
+    fetchCounts();
+  }, []);
+
   return (
     <div className="flex min-h-screen">
       <AdminDashboardSidebar />
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col h-full w-4/5">
         <AdminDashboardHeader />
-
-        {/* Dashboard home */}
+        {/* In the future Clicking these four */}
         <div className="p-6 space-y-6 bg-gray-50 min-h-full">
           {/* Welcome message */}
           <div>
@@ -23,41 +54,45 @@ const AdminDashboardHome = () => {
             <div className="bg-white shadow rounded-xl p-4 flex items-center gap-4">
               <FiUsers className="text-2xl text-teal-600" />
               <div>
-                <p className="text-lg font-bold">123</p>
+                <p className="text-lg font-bold">{totalUsers}</p>
                 <p className="text-sm text-gray-500">Total Users</p>
               </div>
             </div>
+
             <div className="bg-white shadow rounded-xl p-4 flex items-center gap-4">
-              <IoWalletOutline className="text-2xl text-teal-600" />
+              <FaUserShield className="text-2xl text-teal-600" />
               <div>
-                <p className="text-lg font-bold">Ks 4,550,000</p>
-                <p className="text-sm text-gray-500">Total Revenue</p>
+                <p className="text-lg font-bold">{totalAdmins}</p>
+                <p className="text-sm text-gray-500">Total Admins</p>
               </div>
             </div>
+
             <div className="bg-white shadow rounded-xl p-4 flex items-center gap-4">
               <FiCheckCircle className="text-2xl text-teal-600" />
               <div>
-                <p className="text-lg font-bold">18</p>
-                <p className="text-sm text-gray-500">Pending Reviews</p>
+                <p className="text-lg font-bold">{pendingPayment}</p>
+                <p className="text-sm text-gray-500">Pending Payment</p>
               </div>
             </div>
+
             <div className="bg-white shadow rounded-xl p-4 flex items-center gap-4">
               <FiAlertCircle className="text-2xl text-teal-600" />
               <div>
-                <p className="text-lg font-bold">5</p>
-                <p className="text-sm text-gray-500">Total Warnings Sent</p>
+                <p className="text-lg font-bold">{overdueUsers}</p>
+                <p className="text-sm text-gray-500">Overdue Users</p>
               </div>
             </div>
           </div>
 
-          {/* Recent Activity */}
+          {/* Regulation */}
           <div className="bg-white shadow rounded-xl p-6 mt-4">
-            <h3 className="text-lg font-semibold text-gray-700 mb-4">Recent Activity</h3>
-            <ul className="text-sm text-gray-600 space-y-2">
-              <li>✅ Payment received from user id oi0203r039 (Ks 35,00)</li>
-              <li>⚠️ Warning sent to user 7898huehfe for overdue tax</li>
-              <li>📝 New user registered: U089</li>
-              {/* Add dynamic entries later */}
+            <h3 className="text-lg font-semibold text-gray-700 mb-4">Admin Regulation</h3>
+            <ul className="text-sm text-gray-700 space-y-2 list-disc pl-5">
+              <li>All tax payments must be recorded before the 5th of every month.</li>
+              <li>Shops must renew licenses annually with updated documents.</li>
+              <li>Sanitation inspections occur every 2 weeks; maintain hygiene at all times.</li>
+              <li>Unauthorized stalls will be removed after 3 warnings.</li>
+              <li>Admins must update overdue user list weekly.</li>
             </ul>
           </div>
         </div>

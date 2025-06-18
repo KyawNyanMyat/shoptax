@@ -2,22 +2,21 @@ import Admin from '../models/admin.model.js';
 // Create a new admin
 export const createAdmin = async (req, res) => {
   try {
-    const { adminName, password, phoneNo, department, adminSignaturePhoto } = req.body;
+    const { adminName, adminPassword, phoneNo, division } = req.body;
 
     const profilePhoto = `https://avatar.iran.liara.run/username?username=${adminName}`
     
     const newAdmin = new Admin({
       adminName,
-      password,
+      adminPassword,
       profilePhoto,
       phoneNo,
-      department,
-      adminSignaturePhoto
+      division,
     });
 
     await newAdmin.save();
     const adminObj = newAdmin.toObject();
-    delete adminObj.password;
+    delete adminObj.adminPassword;
 
     res.status(201).json(adminObj);
   } catch (error) {
@@ -55,7 +54,7 @@ export const updateAdmin = async (req, res) => {
   try {
     const updatedAdmin = await Admin.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
-    }).select("-password");
+    }).select("-adminPassword");
     if (!updatedAdmin) return res.status(404).json({ message: "Admin not found" });
 
     res.status(200).json(updatedAdmin);
@@ -74,6 +73,39 @@ export const deleteAdmin = async (req, res) => {
     res.status(200).json({ message: "Admin deleted successfully" });
   } catch (error) {
     console.error("Delete Admin Error:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+
+export const loginAdmin = async (req, res) => {
+  try {
+    const { adminName, adminPassword, division } = req.body;
+
+    // Check for required fields
+    if (!adminName || !adminPassword || !division) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    // Find admin
+    const admin = await Admin.findOne({ adminName, adminPassword, division });
+    if (!admin) {
+      return res.status(404).json({ message: "Admin not found or invalid division" });
+    }
+
+    // Success response
+    res.status(200).json({
+      message: "Login successful",
+      admin: {
+        _id: admin._id,
+        adminName: admin.adminName,
+        division: admin.division,
+        phoneNo: admin.phoneNo,
+        profilePhoto: admin.profilePhoto
+      },
+    });
+  } catch (error) {
+    console.error("Login Admin Error:", error);
     res.status(500).json({ message: "Server Error" });
   }
 };

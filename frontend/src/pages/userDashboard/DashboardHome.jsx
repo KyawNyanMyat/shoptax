@@ -80,6 +80,7 @@ const DashboardHome = () => {
       <div className="flex-1 flex flex-col">
         <DashboardHeader />
         
+        {/* In the future Clicking these four */}
         {/* Dashboard home */}
         <div className="p-6 space-y-10">
           <div>
