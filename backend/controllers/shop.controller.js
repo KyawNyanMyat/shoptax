@@ -1,11 +1,14 @@
+import Redlock from 'redlock';
 import Shop from '../models/shop.model.js';
+import redlock from '../utils/redlock.js';
+import mongoose from 'mongoose';
 
 // Create a new shop
 export const createShop = async (req, res) => {
   try {
     const { _id,marketHallNo, shopNo, chargeRate } = req.body;
 
-    if(!marketHallNo || !shopNo){
+    if(!marketHallNo || !shopNo || !chargeRate){
         return res.status(400).json({ message:"Fill the required field"})
     }
 
@@ -76,5 +79,79 @@ export const deleteShop = async (req, res) => {
   } catch (error) {
     console.error("Delete Shop Error:", error);
     res.status(500).json({ message: "Server Error" });
+  }
+};
+
+
+export const getShopsByUserId = async(req, res)=>{
+  try {
+    const { id: userId } = req.params;
+    const ownShopUsers = await Shop.find({ userId }).populate("userId","username");
+    if(ownShopUsers.length == 0){
+      return res.status(404).json([])
+    }
+
+    res.status(200).json(ownShopUsers)
+  } catch (error) {
+    console.error("Get Shop By UserID:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+}
+
+
+export const assignUserToShop = async (req, res) => {
+  const session = await mongoose.startSession();
+  const shopId = req.params.shopId;
+  const { userId } = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(shopId) || !mongoose.Types.ObjectId.isValid(userId)) {
+    return res.status(400).json({ message: "Invalid shopId or userId" });
+  }
+
+  const lockKey = `locks:shop:${shopId}`;
+
+  try {
+
+    const lock = await redlock.acquire([lockKey], 10000,{
+      retryCount: 0,
+      retryDelay: 0,
+      retryJitter: 0,
+    });
+
+    session.startTransaction({
+      readConcern: { level: "snapshot" },
+      writeConcern: { w: "majority" },
+    });
+
+    // Find shop and assign userId
+    const shop = await Shop.findById(shopId).session(session);
+    if (!shop) {
+      await session.abortTransaction();
+      await lock.release();
+      return res.status(404).json({ message: "Shop not found" });
+    }
+
+    shop.userId = userId; // assign user
+    await shop.save({ session });
+
+    await session.commitTransaction();
+
+    await lock.release();
+
+    res.status(200).json({ message: "User assigned to shop successfully" });
+  } catch (error) {
+    await session.abortTransaction();
+
+    // In case lock not acquired, or any other error
+    if (error instanceof Redlock.LockError || error.name == "ExecutionError") {
+      return res.status(423).json({ message: "Resource is locked, please retry" });
+    }
+
+    if(error.code == 112) return res.status(409).json({error:"Another admin made changes"})
+
+    console.error("Assign user to shop error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  } finally {
+    session.endSession();
   }
 };

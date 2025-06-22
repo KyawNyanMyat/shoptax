@@ -9,6 +9,7 @@ const AdminSignup = () => {
     adminName: "",
     adminPassword: "",
     phoneNo: "",
+    position: "",
     division: "",
   });
 
@@ -34,6 +35,7 @@ const AdminSignup = () => {
               <FaUserShield className="text-blue-600 text-2xl" />
             </div>
             <h1 className="text-2xl font-bold text-gray-800">Admin Registration</h1>
+            <p className="text-sm text-center">Of Department of Markets and Slaughterhouses, Taxation, and Sanitation</p>
             <p className="text-sm text-gray-600">Restricted to authorized personnel only</p>
           </div>
 
@@ -45,7 +47,7 @@ const AdminSignup = () => {
                 type="text"
                 autoComplete="off"
                 name="adminName"
-                value={formData.username}
+                value={formData.adminName}
                 onChange={handleChange}
                 placeholder="Enter name"
                 className="w-full input input-bordered focus:outline-offset-0"
@@ -59,7 +61,7 @@ const AdminSignup = () => {
                 type="password"
                 name="adminPassword"
                 autoComplete="new-password"
-                value={formData.password}
+                value={formData.adminPassword}
                 onChange={handleChange}
                 placeholder="Enter password"
                 className="w-full input input-bordered focus:outline-offset-0"
@@ -72,7 +74,7 @@ const AdminSignup = () => {
               <input
                 type="text"
                 name="phoneNo"
-                value={formData.phone}
+                value={formData.phoneNo}
                 onChange={handleChange}
                 placeholder="09974337432"
                 className="w-full input input-bordered focus:outline-offset-0"
@@ -82,7 +84,7 @@ const AdminSignup = () => {
 
             <div>
               <label className="block font-medium text-gray-700 mb-1">
-                Divisions of Department of Markets and Slaughterhouses, Taxation, and Sanitation
+                Divisions
               </label>
               <select
                 name="division"
@@ -103,7 +105,32 @@ const AdminSignup = () => {
                 </option>
               </select>
             </div>
+
+            <div>
+              <label className="block font-medium text-gray-700 mb-1">
+                Rank/Position
+              </label>
+              <select
+                name="position"
+                value={formData.position}
+                onChange={handleChange}
+                className="w-full select select-bordered focus:outline-offset-0"
+                required
+              >
+                <option value="" disabled>
+                  Select Position
+                </option>
+                <option value="Deputy Director">
+                  Deputy Director
+                </option>
+                <option value="Senior Clerk">
+                  Senior Clerk
+                </option>
+              </select>
+            </div>
+
           </div>
+
 
           {/* Buttons */}
           <div className="pt-6 space-y-3">

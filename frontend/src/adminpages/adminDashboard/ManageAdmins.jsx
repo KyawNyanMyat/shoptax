@@ -57,6 +57,7 @@ const ManageAdmins = () => {
                     <th>Password</th>
                     <th>Phone</th>
                     <th>Division</th>
+                    <th>Position</th>
                     <th>Photo</th>
                   </tr>
                 </thead>
@@ -69,6 +70,7 @@ const ManageAdmins = () => {
                       <td>{admin.adminPassword}</td>
                       <td>{admin.phoneNo}</td>
                       <td>{admin.division}</td>
+                      <td>{admin.position}</td>
                       <td>
                         <img
                             src={admin.profilePhoto}

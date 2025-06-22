@@ -5,8 +5,8 @@ import toast from "react-hot-toast";
 
 
 const DashboardHome = () => {
-  const userName = "Kyaw Nyan Myat"; // In the future
-  const userId = "684c2b1ec0a2a3d814a8d2ca"; //In the future
+  const userName = "Kyaw"; // In the future
+  const userId = "68543412639f9a63f9dd50b3"; //In the future
   const today = new Date().toLocaleDateString();
 
   const [lastPayment, setLastPayment] = useState(null)
@@ -17,12 +17,16 @@ const DashboardHome = () => {
   const summary = [
     {
       label: "Last Payment",
-      value: new Date(lastPayment).toLocaleDateString("en-CA"),
+      value: lastPayment
+      ? new Date(lastPayment).toLocaleDateString("en-CA")
+      : "No Payment Yet",
       color: "bg-green-100 text-green-800",
     },
     {
       label: "Next Due",
-      value: new Date(nextPaymentDueDate).toLocaleDateString("en-CA"),
+      value: nextPaymentDueDate
+      ? new Date(nextPaymentDueDate).toLocaleDateString("en-CA")
+      : "No Payment Yet",
       color: "bg-yellow-100 text-yellow-800",
     },
     {
@@ -63,6 +67,7 @@ const DashboardHome = () => {
 
         setUnReadWarning(warningData)
 
+        //console.log(lastPayment ,nextPaymentDueDate, unReadReceipt, unReadWarning)
         if(!res.ok || !receiptRes || !warningRes) {
           throw new Error(data.message)
         }

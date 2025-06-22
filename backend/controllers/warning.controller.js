@@ -1,21 +1,52 @@
+import mongoose from 'mongoose';
 import Warning from '../models/warning.model.js';
 
 // Create a new warning
 export const createWarning = async (req, res) => {
-  try {
-    const { warningTitle ,warningContent, userId } = req.body;
+  const session = await mongoose.startSession();
+  const { warningTitle, warningContent, userId } = req.body;
 
-    if (!warningContent || !userId || !warningTitle) {
-      return res.status(400).json({ message: "Fill All required field" });
-    }
+  if (!warningContent || !userId || !warningTitle) {
+    return res.status(400).json({ message: "Fill all required fields" });
+  }
+
+  const lockKey = `locks:warning:user:${userId}`; // Lock key per user
+
+  try {
+    const lock = await redlock.acquire([lockKey], 10000, {
+      retryCount: 0,
+      retryDelay: 0,
+      retryJitter: 0,
+    });
+
+    session.startTransaction({
+      readConcern: { level: "snapshot" },
+      writeConcern: { w: "majority" },
+    });
+    
 
     const newWarning = new Warning({ warningTitle, warningContent, userId });
-    await newWarning.save();
+    await newWarning.save({ session });
+
+    await session.commitTransaction();
+    await lock.release();
 
     res.status(201).json(newWarning);
   } catch (error) {
+    if (session.inTransaction()) {
+      await session.abortTransaction();
+    }
+
+    if (error instanceof redlock.LockError || error.name == "ExecutionError") {
+      return res.status(423).json({ message: "Another admin is creating a warning. Please try again shortly." });
+    }
+
+    if(err.code == 112) return res.status(409).json({error:"Another admin is also sending"})
+
     console.error("Create Warning Error:", error);
     res.status(500).json({ message: "Server Error" });
+  } finally {
+    session.endSession();
   }
 };
 
@@ -105,8 +136,6 @@ export const getWarningsByUserId = async (req, res) => {
   }
 };
 
-
-// controllers/warning.controller.js
 
 export const updateWarningIsRead = async (req, res) => {
   try {

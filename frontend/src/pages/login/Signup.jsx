@@ -10,7 +10,7 @@ const Signup = () => {
     gender: '',
     NRC: '',
     phoneNo: '',
-    shopId: ''
+    // shopId: ''
   })
 
   const [shops, setShops] = useState([]);
@@ -22,25 +22,28 @@ const Signup = () => {
     await signup(formData)
   }
 
-  useEffect(() => {
-    console.log(formData)
-    const fetchShops = async () => {
-      try {
-        const res = await fetch('/api/shops')
-        const data = await res.json()
-        setShops(data)
-      } catch (err) {
-        console.error("Failed to fetch shops:", err)
-      }
-    }
 
-    fetchShops()
-  }, [])
+  // useEffect(() => {
+  //   console.log(formData)
+  //   const fetchShops = async () => {
+  //     try {
+  //       const res = await fetch('/api/shops')
+  //       const data = await res.json()
+  //       setShops(data)
+  //     } catch (err) {
+  //       console.error("Failed to fetch shops:", err)
+  //     }
+  //   }
+
+  //   fetchShops()
+  // }, [])
+
+
   return (
     <div className='flex flex-col h-full items-center justify-center mt-10 min-h-screen'>
       <div className='bg-gray-200 py-10 mt-18 sm:mt-0 p-5 w-11/12 md:w-1/3'>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} autoComplete='off'>
           <div className='flex items-center justify-center'>
             <Link to="/"><img src="./src/assets/react.svg" alt="Logo"  className='rounded-full w-20 h-10 cursor-pointer'/></Link>
             <span className='text-3xl font-semibold'>Signup</span>
@@ -48,26 +51,26 @@ const Signup = () => {
 
           <div>
             <label className='block font-semibold py-2'>UserName</label>
-            <input type="text" placeholder="Enter your name" className=' w-full input input-borded focus:outline-offset-0'
+            <input type="text" required placeholder="Enter your name" className=' w-full input input-borded focus:outline-offset-0'
               onChange={(e)=> setFormData({...formData, username: e.target.value})}
             />
           </div>
 
           <div>
             <label className='block font-semibold py-2'>Password</label>
-            <input type="text" placeholder="Enter your Password" className=' w-full input input-borded focus:outline-offset-0'
+            <input type="password" required placeholder="Enter your Password" className=' w-full input input-borded focus:outline-offset-0'
               onChange={(e)=> setFormData({...formData, password: e.target.value})}
             />
           </div>
 
           <div>
             <label className='block font-semibold py-2'>Confirm Password</label>
-            <input type="text" placeholder="Enter your Password again" className=' w-full input input-borded focus:outline-offset-0'
+            <input type="password" required placeholder="Enter your Password again" className=' w-full input input-borded focus:outline-offset-0'
               onChange={(e)=> setFormData({...formData, confirmPassword: e.target.value})}
             />
           </div>
 
-          <div>
+          {/* <div>
             <label className='block font-semibold py-2'>Choose Shop</label>
             <select
               className='select select-bordered w-full focus:outline-offset-0'
@@ -84,19 +87,18 @@ const Signup = () => {
               }
               <option disabled>End</option>
             </select>
-          </div>
-
+          </div> */}
 
           <div>
             <label className='block font-semibold py-2'>NRC</label>
-            <input type="text" placeholder="Enter your NRC" className=' w-full input input-borded focus:outline-offset-0'
+            <input type="text" required placeholder="Enter your NRC" className=' w-full input input-borded focus:outline-offset-0'
               onChange={(e)=> setFormData({...formData, NRC: e.target.value})}
             />
           </div>
 
           <div>
             <label className='block font-semibold py-2'>Phone Number</label>
-            <input type="text" placeholder="Enter your phone number" className=' w-full input input-borded focus:outline-offset-0'
+            <input type="text" required placeholder="Enter your phone number" className=' w-full input input-borded focus:outline-offset-0'
               onChange={(e)=> setFormData({...formData, phoneNo: e.target.value})}
             />
           </div>
@@ -109,6 +111,7 @@ const Signup = () => {
               type="radio"
               name="gender"
               value="male"
+              required
               checked={formData.gender === "male"}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, gender: e.target.value }))
@@ -121,6 +124,7 @@ const Signup = () => {
               type="radio"
               name="gender"
               value="female"
+              required
               checked={formData.gender === "female"}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, gender: e.target.value }))

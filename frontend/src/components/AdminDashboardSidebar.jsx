@@ -4,6 +4,8 @@ import { CiLogout } from "react-icons/ci";
 import { CiShop } from "react-icons/ci";
 import { Link } from 'react-router-dom';
 import { MdAdminPanelSettings, MdOutlineAdminPanelSettings } from "react-icons/md";
+import { IoReceiptOutline, IoWarningOutline} from "react-icons/io5";
+import { PiShieldWarning } from "react-icons/pi";
 
 const AdminDashboardSidebar = () => {
   return (
@@ -32,14 +34,28 @@ const AdminDashboardSidebar = () => {
           <CiShop className="text-lg" />
           Manage Shop
         </Link>
+        
         <Link to="/admin/managepayment" className="flex items-center gap-3 hover:text-slate-300">
           <RiSecurePaymentLine className="text-lg" />
           Manage Payment
+        </Link>
+        <Link to="/admin/sendwarning" className="flex items-center gap-3 hover:text-slate-300">
+          <PiShieldWarning className="text-lg" />
+          Send Warning
+        </Link>
+        <Link to="/admin/viewreceipt" className="flex items-center gap-3 hover:text-slate-300">
+          <IoReceiptOutline className="text-lg" />
+          View All Receipts
+        </Link>
+        <Link to="/admin/viewwarning" className="flex items-center gap-3 hover:text-slate-300">
+          <IoWarningOutline className="text-lg" />
+          View All Warnings
         </Link>
         <Link to="/admin" className="flex items-center gap-3 hover:text-slate-300">
           <CiLogout className="text-lg" />
           Logout
         </Link>
+
       </nav>
     </aside>
   );

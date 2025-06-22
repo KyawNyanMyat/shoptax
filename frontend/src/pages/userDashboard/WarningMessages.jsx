@@ -6,7 +6,7 @@ import useMarkWarningAsRead from "../../hooks/useMarkWarningAsRead";
 
 
 const WarningMessages = () => {
-  const userId = "684c2b1ec0a2a3d814a8d2ca"; // in the future
+  const userId = "68543412639f9a63f9dd50b3"; // in the future
   const [warnings, setWarnings] = useState([])
   const { markAsRead, loadingId } = useMarkWarningAsRead() 
 
@@ -43,7 +43,8 @@ const WarningMessages = () => {
                     {warnings.map((warn) => (
                     <div
                         key={warn._id}
-                        className={`border-l-4 p-4 rounded-xl shadow-sm bg-red-100 text-red-800 border-red-200`}
+                        className={`border-l-4 p-4 rounded-xl shadow-sm text-red-800 border-red-200
+                          ${warn.warningTitle == "Payment Rejected" ? "bg-amber-200" : "bg-red-200"}`}
                     >
                         <div className="flex items-start gap-3">
                         <FiAlertCircle className="text-xl mt-1" />
@@ -71,7 +72,7 @@ const WarningMessages = () => {
                     </div>
                     ))}
 
-                    {warnings.length === 0 && (
+                    {warnings.length == 0 && (
                     <p className="text-sm text-gray-500">No warning messages at the moment.</p>
                     )}
                 </div>

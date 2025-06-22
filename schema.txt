@@ -6,7 +6,6 @@
     NRC
     PhoneNo
     Gender
-    ShopId[Foreign Key to Shop Table(ref)]
     createdAt
     updatedAt
 
@@ -18,6 +17,7 @@
     ProfilePhoto
     PhoneNo
     Division
+    Position
     //AdminSignaturePhoto(Don't add this for now)
     createdAt
     updatedAt
@@ -28,7 +28,8 @@
     MarketHallNo
     ShopNo
     ChargeRate
-    //Status(Don't add this for now)
+    UserId[foreign key to User Table(ref)]
+    Status(Available or Occupied)
 
 
 #Payment Table(Schema)

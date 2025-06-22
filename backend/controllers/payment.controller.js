@@ -1,4 +1,10 @@
+import mongoose from 'mongoose';
 import Payment from '../models/payment.model.js';
+import redlock from '../utils/redlock.js';
+import Shop from '../models/shop.model.js';
+import Warning from '../models/warning.model.js';
+import Receipt from '../models/receipt.model.js';
+import Redlock from 'redlock';
 
 // Create a new payment
 export const createPayment = async (req, res) => {
@@ -12,13 +18,37 @@ export const createPayment = async (req, res) => {
     } = req.body;
 
     const paymentPhoto = req.file ? `/uploads/${req.file.filename}` : null;
-    
+
+
+    if (!userId || !shopId || !paymentType || !amount || !nextPaymentDueDate || !paymentPhoto) {
+      return res.status(400).json({ message: "All fields are required." });
+    }
+
+    const amountNumber = parseFloat(amount);
+    if (isNaN(amountNumber) || amountNumber <= 0) {
+      return res.status(400).json({ message: "Amount must be a positive number." });
+    }
+
+    const validTypes = ["NRC Register Cost", "Land Rent Cost", "Overdue Fee"];
+    if (!validTypes.includes(paymentType)) {
+      return res.status(400).json({ message: "Invalid payment type." });
+    }
+
+    // In the future(Maybe change or delete it)
+    // const dueDate = new Date(nextPaymentDueDate);
+    // if (isNaN(dueDate.getTime())) {
+    //   return res.status(400).json({ message: "Invalid date format." });
+    // }
+    // if (dueDate < new Date()) {
+    //   return res.status(400).json({ message: "Next payment due date must be in the future." });
+    // }
+
     const newPayment = new Payment({
       userId,
       shopId,
       paymentType,
       paymentPhoto,
-      amount,
+      amount: amountNumber,
       nextPaymentDueDate,
     });
 
@@ -155,5 +185,102 @@ export const getOverdueUsers = async (req, res) => {
   } catch (error) {
     console.error("Error fetching overdue payments:", error);
     res.status(500).json({ message: "Server Error" });
+  }
+};
+
+
+export const updatePaymentStatus = async (req, res) => {
+  //const userId = "684c2b1ec0a2a3d814a8d2ca"; //In the future
+  const adminId = "6854473584392169732eacf5"; // In the future
+  const { id } = req.params;
+  const { status, userId } = req.body;
+
+  if (!['Pending', 'Finished', 'Rejected'].includes(status)) {
+    return res.status(400).json({ message: 'Invalid status value' });
+  }
+
+  let lock;
+  const session = await mongoose.startSession();
+  // session.startTransaction({
+  //   readConcern: { level: "snapshot" },
+  //   writeConcern: { w: "majority" },
+  // });
+
+  try {
+    lock = await redlock.acquire([`locks:payment:${id}`], 10000,
+      {
+        retryCount: 0,
+        retryDelay: 0,
+        retryJitter: 0
+      }
+    ); 
+
+    session.startTransaction({
+      readConcern: { level: "snapshot" },
+      writeConcern: { w: "majority" },
+    });
+    const payment = await Payment.findById(id).session(session);
+    if (!payment) {
+      await session.abortTransaction();
+      await lock.release();
+      return res.status(404).json({ message: "Payment not found" });
+    }
+
+    //if admin accept payment, then create checkout and send to user
+    if (status === "Finished") {
+      await Receipt.create([{
+        paymentId: payment._id,
+        adminId: adminId,  //In the future
+        amount: payment.amount,
+        issueDate: new Date()
+      }], { session });
+    }
+
+    //if admin reject payment, then create warning and send to user
+    if (status === "Rejected") {
+      const shop = await Shop.findById(payment.shopId).session(session);
+      if (!shop) throw new Error("Shop not found");
+    
+      await Warning.create([{
+        warningTitle: "Payment Rejected",
+        warningContent: `Your ${payment.paymentType} has been rejected. Please resubmit a valid payment form again.`,
+        userId: userId, //In the future
+        issueDate: new Date()
+      }], { session });
+    }
+    
+
+    if (payment.status !== 'Pending') {
+      await session.abortTransaction();
+      await lock.release();
+      return res.status(409).json({ message: `Payment already ${payment.status}` });
+    }
+
+    payment.status = status;
+    await payment.save({ session });
+
+    await session.commitTransaction();
+    await lock.release();
+
+    const updated = await Payment.findById(id)
+      .populate("userId", "username")
+      .populate("shopId", "marketHallNo shopNo");
+
+    res.status(200).json(updated);
+  } catch (err) {
+    if (session.inTransaction()) {
+      await session.abortTransaction();
+    }
+    console.error("Error in payment Controller, update payment status:", err);
+
+    if (err.name == "ExecutionError" || err instanceof Redlock.LockError) {
+      return res.status(423).json({ message: "Payment is currently being updated. Try again later." });
+    }
+
+    if(err.code == 112) return res.status(409).json({error:"Another admin made changes"})
+
+    res.status(500).json({ message: "Server error" });
+  } finally {
+    session.endSession();
   }
 };

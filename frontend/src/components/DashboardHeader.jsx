@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { FiBell } from "react-icons/fi";
 
 const DashboardHeader = () => {
-  let userPhoto = "https://avatar.iran.liara.run/username?username=kozin" // in the future
+  let userPhoto = "haha" // in the future
   return (
     <header className="bg-primary text-white px-6 py-4 shadow flex justify-between items-center">
       {/* Left - Title */}
@@ -18,7 +18,7 @@ const DashboardHeader = () => {
         <div className="w-8 h-8 rounded-full overflow-hidden">
           {userPhoto && (
             <img
-              src={userPhoto}
+              src={"#"}
               alt="User"
               className="w-full h-full object-cover"
             />

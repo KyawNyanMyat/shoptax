@@ -21,6 +21,10 @@ const adminSchema = new mongoose.Schema({
         type: String, 
         required: true 
     },
+    position: {
+        type: String,
+        required: true
+    }
     // adminSignaturePhoto: { 
     //     type: String 
     // }

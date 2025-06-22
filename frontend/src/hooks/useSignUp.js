@@ -23,7 +23,9 @@ const useSignUp = () => {
               }
 
             toast.success("Account Created Successfully", {duration: 3000})
-            navigate("/login")
+
+            //In the future change navigation
+            //navigate("/login")
         } catch (error) {
             console.log('Error in useLogin hook',error)
             toast.error(error.message, {duration: 1500})

@@ -17,6 +17,9 @@ import ManageAdmins from "./adminpages/adminDashboard/ManageAdmins"
 import AdminManageUsers from "./adminpages/adminDashboard/ManageUsers"
 import AdminManageShops from "./adminpages/adminDashboard/AdminManageShops"
 import AdminManagePayments from "./adminpages/adminDashboard/AdminManagePayment"
+import AdminManageReceipts from "./adminpages/adminDashboard/AdminManageReceipts"
+import AdminViewWarnings from "./adminpages/adminDashboard/AdminViewWarning"
+import AdminSendWarning from "./adminpages/adminDashboard/AdminSendWarning"
 function App() {
 
   return (
@@ -45,6 +48,9 @@ function App() {
             <Route path="/admin/manageadmin" element={<ManageAdmins />} />
             <Route path="/admin/manageshop" element={<AdminManageShops />} />
             <Route path="/admin/managepayment" element={<AdminManagePayments />} />
+            <Route path="/admin/sendwarning" element={<AdminSendWarning />} />
+            <Route path="/admin/viewreceipt" element={<AdminManageReceipts />} />
+            <Route path="/admin/viewwarning" element={<AdminViewWarnings />} />
           </Routes>
           <Toaster/>
         </main>

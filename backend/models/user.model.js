@@ -16,7 +16,8 @@ const userSchema = new mongoose.Schema({
     },
     NRC: { 
         type: String, 
-        required: true 
+        required: true,
+        unique: true
     },
     phoneNo: { 
         type: String, 
@@ -27,11 +28,12 @@ const userSchema = new mongoose.Schema({
         enum: ['male', 'female'], 
         required: true 
     },
-    shopId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Shop',
-        require: true
-    }
+    //In the future delete shopId
+    // shopId: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'Shop',
+    //     require: true
+    // }
 }, {timestamps: true});
 
 export default mongoose.model('User', userSchema);

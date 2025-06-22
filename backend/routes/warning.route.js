@@ -12,9 +12,9 @@ import {
 
 const router = express.Router();
 
-router.post('/', createWarning);
+router.post('/', createWarning); // use by admin
 
-router.get('/', getAllWarnings);
+router.get('/', getAllWarnings); // use by admin
 
 router.get('/:id', getWarningById);
 
@@ -22,10 +22,10 @@ router.put('/:id', updateWarning);
 
 router.delete('/:id', deleteWarning);
 
-router.get('/unread/:userId', getUnreadWarningsByUserId);
+router.get('/unread/:userId', getUnreadWarningsByUserId); // used by user
 
-router.get("/user/:userId", getWarningsByUserId); 
+router.get("/user/:userId", getWarningsByUserId); // used by user
 
-router.patch("/user/:warningId", updateWarningIsRead);
+router.patch("/user/:warningId", updateWarningIsRead); // used by user
 
 export default router;

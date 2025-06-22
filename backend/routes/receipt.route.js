@@ -13,9 +13,11 @@ import {
 
 const router = express.Router();
 
+//In the future, add auth
+
 router.post('/', createReceipt);
 
-router.get('/', getAllReceipts);
+router.get('/', getAllReceipts); //use by admin
 
 router.get('/:id', getReceiptById);
 
@@ -25,7 +27,7 @@ router.delete('/:id', deleteReceipt);
 
 router.get("/user/:userId", getReceiptsByUser);
 
-router.get("/unread/:userId", getAllUnreadReceiptsByUserId);
+router.get("/unread/:userId", getAllUnreadReceiptsByUserId); // used by user
 
 router.patch("/mark-read/:id", markReceiptAsRead);
 

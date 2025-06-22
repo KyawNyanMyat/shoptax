@@ -6,7 +6,7 @@ import useSubmitPayment from "../../hooks/useSubmitPayment";
 
 const SubmitPaymentProof = () => {
 
-  const userId = "684c2b1ec0a2a3d814a8d2ca"; // in the future
+  const userId = "68543412639f9a63f9dd50b3"; // in the future
   const [userName, setUserName] = useState("");
   const [marketHallNo, setMarketHallNo] = useState("");
   const [shopNo, setShopNo] = useState("");
@@ -14,6 +14,7 @@ const SubmitPaymentProof = () => {
   const [paymentPhoto, setPaymentPhoto] = useState("");
   const [amount, setAmount] = useState("");
   const [shopId, setShopId] = useState("");
+  const [ownedShops, setOwnedShops] = useState([]);
 
   const { loading, submitPayment } = useSubmitPayment()
 
@@ -24,11 +25,18 @@ const SubmitPaymentProof = () => {
         const data = await res.json();
 
         if (!res.ok) throw new Error(data.message || "Something went wrong");
-      
+
+        const shopRes = await fetch(`/api/shops/user/${userId}`);
+        const shopData = await shopRes.json()
+
+        if (!shopRes.ok) throw new Error(data.message || "Something went wrong");
+
         setUserName(data.username)
-        setShopId(data.shopId)
-        setMarketHallNo(data.shopId.marketHallNo)
-        setShopNo(data.shopId.shopNo)
+        setOwnedShops(shopData);
+
+        // setShopId(shopData._id)
+        // setMarketHallNo(shopData.marketHallNo)
+        // setShopNo(shopData.shopNo)
         
       } catch (error) {
         console.log("Error in Receipt.jsx", error.message);
@@ -37,6 +45,14 @@ const SubmitPaymentProof = () => {
 
     getUserInfo();
   }, []);
+
+  // For select option only
+  const handleShopChange = (e) => {
+    const selectedShopId = e.target.value;
+    setShopId(selectedShopId);
+  
+  };
+  
 
 
   const handleSubmit = async (e) => {
@@ -65,7 +81,7 @@ const SubmitPaymentProof = () => {
 
     const formData = new FormData();
     formData.append("userId", userId);
-    formData.append("shopId", shopId._id);
+    formData.append("shopId", shopId);
     formData.append("paymentType", paymentType);
     formData.append("amount", amount);
     formData.append("paymentPhoto", paymentPhoto);
@@ -101,27 +117,25 @@ const SubmitPaymentProof = () => {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="label">Market Hall No</label>
-                <input
-                  type="text"
-                  value={marketHallNo}
-                  disabled
-                  className="input input-bordered w-full bg-gray-100 focus:outline-offset-0"
-                />
-              </div>
-              <div>
-                <label className="label">Shop No</label>
-                <input
-                  type="text"
-                  value={shopNo}
-                  disabled
-                  className="input input-bordered w-full bg-gray-100 focus:outline-offset-0"
-                />
-              </div>
+            <div>
+              <label className="label">Select Shop</label>
+              <select
+                className="select select-bordered w-full focus:outline-offset-0"
+                value={shopId}
+                onChange={handleShopChange}
+                disabled={ownedShops.length == 0}
+                required
+              >
+                <option value="" disabled>
+                  {ownedShops.length == 0 ? "No shop assigned" : "Select your shop"}
+                </option>
+                {ownedShops.map((shop) => (
+                  <option key={shop._id} value={shop._id}>
+                    {shop.marketHallNo} - {shop.shopNo}
+                  </option>
+                ))}
+              </select>
             </div>
-
 
             <div>
               <label className="label">Payment Type</label>
@@ -134,6 +148,7 @@ const SubmitPaymentProof = () => {
                 <option value="" disabled>Select Payment Type</option>
                 <option value="NRC Register Cost">NRC Register Cost</option>
                 <option value="Land Rent Cost">Land Rent Cost</option>
+                <option value="Overdue Fee">Overdue Fee</option>
               </select>
             </div>
 

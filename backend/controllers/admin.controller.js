@@ -2,7 +2,7 @@ import Admin from '../models/admin.model.js';
 // Create a new admin
 export const createAdmin = async (req, res) => {
   try {
-    const { adminName, adminPassword, phoneNo, division } = req.body;
+    const { adminName, adminPassword, phoneNo, division, position } = req.body;
 
     const profilePhoto = `https://avatar.iran.liara.run/username?username=${adminName}`
     
@@ -12,6 +12,7 @@ export const createAdmin = async (req, res) => {
       profilePhoto,
       phoneNo,
       division,
+      position
     });
 
     await newAdmin.save();

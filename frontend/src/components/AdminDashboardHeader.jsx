@@ -7,7 +7,7 @@ const AdminDashboardHeader = () => {
       {/* Left - Title */}
       <div>
         <h1 className="text-xl font-bold">TDD Admin Dashboard</h1>
-        <p className="text-sm text-amber-100">Oversee haah and manage township operations</p>
+        <p className="text-sm text-amber-100">Oversee users and manage market operations</p>
       </div>
 
       {/* Right - Bell & Profile */}
@@ -23,7 +23,7 @@ const AdminDashboardHeader = () => {
           {userPhoto && (
             <img
               src={userPhoto}
-              alt="User"
+              alt="Admin"
               className="w-full h-full object-cover"
             />
           )}

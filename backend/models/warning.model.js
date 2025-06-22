@@ -21,7 +21,7 @@ const warningSchema = new mongoose.Schema({
     },
     overdueFee: {
         type: Number,
-        default: 0
+        default: 100
     },
     isRead: { 
         type: Boolean, 

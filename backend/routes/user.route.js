@@ -9,7 +9,7 @@ router.post('/login', loginUser);
 
 router.get('/', getAllUsers); // used by admin
 
-router.get('/:id', getUserById);
+router.get('/:id', getUserById); // used by user
 
 router.put('/:id', updateUser);
 

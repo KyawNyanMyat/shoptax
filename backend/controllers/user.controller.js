@@ -6,15 +6,24 @@ export const createUser = async (req, res) => {
   try {
     const {
       username, password, confirmPassword, NRC,
-      phoneNo, gender, shopId
+      phoneNo, gender
     } = req.body;
 
-    const shop = await Shop.findById(shopId);
-    if (!shop) {
-      return res.status(404).json({ message: "Shop not found" });
+    // const shop = await Shop.findById(shopId);
+    // if (!shop) {
+    //   return res.status(404).json({ message: "Shop not found" });
+    // }
+    if (
+      !username?.trim() || !password?.trim() || !confirmPassword?.trim() ||
+      !NRC?.trim() || !phoneNo?.trim() || !gender?.trim()
+    ) {
+      return res.status(400).json({ message: "Fill all required fields" });
     }
+    
 
-    //In the future(password != confirmPassword)
+    if(password.trim() != confirmPassword.trim()){
+      return res.status(400).json({message: "Check your password again"})
+    }
 
     const profilePhoto = `https://avatar.iran.liara.run/username?username=${username}`
     
@@ -25,7 +34,6 @@ export const createUser = async (req, res) => {
         NRC,
         phoneNo,
         gender,
-        shopId
     });
 
     await newUser.save();
@@ -36,6 +44,12 @@ export const createUser = async (req, res) => {
 
   } catch (error) {
     console.error("Create User Error:", error);
+
+    // duplicate key error
+    if (error.code == 11000) {
+      return res.status(409).json({ message: "NRC already registered." });
+    }
+
     res.status(500).json({ message: "Server Error" });
   }
 };
@@ -43,7 +57,7 @@ export const createUser = async (req, res) => {
 // Get all users
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find().populate('shopId')
+    const users = await User.find()
     res.status(200).json(users);
   } catch (error) {
     console.error("Get Users Error:", error);
@@ -54,7 +68,7 @@ export const getAllUsers = async (req, res) => {
 // Get one user by ID
 export const getUserById = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id).populate('shopId').select("-password");
+    const user = await User.findById(req.params.id).select("-password");
     if (!user) return res.status(404).json({ message: "User not found" });
 
     res.status(200).json(user);

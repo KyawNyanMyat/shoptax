@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import AdminDashboardHeader from "../../components/AdminDashboardHeader";
 import AdminDashboardSidebar from "../../components/AdminDashboardSidebar";
+import usePaymentStatusUpdate from "../../hooks/usePaymentStatusUpdate";
+
 
 const AdminManagePayments = () => {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { updateStatus, loading: statusLoading } = usePaymentStatusUpdate();
+
 
   useEffect(() => {
     const fetchPayments = async () => {
@@ -46,14 +50,15 @@ const AdminManagePayments = () => {
                         <tr className="text-teal-800 text-sm">
                         <th className="px-6 py-3 text-left font-medium">No</th>
                         <th className="px-6 py-3 text-left font-medium">PaymentID</th>
-                        <th className="px-6 py-3 text-left font-medium">UserId</th>
-                        <th className="px-6 py-3 text-left font-medium">ShopId</th>
+                        <th className="px-6 py-3 text-left font-medium">Username</th>
+                        <th className="px-6 py-3 text-left font-medium">Shop</th>
                         <th className="px-6 py-3 text-left font-medium">Type</th>
                         <th className="px-6 py-3 text-left font-medium">Photo</th>
                         <th className="px-6 py-3 text-left font-medium">Amount</th>
                         <th className="px-6 py-3 text-left font-medium">Paid Date</th>
                         <th className="px-6 py-3 text-left font-medium">Next Due</th>
                         <th className="px-6 py-3 text-left font-medium">Status</th>
+                        <th className="px-6 py-3 text-left font-medium">Action</th>
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
@@ -61,8 +66,8 @@ const AdminManagePayments = () => {
                         <tr key={payment._id} className="text-sm">
                             <td className="px-6 py-4 whitespace-nowrap">{index + 1}</td>
                             <td className="px-6 py-4 whitespace-nowrap">{payment._id}</td>
-                            <td className="px-6 py-4 whitespace-nowrap">{payment.userId._id}</td>
-                            <td className="px-6 py-4 whitespace-nowrap">{payment.shopId._id}</td>
+                            <td className="px-6 py-4 whitespace-nowrap">{payment.userId.username}</td>
+                            <td className="px-6 py-4 whitespace-nowrap">{payment.shopId.marketHallNo}/ {payment.shopId.shopNo}</td>
                             <td className="px-6 py-4 whitespace-nowrap">{payment.paymentType}</td>
                             <td className="px-6 py-4 whitespace-nowrap">
                             <img
@@ -86,6 +91,28 @@ const AdminManagePayments = () => {
                             }`}>
                                 {payment.status}
                             </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                            <button
+                              className="btn bg-success mr-4"
+                              disabled={statusLoading}
+                              onClick={async () => {
+                                const updated = await updateStatus(payment._id, "Finished", payment.userId);
+                              }}
+                            >
+                              Accept
+                            </button>
+
+                            <button
+                              className="btn btn-error"
+                              disabled={statusLoading}
+                              onClick={async () => {
+                                const updated = await updateStatus(payment._id, "Rejected", payment.userId);
+                              }}
+                            >
+                              Reject
+                            </button>
+
                             </td>
                         </tr>
                         ))}

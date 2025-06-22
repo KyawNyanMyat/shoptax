@@ -7,7 +7,7 @@ import UseReceiptMarkAsRead from "../../hooks/UseReceiptMarkAsRead";
 
 const Receipts = () => {
   const [userReceipts, setUserReceipts] = useState([]);
-  const userId = "684c2b1ec0a2a3d814a8d2ca"; // in the future
+  const userId = "68543412639f9a63f9dd50b3"; // in the future
 
   const {loadingId, markAsRead} = UseReceiptMarkAsRead()
 
@@ -19,6 +19,7 @@ const Receipts = () => {
 
         if (!res.ok) throw new Error(data.message || "Something went wrong");
         setUserReceipts(data);
+        console.log("receipt", data)
       } catch (error) {
         console.log("Error in Receipt.jsx", error.message);
         toast.error(error.message, { duration: 1500 });

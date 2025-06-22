@@ -61,7 +61,6 @@ const AdminManageUsers = () => {
                     <th>NRC</th>
                     <th>Phone</th>
                     <th>Gender</th>
-                    <th>Shop</th>
                     <th>Photo</th>
                     </tr>
                 </thead>
@@ -75,7 +74,6 @@ const AdminManageUsers = () => {
                         <td>{u.NRC}</td>
                         <td>{u.phoneNo}</td>
                         <td className="capitalize">{u.gender}</td>
-                        <td>{u.shopId?.marketHallNo} / {u.shopId?.shopNo}</td>
                         <td>
                         <img
                             src={u.profilePhoto}

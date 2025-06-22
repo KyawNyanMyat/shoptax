@@ -4,7 +4,7 @@ import toast from "react-hot-toast"
 const useSubmitPayment = ()=>{
     const [loading, setloading] = useState(false)
     const submitPayment = async (formData)=>{
-        console.log(formData)
+
         setloading(true)
         try {
             const res = await fetch("/api/payments/", {

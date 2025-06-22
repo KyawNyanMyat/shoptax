@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import AdminDashboardSidebar from "../../components/AdminDashboardSidebar";
 import AdminDashboardHeader from "../../components/AdminDashboardHeader";
+import AssignUserToShop from "../../components/AssignUserToShop";
+import toast from "react-hot-toast";
 
 const AdminManageShops = () => {
   const [shops, setShops] = useState([]);
@@ -25,6 +27,26 @@ const AdminManageShops = () => {
 
     fetchShops();
   }, []);
+
+  const handleAssign = async (shopId, userId) => {
+    try {
+      const res = await fetch(`/api/shops/${shopId}/assign`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+      });
+      const data = await res.json();
+      console.log(data,"in")
+      if (!res.ok) throw new Error(data.message);
+      // Refresh the shop list after assigning
+      //In the future (Socket)
+      toast.success("Assign Successfully", { duration: 1500})
+    } catch (err) {
+        console.log('Error in adminManageShop.jsx', err)
+      toast.error(err.message || "Failed to assign user", {duration: 1500});
+    }
+  };
+  
 
   return (
     <div className="flex min-h-screen">
@@ -57,6 +79,8 @@ const AdminManageShops = () => {
                     <th>ShopID</th>
                     <th>Market Hall No</th>
                     <th>Shop No</th>
+                    <th>Status</th>
+                    <th>Occupied By</th>
                     <th>Charge Rate</th>
                     </tr>
                 </thead>
@@ -67,6 +91,17 @@ const AdminManageShops = () => {
                         <td>{s._id}</td>
                         <td>{s.marketHallNo}</td>
                         <td>{s.shopNo}</td>
+                        <td>{s.status}</td>
+                        <td>
+                            {s.userId == null ? (
+                                <AssignUserToShop
+                                shopId={s._id}
+                                onAssign={(shopId, userId) => handleAssign(shopId, userId)}
+                                />
+                            ) : (
+                                s.userId
+                            )}
+                        </td>
                         <td>{s.chargeRate}</td>
                     </tr>
                     ))}

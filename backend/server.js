@@ -8,7 +8,6 @@ import AdminRoutes from "./routes/admin.route.js"
 import PaymentRoutes from "./routes/payment.route.js"
 import ReceiptRoutes from "./routes/receipt.route.js"
 import WarningRoutes from "./routes/warning.route.js"
-import ShopHistoryRoutes from "./routes/shopHistory.route.js"
 import path from 'path';
 import cors from "cors";
 
@@ -36,7 +35,6 @@ app.use('/api/admins', AdminRoutes);
 app.use('/api/payments', PaymentRoutes);
 app.use('/api/receipts', ReceiptRoutes);
 app.use('/api/warnings', WarningRoutes);
-app.use('/api/shopHistories', ShopHistoryRoutes);
 
 
 connectToDB()
