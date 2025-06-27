@@ -19,16 +19,17 @@ const useSignUp = () => {
             const data = await res.json();
             
             if (!res.ok) {
-                throw new Error(data.message || "Something went wrong");
+                throw new Error(data.message || "တခုခုမှားယွင်းနေပါသည်");
               }
 
-            toast.success("Account Created Successfully", {duration: 3000})
-
+            toast.success("အကောင့်ဖန်တီးမှု အောင်မြင်ပါသည်", {duration: 3000})
+            return true
             //In the future change navigation
             //navigate("/login")
         } catch (error) {
             console.log('Error in useLogin hook',error)
             toast.error(error.message, {duration: 1500})
+            return false
         }
         finally{
             setloading(false)

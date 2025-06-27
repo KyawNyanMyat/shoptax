@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AdminDashboardHeader from "../../components/AdminDashboardHeader";
 import AdminDashboardSidebar from "../../components/AdminDashboardSidebar";
 import { LiaUserPlusSolid } from "react-icons/lia";
+import toast from "react-hot-toast";
 
 const ManageAdmins = () => {
   const [admins, setAdmins] = useState([]);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate()
+  const myposition = "ဒုဦးစီးမှူး" // In the future
 
   useEffect(() => {
     const fetchAdmins = async () => {
@@ -25,6 +28,15 @@ const ManageAdmins = () => {
     fetchAdmins();
   }, []);
 
+  const handleAuthorization = (e)=>{
+    if(myposition!=="ဒုဦးစီးမှူး"){
+      toast.error("ခွင့်ပြုချက် မရှိပါ", {duration: 1500})
+    }
+    else{
+      navigate("/admin/signup")
+    }
+  }
+
   return (
     <div className="flex min-h-screen">
       <AdminDashboardSidebar />
@@ -34,12 +46,9 @@ const ManageAdmins = () => {
         <div className="p-6 bg-gray-50 min-h-full">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-teal-600">Manage Admins</h2>
-            <Link
-              to="/admin/signup"
-              className="btn bg-blue-600 text-white hover:bg-blue-700"
-            >
-              <LiaUserPlusSolid className="text-2xl"/>Create Admin
-            </Link>
+            <button onClick={handleAuthorization} className="btn bg-blue-600 text-white hover:bg-blue-700">
+                <LiaUserPlusSolid className="text-2xl"/>Create Admin
+            </button>
           </div>
 
           {loading ? (

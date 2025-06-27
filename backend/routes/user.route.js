@@ -1,15 +1,18 @@
 import express from 'express';
-import { createUser, deleteUser, getAllUsers, getUserById, loginUser, updateUser } from '../controllers/user.controller.js';
+import { createUser, deleteUser, getAllUsers, getUserById, loginUser, logoutUser, updateUser } from '../controllers/user.controller.js';
+import userProtectRoute from '../middleware/userProtectRoute.js';
 
 const router = express.Router();
 
 router.post('/', createUser);
 
-router.post('/login', loginUser);
+router.post('/login', loginUser); // used by user
+
+router.post("/logout", logoutUser); // used by user
 
 router.get('/', getAllUsers); // used by admin
 
-router.get('/:id', getUserById); // used by user
+router.get('/:id',userProtectRoute, getUserById); // used by user
 
 router.put('/:id', updateUser);
 

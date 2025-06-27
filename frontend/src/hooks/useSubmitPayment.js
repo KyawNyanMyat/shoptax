@@ -14,10 +14,9 @@ const useSubmitPayment = ()=>{
           
             const data = await res.json();
           
-            if (!res.ok) throw new Error(data.message || "Failed to upload");
+            if (!res.ok) throw new Error(data.message || "Update လုပ်တာမအောင်မြင်ပါ");
             
-            toast.success("Submit Success", {duration:1500})
-            console.log("Image URL:", data.paymentPhoto);
+            toast.success("ငွေပေးချေမှု တင်သွင်းမှုအောင်မြင်ပါသည်", {duration:2500})
 
         } catch (error) {
             console.log("Error in useSubmitPayment hook", error.message)

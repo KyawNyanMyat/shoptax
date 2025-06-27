@@ -18,11 +18,12 @@ const useLogin = ()=>{
 
             const data = await res.json();
             if(!res.ok){
-                throw new Error(data.message || "Something went wrong");
+                throw new Error(data.message || "တခုခုမှားယွင်းနေပါသည်");
             }
 
+            localStorage.setItem("user-dashboard", JSON.stringify(data))
             toast.success("Login Success", {duration: 2000});
-            navigate("/user")
+            navigate("/user") //In the future uncomment this
         } catch (error) {
             console.log('Error in useLogin hook',error)
             toast.error(error.message, {duration: 1500})

@@ -35,3 +35,12 @@
 | ✅ Update & Return | `findOneAndUpdate`       | Updated doc or `null`    |
 | ❌ Only Status     | `updateOne`, `deleteOne` | Result object            |
 | ❓ Exists?         | `exists()`               | `null` or `{ _id: ... }` |
+
+
+
+Name	                    Who Receives the Event?	                                Usage
+socket.emit()	            Only the sender (can be used to send to server too)	    Client/server emits to the other side
+io.emit()	                Everyone connected (including sender)	                Broadcast from server to all clients
+socket.broadcast.emit()	    Everyone except the sender	Server                      broadcasts to others
+socket.to(room).emit()	    Everyone in a room (except sender)	                    Room-based communication
+io.to(room).emit()	        Everyone in a room (including sender)	                Full room broadcast

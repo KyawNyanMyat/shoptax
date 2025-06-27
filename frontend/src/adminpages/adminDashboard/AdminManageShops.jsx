@@ -79,7 +79,6 @@ const AdminManageShops = () => {
                     <th>ShopID</th>
                     <th>Market Hall No</th>
                     <th>Shop No</th>
-                    <th>Status</th>
                     <th>Occupied By</th>
                     <th>Charge Rate</th>
                     </tr>
@@ -91,7 +90,6 @@ const AdminManageShops = () => {
                         <td>{s._id}</td>
                         <td>{s.marketHallNo}</td>
                         <td>{s.shopNo}</td>
-                        <td>{s.status}</td>
                         <td>
                             {s.userId == null ? (
                                 <AssignUserToShop
@@ -99,7 +97,7 @@ const AdminManageShops = () => {
                                 onAssign={(shopId, userId) => handleAssign(shopId, userId)}
                                 />
                             ) : (
-                                s.userId
+                                s.userId.username
                             )}
                         </td>
                         <td>{s.chargeRate}</td>

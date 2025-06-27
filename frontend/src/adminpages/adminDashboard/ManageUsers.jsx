@@ -42,12 +42,12 @@ const AdminManageUsers = () => {
             <div className="p-6 space-y-4">
             <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold text-teal-600">Manage Users</h2>
-                {/* <Link
-                to="/admin/create-user"
-                className="btn btn-sm bg-teal-600 text-white hover:bg-teal-700"
+                <Link
+                  to="/admin/user/signup"
+                  className="btn btn-sm bg-teal-600 text-white hover:bg-teal-700"
                 >
-                + Create User
-                </Link> */}
+                  + Create User
+                </Link>
             </div>
 
             <div className="overflow-x-auto">

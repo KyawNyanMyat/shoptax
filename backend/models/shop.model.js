@@ -19,11 +19,11 @@ const shopSchema = new mongoose.Schema({
         ref: 'User',
         default: null
     },
-    status: {
-        type: String,
-        enum: ["Available", "Occupied"],
-        default: "Available"
-    }
+    // status: {
+    //     type: String,
+    //     enum: ["Available", "Occupied"],
+    //     default: "Available"
+    // }
 });
 
 export default mongoose.model('Shop', shopSchema);

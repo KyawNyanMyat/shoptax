@@ -17,7 +17,7 @@ const usePaymentStatusUpdate = () => {
 
       const data = await res.json();
 
-      if (!res.ok) throw new Error(data.message || "Failed to update status");
+      if (!res.ok) throw new Error(data.message || "Update လုပ်တာမအောင်မြင်ပါ");
 
       toast.success(`Payment ${newStatus} successfully`);
       

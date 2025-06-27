@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import Warning from '../models/warning.model.js';
+import redlock from '../utils/redlock.js';
 
 // Create a new warning
 export const createWarning = async (req, res) => {

@@ -9,6 +9,7 @@ import {
   getWarningsByUserId,
   updateWarningIsRead,
 } from '../controllers/warning.controller.js';
+import userProtectRoute from '../middleware/userProtectRoute.js';
 
 const router = express.Router();
 
@@ -22,10 +23,10 @@ router.put('/:id', updateWarning);
 
 router.delete('/:id', deleteWarning);
 
-router.get('/unread/:userId', getUnreadWarningsByUserId); // used by user
+router.get('/unread/:userId', userProtectRoute , getUnreadWarningsByUserId); // used by user
 
-router.get("/user/:userId", getWarningsByUserId); // used by user
+router.get("/user/:userId", userProtectRoute, getWarningsByUserId); // used by user
 
-router.patch("/user/:warningId", updateWarningIsRead); // used by user
+router.patch("/user/:warningId", userProtectRoute, updateWarningIsRead); // used by user
 
 export default router;

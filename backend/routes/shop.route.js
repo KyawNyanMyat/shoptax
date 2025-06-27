@@ -1,5 +1,6 @@
 import express from 'express';
 import { assignUserToShop, createShop, deleteShop, getAllShops, getShopById, getShopsByUserId, updateShop } from '../controllers/shop.controller.js';
+import userProtectRoute from '../middleware/userProtectRoute.js';
 
 const router = express.Router();
 
@@ -9,7 +10,7 @@ router.get('/', getAllShops);
 
 router.put("/:shopId/assign", assignUserToShop); // used by admin
 
-router.get('/user/:id', getShopsByUserId); // used by user
+router.get('/user/:id', userProtectRoute, getShopsByUserId); // used by user
 
 router.get('/:id', getShopById);
 

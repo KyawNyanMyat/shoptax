@@ -10,6 +10,7 @@ import {
   markReceiptAsRead,
   getAllUnreadReceiptsByUserId
 } from '../controllers/receipt.controller.js';
+import userProtectRoute from '../middleware/userProtectRoute.js';
 
 const router = express.Router();
 
@@ -17,7 +18,7 @@ const router = express.Router();
 
 router.post('/', createReceipt);
 
-router.get('/', getAllReceipts); //use by admin
+router.get('/', getAllReceipts); //used by admin
 
 router.get('/:id', getReceiptById);
 
@@ -25,10 +26,10 @@ router.put('/:id', updateReceipt);
 
 router.delete('/:id', deleteReceipt);
 
-router.get("/user/:userId", getReceiptsByUser);
+router.get("/user/:userId", userProtectRoute ,getReceiptsByUser); // used by user
 
-router.get("/unread/:userId", getAllUnreadReceiptsByUserId); // used by user
+router.get("/unread/:userId", userProtectRoute, getAllUnreadReceiptsByUserId); // used by user
 
-router.patch("/mark-read/:id", markReceiptAsRead);
+router.patch("/mark-read/:id", userProtectRoute, markReceiptAsRead);
 
 export default router;

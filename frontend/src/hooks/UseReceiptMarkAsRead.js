@@ -13,9 +13,9 @@ const UseReceiptMarkAsRead = () => {
       });
       const data = await res.json();
 
-      if (!res.ok) throw new Error(data.message || "Failed to update");
+      if (!res.ok) throw new Error(data.message || "Update လုပ်တာမအောင်မြင်ပါ");
 
-      toast.success("Marked as read");
+      //toast.success("Marked as read");
     } catch (err) {
       toast.error(err.message);
     } finally {

@@ -64,7 +64,7 @@ const Home = () => {
             {services.map((service, idx) => (
               <div
                 key={idx}
-                className=" bg-base-100 shadow-md border border-base-200 rounded-2xl hover:shadow-xl transition"
+                className=" bg-white shadow-md border border-base-200 rounded-2xl hover:shadow-xl transition"
               >
                 <figure>
                   { service.image }

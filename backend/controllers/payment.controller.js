@@ -5,6 +5,7 @@ import Shop from '../models/shop.model.js';
 import Warning from '../models/warning.model.js';
 import Receipt from '../models/receipt.model.js';
 import Redlock from 'redlock';
+import { myanmarToEnglish } from '../utils/numberConverter.js';
 
 // Create a new payment
 export const createPayment = async (req, res) => {
@@ -19,29 +20,19 @@ export const createPayment = async (req, res) => {
 
     const paymentPhoto = req.file ? `/uploads/${req.file.filename}` : null;
 
-
     if (!userId || !shopId || !paymentType || !amount || !nextPaymentDueDate || !paymentPhoto) {
-      return res.status(400).json({ message: "All fields are required." });
+      return res.status(400).json({ message: "အချက်အလက်အားလုံးဖြည့်ရန် လိုအပ်ပါသည်။" });
     }
 
-    const amountNumber = parseFloat(amount);
+    const amountNumber = myanmarToEnglish(amount)
     if (isNaN(amountNumber) || amountNumber <= 0) {
-      return res.status(400).json({ message: "Amount must be a positive number." });
+      return res.status(400).json({ message: "ပမာဏသည် ငွေပမာဏဖြစ်ပြီး သုညထက်ကြီးရမည်။" });
     }
 
     const validTypes = ["NRC Register Cost", "Land Rent Cost", "Overdue Fee"];
     if (!validTypes.includes(paymentType)) {
-      return res.status(400).json({ message: "Invalid payment type." });
+      return res.status(400).json({ message: "ငွေပေးချေမှု အမျိုးအစား မမှန်ကန်ပါ။" });
     }
-
-    // In the future(Maybe change or delete it)
-    // const dueDate = new Date(nextPaymentDueDate);
-    // if (isNaN(dueDate.getTime())) {
-    //   return res.status(400).json({ message: "Invalid date format." });
-    // }
-    // if (dueDate < new Date()) {
-    //   return res.status(400).json({ message: "Next payment due date must be in the future." });
-    // }
 
     const newPayment = new Payment({
       userId,
@@ -56,9 +47,10 @@ export const createPayment = async (req, res) => {
     res.status(201).json(newPayment);
   } catch (error) {
     console.error("Create Payment Error:", error);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: "ဆာဗာအမှား ဖြစ်ပွားနေပါသည်။" });
   }
 };
+
 
 // Get all payments
 export const getAllPayments = async (req, res) => {
@@ -139,12 +131,12 @@ export const getPaymentByUserId = async (req, res) => {
     const user = await Payment.findOne({userId: id}).sort({paidDate: -1})
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "မည်သည့်အချက်အလက်မျှ မတွေ့ရှိပါ။" });
     }
     res.status(200).json(user);
   } catch (error) {
     console.error("Get Payment Error:", error);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: "ဆာဗာ အခက်အခဲ ဖြစ်ပွားနေပါသည်။" });
   }
 };
 
@@ -277,7 +269,7 @@ export const updatePaymentStatus = async (req, res) => {
       return res.status(423).json({ message: "Payment is currently being updated. Try again later." });
     }
 
-    if(err.code == 112) return res.status(409).json({error:"Another admin made changes"})
+    if(err.code == 112) return res.status(409).json({ message:"Another admin made changes"})
 
     res.status(500).json({ message: "Server error" });
   } finally {

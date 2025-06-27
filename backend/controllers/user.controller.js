@@ -1,5 +1,7 @@
 import User from "../models/user.model.js";
 import Shop from "../models/shop.model.js";
+import myanmarToEnglishInitial from "../utils/myanmarInitialMap.js";
+import generateUserTokenAndCookie from "../utils/generateUserToken.js";
 
 // Create a new user
 export const createUser = async (req, res) => {
@@ -8,24 +10,45 @@ export const createUser = async (req, res) => {
       username, password, confirmPassword, NRC,
       phoneNo, gender
     } = req.body;
-
-    // const shop = await Shop.findById(shopId);
-    // if (!shop) {
-    //   return res.status(404).json({ message: "Shop not found" });
-    // }
+    
     if (
       !username?.trim() || !password?.trim() || !confirmPassword?.trim() ||
       !NRC?.trim() || !phoneNo?.trim() || !gender?.trim()
     ) {
-      return res.status(400).json({ message: "Fill all required fields" });
+      return res.status(400).json({ message: "အချက်လက် အကုန်ဖြည့်ပါ" });
     }
     
-
-    if(password.trim() != confirmPassword.trim()){
-      return res.status(400).json({message: "Check your password again"})
+    if(!/^[\u1000-\u109F\uAA60-\uAA7F\u102B-\u103E\u1039-\u103A\s၊။]+$/.test(username)) {
+      return res.status(400).json({ message: "နာမည်သည် မြန်မာလိုပဲဖြစ်ရမယ်"})
     }
 
-    const profilePhoto = `https://avatar.iran.liara.run/username?username=${username}`
+    if(password.trim() != confirmPassword.trim()){
+      return res.status(400).json({message: "လျို့၀ှက်နံပါတ်ကို ပြန်စစ်ပါ"})
+    }
+  
+
+    const nrcRegex = /^(၁[၀-၄]|[၁-၉])\/[က-အ]{3}\((နိုင်|ဧည့်|ပြု|သာသနာ|ယာယီ|စ)\)([၀-၉]{5,6})$/;
+    if (!nrcRegex.test(NRC)) {
+      return res.status(400).json({  message: "မှတ်ပုံတင်နံပါတ် မှားနေပါသည်" });
+    }
+
+    if (!/^၀၉\-([၀-၉]{7}|[၀-၉]{9})$/.test(phoneNo)) {
+      return res.status(400).json({  message: "ဖုန်းနံပါတ်သည် 09- နဲ့စပြီး ၇ သို့မဟုတ် ၉ လုံးရပါမည်။" });
+    }
+
+
+    const getMyanmarInitials = (name) => {
+      let initials = '';
+      for (const char of name) {
+        if (myanmarToEnglishInitial[char]) {
+          initials += myanmarToEnglishInitial[char][0]; // first letter only
+        }
+      }
+      return initials == '' ? 'New User' : initials.toUpperCase();
+    };
+
+    const avatarName = getMyanmarInitials(username)
+    const profilePhoto = `https://ui-avatars.com/api/?name=${avatarName}&background=random`
     
     const newUser = new User({
         username,
@@ -68,13 +91,18 @@ export const getAllUsers = async (req, res) => {
 // Get one user by ID
 export const getUserById = async (req, res) => {
   try {
+    // const doesCookieExist = req.user;
+    // if(!doesCookieExist){
+    //   return res.status(403).json({ message: "အကောင့်အရင်၀င်ပါ" })
+    // }
+
     const user = await User.findById(req.params.id).select("-password");
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) return res.status(404).json({ message: "အသုံပြုသူကိုမတွေ့ရှိပါ" });
 
     res.status(200).json(user);
   } catch (error) {
     console.error("Get User Error:", error);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: "Server ပြဿနာဖြစ်ပေါ်နေပါသည်" });
   }
 };
 
@@ -116,15 +144,34 @@ export const loginUser = async (req, res) => {
   try {
     const user = await User.findOne({ username });
     if (!user || user.password !== password) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({ message: "အချက်လက်မှားယွင်းနေပါသည်" });
     }
 
     const userObj = user.toObject();
     delete userObj.password;
-
+    
+    generateUserTokenAndCookie(userObj._id, res)
     res.status(200).json(userObj);
+    
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
+
+
+export const logoutUser = async (req, res) => {
+  try {
+    res.clearCookie("usertoken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // use HTTPS in production
+      sameSite: "strict",
+    });
+
+    res.status(200).json({ message: "ထွက်ခွာခြင်း အောင်မြင်ပါသည်။" });
+  } catch (error) {
+    console.error("Logout Error:", error.message);
+    res.status(500).json({ message: "ထွက်ခွာမှု မအောင်မြင်ပါ။" });
+  }
+};
+

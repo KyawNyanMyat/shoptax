@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaUserShield } from "react-icons/fa";
 import useAdminSignup from "../../hooks/useAdminSignup"; 
+import toast from "react-hot-toast";
 
 const AdminSignup = () => {
   const { adminSignup, loading } = useAdminSignup();
@@ -10,7 +11,7 @@ const AdminSignup = () => {
     adminPassword: "",
     phoneNo: "",
     position: "",
-    division: "",
+    division: "စျေးနှင့်သားသတ်ဌာနစိတ်",
   });
 
   const handleChange = (e) => {
@@ -19,6 +20,7 @@ const AdminSignup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (!formData.division) {
       return alert("Please select a division");
     }
@@ -34,49 +36,48 @@ const AdminSignup = () => {
             <div className="bg-blue-100 p-3 rounded-full mb-3">
               <FaUserShield className="text-blue-600 text-2xl" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-800">Admin Registration</h1>
-            <p className="text-sm text-center">Of Department of Markets and Slaughterhouses, Taxation, and Sanitation</p>
-            <p className="text-sm text-gray-600">Restricted to authorized personnel only</p>
-          </div>
+              <h1 className="text-2xl font-bold text-gray-800">အုပ်ချုပ်ရေးအကောင့်ဖွင့်ခြင်း</h1>
+              <p className="text-sm text-gray-600 mt-2">ခွင့်ပြုထားသူများအတွက်သာ အသုံးပြုနိုင်ပါသည်</p>
+            </div>
 
           {/* Fields */}
           <div className="space-y-4">
             <div>
-              <label className="block font-medium text-gray-700 mb-1">UserName</label>
+              <label className="block font-medium text-gray-700 mb-1">နာမည်</label>
               <input
                 type="text"
                 autoComplete="off"
                 name="adminName"
                 value={formData.adminName}
                 onChange={handleChange}
-                placeholder="Enter name"
+                placeholder="ဦးကျော်လင်း"
                 className="w-full input input-bordered focus:outline-offset-0"
                 required
               />
             </div>
 
             <div>
-              <label className="block font-medium text-gray-700 mb-1">Password</label>
+              <label className="block font-medium text-gray-700 mb-1">လျို့၀ှက်နံပါတ်</label>
               <input
-                type="password"
+                type="text"
                 name="adminPassword"
                 autoComplete="new-password"
                 value={formData.adminPassword}
                 onChange={handleChange}
-                placeholder="Enter password"
+                placeholder="ဥပမာ.၁၂၃၄fpass"
                 className="w-full input input-bordered focus:outline-offset-0"
                 required
               />
             </div>
 
             <div>
-              <label className="block font-medium text-gray-700 mb-1">Phone no</label>
+              <label className="block font-medium text-gray-700 mb-1">ဖုန်းနံပါတ်</label>
               <input
                 type="text"
                 name="phoneNo"
                 value={formData.phoneNo}
                 onChange={handleChange}
-                placeholder="09974337432"
+                placeholder="၀၉-၆၇၇၈၅၅၄၉၈"
                 className="w-full input input-bordered focus:outline-offset-0"
                 required
               />
@@ -84,7 +85,7 @@ const AdminSignup = () => {
 
             <div>
               <label className="block font-medium text-gray-700 mb-1">
-                Divisions
+                ငှာနစိတ်
               </label>
               <select
                 name="division"
@@ -93,22 +94,18 @@ const AdminSignup = () => {
                 className="w-full select select-bordered focus:outline-offset-0"
                 required
               >
-                <option value="" disabled>
-                  Select division
-                </option>
-                <option value="Market Regulation and Slaughterhouse Management Division">
-                  Market Regulation and Slaughterhouse Management Division
-                </option>
-                <option value="Taxation Division">Taxation Division</option>
-                <option value="Sanitation and Waste Management Division">
-                  Sanitation and Waste Management Division
+                {/* <option value="" disabled>
+                  ဌာနစိတ် ရွေးရန်
+                </option> */}
+                <option value="စျေးနှင့်သားသတ်ဌာနစိတ်">
+                  စျေးနှင့်သားသတ်ဌာနစိတ်
                 </option>
               </select>
             </div>
 
             <div>
               <label className="block font-medium text-gray-700 mb-1">
-                Rank/Position
+                ရာထူး
               </label>
               <select
                 name="position"
@@ -118,17 +115,31 @@ const AdminSignup = () => {
                 required
               >
                 <option value="" disabled>
-                  Select Position
+                ရာထူး ရွေးရန်
                 </option>
-                <option value="Deputy Director">
-                  Deputy Director
+                <option value="ဒုဦးစီးမှူး">
+                  ဒုဦးစီးမှူး
                 </option>
-                <option value="Senior Clerk">
-                  Senior Clerk
+                <option value="အကြီးတန်းစာရေး">
+                  အကြီးတန်းစာရေး
+                </option>
+                <option value="အငယ်တန်းလက်နှိပ်စက်">
+                  အငယ်တန်းလက်နှိပ်စက်
+                </option>
+                <option value="စက်မောင်းလေး">
+                  စက်မောင်းလေး
+                </option>
+                <option value="အခွန်ကောက်">
+                အခွန်ကောက်
+                </option>
+                <option value="လုပ်သားသုံး">
+                လုပ်သားသုံး
+                </option>
+                <option value="နေ့ရှင်း">
+                နေ့ရှင်း
                 </option>
               </select>
             </div>
-
           </div>
 
 
@@ -139,20 +150,20 @@ const AdminSignup = () => {
               className="btn w-full bg-blue-600 hover:bg-blue-700 border-none text-white focus:outline-offset-0"
               disabled={loading}
             >
-              {loading ? <span className="loading loading-spinner loading-sm"></span> : "Register Admin Account"}
+              {loading ? <span className="loading loading-spinner loading-sm"></span> : "အကောင့်ဖွင့်ရန်"}
             </button>
-            <Link
+            {/* <Link
               to="/admin"
               className="block text-center text-sm hover:underline hover:text-blue-600 text-gray-600"
             >
-              Already have admin access? Login here
-            </Link>
+              အကောင့်၀င်ရန်
+            </Link> */}
 
             <Link
               to="/admin/dashboard"
               className="block text-center text-sm hover:underline hover:text-blue-600 text-green-600"
             >
-              Go To Admin Dashboard
+              အုပ်ချုပ်သူ ဘုတ်ပြားဆီသွားရန်
             </Link>
           </div>
         </form>

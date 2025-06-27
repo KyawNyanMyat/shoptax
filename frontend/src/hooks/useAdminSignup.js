@@ -22,7 +22,7 @@ const useAdminSignup = () => {
       }
 
       toast.success("Admin registered successfully!");
-      navigate("/admin/dashboard");
+      //navigate("/admin/dashboard"); //In the future uncomment
     } catch (err) {
         console.log("Error in useAdminSignup hook", err.message)
         toast.error(err.message, {duration: 1500});

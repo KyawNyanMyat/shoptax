@@ -2,13 +2,19 @@ import { useEffect, useState } from "react";
 import DashboardHeader from "../../components/DashboardHeader";
 import DashboardSidebar from "../../components/DashboardSidebar";
 import toast from "react-hot-toast";
-
+import { useUserAuthContext } from "../../context/userAuthContext";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const DashboardHome = () => {
-  const userName = "Kyaw"; // In the future
-  const userId = "68543412639f9a63f9dd50b3"; //In the future
+  const { userAuth, setUserAuth } = useUserAuthContext()
+  if(!userAuth){
+    return <Navigate to={"/"} />
+  }
+
+  const userId = userAuth._id; 
   const today = new Date().toLocaleDateString();
 
+  const [userName, setUserName] = useState("")
   const [lastPayment, setLastPayment] = useState(null)
   const [nextPaymentDueDate, setNextPaymentDueDate] = useState(null)
   const [unReadWarning, setUnReadWarning] = useState([])
@@ -16,41 +22,55 @@ const DashboardHome = () => {
 
   const summary = [
     {
-      label: "Last Payment",
+      label: "နောက်ဆုံး ငွေပေးချေမှု ရက်စွဲ",
       value: lastPayment
-      ? new Date(lastPayment).toLocaleDateString("en-CA")
-      : "No Payment Yet",
+        ? new Date(lastPayment).toLocaleDateString("en-CA")
+        : "မရှိသေးပါ",
       color: "bg-green-100 text-green-800",
     },
     {
-      label: "Next Due",
+      label: "လာမည့် ပေးချေရမည့် ရက်စွဲ",
       value: nextPaymentDueDate
-      ? new Date(nextPaymentDueDate).toLocaleDateString("en-CA")
-      : "No Payment Yet",
+        ? new Date(nextPaymentDueDate).toLocaleDateString("en-CA")
+        : "မရှိသေးပါ",
       color: "bg-yellow-100 text-yellow-800",
     },
     {
-      label: "Unread Warnings",
+      label: "မဖတ်ရသေးသော သတိပေးချက်များ",
       value: unReadWarning.length > 0 ? unReadWarning.length : 0,
       color: "bg-red-100 text-red-800",
     },
     {
-      label: "Unread Receipts",
+      label: "မဖတ်ရသေးသော ငွေသက်သေ စာရွက်များ",
       value: unReadReceipt.length > 0 ? unReadReceipt.length : 0,
       color: "bg-blue-100 text-blue-800",
     },
   ];
+  
 
   const regulations = [
-    "All shop owners must renew their monthly shop tax by the 10th of each month.",
-    "Unauthorized disposal of waste in public areas is strictly prohibited.",
-    // "Water usage beyond allocated hours may result in additional charges.",
+    "အရောင်းဆိုင်များသည် လစဉ်ဆိုင်ခွန်ကို တစ်လတစ်ကြိမ် ပြန်လည်ပေးဆောင်ရမည်။",
+    "အမှိုက်များကို အသုံးမပြုရသောနေရာများတွင် ပစ်ချပေးခွင့်မရှိပါ။",
+    "ဆိုင်အမှတ်နှင့် စျေးအမှတ်တို့ကို ဖျက်ဆီးခြင်း မပြုရ။",
+    "အများသုံးလမ်းများတွင် ကုန်ပစ္စည်းများ ချထားခြင်းကို တားမြစ်ပါသည်။",
+    "အချက်အလက်အမှားများကို စနစ်တကျ ပြင်ဆင်ရန် တာဝန်ရှိသည်။",
+    "အသုံးပြုသူအမည်နှင့် ဆိုင်အချက်အလက်သည် တိကျမှန်ကန်ရမည်။",
   ];
+  
   
 
   useEffect(()=>{
     const forDashBoard = async()=>{
       try {
+
+        const userRes = await fetch(`/api/users/${userId}`)
+        const userData = await userRes.json()
+        
+        if (!userRes.ok) {
+          throw new Error(userData.message || "အသုံးပြုသူ အချက်အလက်ရယူရာတွင် ပြဿနာတစ်ခုရှိနေသည်။");
+        }
+        setUserName(userData.username)
+
         const res = await fetch(`/api/payments/user/${userId}`)
         const data = await res.json();
 
@@ -68,11 +88,12 @@ const DashboardHome = () => {
         setUnReadWarning(warningData)
 
         //console.log(lastPayment ,nextPaymentDueDate, unReadReceipt, unReadWarning)
-        if(!res.ok || !receiptRes || !warningRes) {
+        if(!res.ok || !receiptRes.ok || !warningRes.ok) {
           throw new Error(data.message)
         }
       } catch (error) {
         console.log("Error in Dashboard Home", error.message)
+        toast.error(error.message, { id: 'dashboard-error', duration: 2500 })
       }
     }
 
@@ -89,8 +110,8 @@ const DashboardHome = () => {
         {/* Dashboard home */}
         <div className="p-6 space-y-10">
           <div>
-            <h2 className="text-2xl font-bold">Welcome, {userName}!</h2>
-            <p className="text-sm text-gray-500">Today is {today}</p>
+            <h2 className="text-2xl font-bold">မင်္ဂလာပါ {userName}!</h2>
+            <p className="text-sm text-gray-500">ယနေ့ ရက်စွဲ - {today}</p>
           </div>
 
           {/* Summary Cards */}
@@ -113,7 +134,7 @@ const DashboardHome = () => {
 
           {/* Township Regulations */}
           <div>
-            <h3 className="text-xl font-semibold mb-3">Township Regulations</h3>
+            <h3 className="text-xl font-semibold mb-3">ဈေးစည်းကမ်းချက်များ</h3>
             <ul className="list-disc pl-6 text-sm text-gray-700 space-y-2">
               {regulations.map((rule, idx) => (
                 <li key={idx}>{rule}</li>

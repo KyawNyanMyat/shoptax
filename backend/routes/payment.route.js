@@ -8,11 +8,12 @@ import {
     updatePaymentStatus
 } from '../controllers/payment.controller.js';
 import upload from '../middleware/upload.js';
+import userProtectRoute from '../middleware/userProtectRoute.js';
 
 
 const router = express.Router();
 
-router.post('/',upload.single("paymentPhoto"), createPayment); // used by user
+router.post('/', userProtectRoute , upload.single("paymentPhoto"), createPayment); // used by user
 
 router.get("/pending", getPendingPayments);
 
@@ -22,7 +23,7 @@ router.get('/:id', getPaymentById);
 
 router.get('/user/overdue', getOverdueUsers);
 
-router.get('/user/:id', getPaymentByUserId); //used by user
+router.get('/user/:id', userProtectRoute , getPaymentByUserId); //used by user
 
 router.put('/:id', updatePayment);
 

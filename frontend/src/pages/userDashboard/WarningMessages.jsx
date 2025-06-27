@@ -3,10 +3,16 @@ import { FiAlertCircle } from "react-icons/fi";
 import DashboardSidebar from "../../components/DashboardSidebar";
 import DashboardHeader from "../../components/DashboardHeader";
 import useMarkWarningAsRead from "../../hooks/useMarkWarningAsRead";
+import { useUserAuthContext } from "../../context/userAuthContext";
+import toast from "react-hot-toast";
 
 
 const WarningMessages = () => {
-  const userId = "68543412639f9a63f9dd50b3"; // in the future
+  const { userAuth } = useUserAuthContext()
+  if(!userAuth){
+    return <Navigate to={"/"} />
+  }
+  const userId = userAuth._id;
   const [warnings, setWarnings] = useState([])
   const { markAsRead, loadingId } = useMarkWarningAsRead() 
 
@@ -16,10 +22,11 @@ const WarningMessages = () => {
         const res = await fetch(`/api/warnings/user/${userId}`);
         const data = await res.json();
   
-        if (!res.ok) throw new Error(data.message || "Something went wrong");
+        if (!res.ok) throw new Error(data.message || "တခုခုမှားယွင်းနေပါသည်");
         setWarnings(data);
       } catch (error) {
         console.log("Error in Receipt.jsx", error.message);
+        toast.error(error.message, {id:"warning-error", duration: 2500})
       }
     };
   
@@ -37,7 +44,7 @@ const WarningMessages = () => {
             <DashboardHeader />
             
             <div className="p-6">
-                <h2 className="text-2xl font-bold mb-6">Warning Messages</h2>
+                <h2 className="text-2xl font-bold mb-6">သတိပေးစာဆောင်များ</h2>
 
                 <div className="space-y-6">
                     {warnings.map((warn) => (
@@ -52,7 +59,7 @@ const WarningMessages = () => {
                           {/* In the future, add penalty fee */}
                             <h3 className="font-semibold">{warn.warningTitle}</h3>
                             <p className="text-sm mb-1">{warn.warningContent}</p>
-                            <p className="text-xs text-gray-500">Issued: {warn.issueDate}</p>
+                            <p className="text-xs text-gray-500">ထုတ်ပေးသည့်ရက်စွဲ: {warn.issueDate}</p>
                             <button
                               className="btn btn-success mt-4"
                               disabled={warn.isRead || loadingId == warn._id}
@@ -62,9 +69,9 @@ const WarningMessages = () => {
                               {loadingId == warn._id ? (
                                 <span className="loading loading-spinner loading-sm"></span>
                               ) : warn.isRead ? (
-                                "Already Read"
+                                "ဖတ်ပြီးပြီးပါပြီ"
                               ) : (
-                                "Mark as Read"
+                                "ဖတ်ပြီးဟု သတ်မှတ်မည်"
                               )}
                             </button>
                         </div>
@@ -73,7 +80,7 @@ const WarningMessages = () => {
                     ))}
 
                     {warnings.length == 0 && (
-                    <p className="text-sm text-gray-500">No warning messages at the moment.</p>
+                    <p className="text-sm text-gray-500">သတိပေးတဲ့စာဆောင်မရှိသေးပါ</p>
                     )}
                 </div>
             </div>

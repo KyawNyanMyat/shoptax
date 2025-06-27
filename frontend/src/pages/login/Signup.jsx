@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import useSignUp from '../../hooks/useSignUp.js';
+import logo from "../../assets/react.svg"
+import { FiUser } from "react-icons/fi";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -19,113 +21,110 @@ const Signup = () => {
 
   const handleSubmit = async (e)=>{
     e.preventDefault();
-    await signup(formData)
+    const success = await signup(formData)
+
+    // If signup is successful, reset the form
+    if (success) {
+      setFormData({
+        username: '',
+        password: '',
+        confirmPassword: '',
+        gender: '',
+        NRC: '',
+        phoneNo: '',
+      });
+    }
   }
 
 
-  // useEffect(() => {
-  //   console.log(formData)
-  //   const fetchShops = async () => {
-  //     try {
-  //       const res = await fetch('/api/shops')
-  //       const data = await res.json()
-  //       setShops(data)
-  //     } catch (err) {
-  //       console.error("Failed to fetch shops:", err)
-  //     }
-  //   }
-
-  //   fetchShops()
-  // }, [])
-
 
   return (
-    <div className='flex flex-col h-full items-center justify-center mt-10 min-h-screen'>
-      <div className='bg-gray-200 py-10 mt-18 sm:mt-0 p-5 w-11/12 md:w-1/3'>
+    <div className='flex flex-col h-full items-center justify-center md:mt-10 min-h-screen'>
+      <div className='bg-gray-200 py-10 sm:mt-0 p-5 w-11/12 md:w-1/3'>
 
-        <form onSubmit={handleSubmit} autoComplete='off'>
-          <div className='flex items-center justify-center'>
-            <Link to="/"><img src="./src/assets/react.svg" alt="Logo"  className='rounded-full w-20 h-10 cursor-pointer'/></Link>
-            <span className='text-3xl font-semibold'>Signup</span>
+          {/* Header */}
+          <div className="flex flex-col items-center mb-6">
+            <div className="bg-blue-100 p-3 rounded-full mb-3">
+              <FiUser className="text-blue-600 text-5xl" />
+            </div>
+            <h1 className="text-2xl font-bold text-gray-800">
+              <div className='flex items-center justify-center'>
+                <Link to="/admin/dashboard"><img src={logo} alt="Logo"  className='rounded-full w-20 h-10 cursor-pointer'/></Link>
+                <span className='text-3xl font-semibold'>အကောင့်ဖွင့်ရန်</span>
+              </div>
+            </h1>
           </div>
 
+        <form onSubmit={handleSubmit} autoComplete='off'>
+
           <div>
-            <label className='block font-semibold py-2'>UserName</label>
-            <input type="text" required placeholder="Enter your name" className=' w-full input input-borded focus:outline-offset-0'
+            <label className='block font-semibold py-2'>နာမည်</label>
+            <input type="text" required placeholder="ဦးကျော်လင်း"
+              className=' w-full input input-borded focus:outline-offset-0'
+              value={formData.username}
               onChange={(e)=> setFormData({...formData, username: e.target.value})}
             />
           </div>
 
           <div>
-            <label className='block font-semibold py-2'>Password</label>
-            <input type="password" required placeholder="Enter your Password" className=' w-full input input-borded focus:outline-offset-0'
+            <label className='block font-semibold py-2'>လျို့၀ှက်နံပါတ်</label>
+            <input type="password" required placeholder="ဥပမာ.၁၂၃၄fpass" 
+              className=' w-full input input-borded focus:outline-offset-0'
+              value={formData.password}
               onChange={(e)=> setFormData({...formData, password: e.target.value})}
             />
           </div>
 
           <div>
-            <label className='block font-semibold py-2'>Confirm Password</label>
-            <input type="password" required placeholder="Enter your Password again" className=' w-full input input-borded focus:outline-offset-0'
+            <label className='block font-semibold py-2'>လျို့၀ှက်နံပါတ် အတည်ပြုရန်</label>
+            <input type="password" required placeholder="ဥပမာ.၁၂၃၄fpass" 
+              className=' w-full input input-borded focus:outline-offset-0'
+              value={formData.confirmPassword}
               onChange={(e)=> setFormData({...formData, confirmPassword: e.target.value})}
             />
           </div>
 
-          {/* <div>
-            <label className='block font-semibold py-2'>Choose Shop</label>
-            <select
-              className='select select-bordered w-full focus:outline-offset-0'
-              value={formData.shopId}
-              onChange={(e) =>
-                setFormData({ ...formData, shopId: e.target.value })
-              }
-            >
-              <option value="" disabled>Choose a shop</option>
-              {
-                shops.map((item, idx)=>(
-                  <option key={item._id} value={item._id}>HallNo {item.marketHallNo} - ShopNo {item.shopNo}</option>
-                ))
-              }
-              <option disabled>End</option>
-            </select>
-          </div> */}
-
           <div>
-            <label className='block font-semibold py-2'>NRC</label>
-            <input type="text" required placeholder="Enter your NRC" className=' w-full input input-borded focus:outline-offset-0'
+            <label className='block font-semibold py-2'>မှတ်ပုံတင်</label>
+            <input type="text" required placeholder="၁၂/အစန(နိင်)၁၅၃၆၇၈" 
+              className=' w-full input input-borded focus:outline-offset-0'
+              value={formData.NRC}
               onChange={(e)=> setFormData({...formData, NRC: e.target.value})}
             />
           </div>
 
           <div>
-            <label className='block font-semibold py-2'>Phone Number</label>
-            <input type="text" required placeholder="Enter your phone number" className=' w-full input input-borded focus:outline-offset-0'
+            <label className='block font-semibold py-2'>ဖုန်းနံပါတ်</label>
+            <input type="text" required placeholder="၀၉-၆၇၇၈၅၅၄၉၈" 
+              className=' w-full input input-borded focus:outline-offset-0'
+              value={formData.phoneNo}
               onChange={(e)=> setFormData({...formData, phoneNo: e.target.value})}
             />
           </div>
           
           <div className='flex items-center gap-3'>
-            <label className='block font-semibold py-2'>Choose your gender</label>
+            <label className='block font-semibold py-2'>လိင်ရွေးရန်</label>
 
-            <span>Male</span>
+            <span>ယောက်ျား</span>
             <input
               type="radio"
               name="gender"
-              value="male"
+              value="ယောက်ျား"
               required
-              checked={formData.gender === "male"}
+              checked={formData.gender === "ယောက်ျား"}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, gender: e.target.value }))
               }
               className='radio radio-sm radio-primary'
             />
 
-            <span>Female</span>
+            <span>မိန်းမ</span>
             <input
               type="radio"
               name="gender"
-              value="female"
+              value="မိန်းမ"
               required
-              checked={formData.gender === "female"}
+              checked={formData.gender === "မိန်းမ"}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, gender: e.target.value }))
               }
@@ -133,11 +132,12 @@ const Signup = () => {
             />
           </div>
 
+          <Link to='/admin/dashboard' className='text-sm hover:underline text-green-600 hover:text-blue-700 mt-4 inline-block'> ပင်မစာမျက်နှာ သို့သွားရန်</Link>
 
           <div className='pt-3'>
             <button className='btn btn-success w-full'>
               {loading ? <span className="loading loading-spinner loading-xs"></span>
-                : "Sign Up"
+                : "အကောင့်ဖွင့်ရန်"
               }
             </button>
           </div>

@@ -3,10 +3,15 @@ import DashboardHeader from "../../components/DashboardHeader";
 import DashboardSidebar from "../../components/DashboardSidebar";
 import toast from "react-hot-toast";
 import useSubmitPayment from "../../hooks/useSubmitPayment";
+import { useUserAuthContext } from "../../context/userAuthContext";
+import { Navigate } from "react-router-dom";
 
 const SubmitPaymentProof = () => {
-
-  const userId = "68543412639f9a63f9dd50b3"; // in the future
+  const { userAuth } = useUserAuthContext()
+  if(!userAuth){
+    return <Navigate to={"/"} />
+  }
+  const userId = userAuth._id;
   const [userName, setUserName] = useState("");
   const [marketHallNo, setMarketHallNo] = useState("");
   const [shopNo, setShopNo] = useState("");
@@ -24,12 +29,12 @@ const SubmitPaymentProof = () => {
         const res = await fetch(`/api/users/${userId}`);
         const data = await res.json();
 
-        if (!res.ok) throw new Error(data.message || "Something went wrong");
+        if (!res.ok) throw new Error(data.message || "တခုခုမှားယွင်းနေပါသည်");
 
         const shopRes = await fetch(`/api/shops/user/${userId}`);
         const shopData = await shopRes.json()
 
-        if (!shopRes.ok) throw new Error(data.message || "Something went wrong");
+        if (!shopRes.ok) throw new Error(shopData.message || "တခုခုမှားယွင်းနေပါသည်");
 
         setUserName(data.username)
         setOwnedShops(shopData);
@@ -40,6 +45,7 @@ const SubmitPaymentProof = () => {
         
       } catch (error) {
         console.log("Error in Receipt.jsx", error.message);
+        toast.error(error.message, {id:"payment-error", duration: 2500})
       }
     };
 
@@ -98,17 +104,17 @@ const SubmitPaymentProof = () => {
       <DashboardSidebar />
       <div className="flex-1 flex flex-col">
         <DashboardHeader />
-
+  
         <div className="p-6 max-w-2xl mx-auto">
-          <h2 className="text-2xl font-bold mb-2">Submit Payment Proof</h2>
+          <h2 className="text-2xl font-bold mb-2">ငွေပေးချေမှုအထောက်အထား တင်သွင်းရန်</h2>
           <p className="text-sm text-gray-600 mb-6">
-            Upload a screenshot of your payment (e.g., KBZPay, WavePay). Please ensure to select Cost Type and enter amount.
+            ငွေပေးချေမှု၏ Screenshot (ဥပမာ - KBZPay၊ WavePay) တင်ပါ။ သက်ဆိုင်ရာ ကျသင့်ငွေ အမျိုးအစားနှင့် ငွေပမာဏ ထည့်ရန်လိုအပ်သည်။
           </p>
-
+  
           <form onSubmit={handleSubmit} className="space-y-4">
-
+  
             <div>
-              <label className="label">Username</label>
+              <label className="label">အသုံးပြုသူအမည်</label>
               <input
                 type="text"
                 value={userName}
@@ -116,9 +122,9 @@ const SubmitPaymentProof = () => {
                 className="input input-bordered w-full bg-gray-100 focus:outline-offset-0"
               />
             </div>
-
+  
             <div>
-              <label className="label">Select Shop</label>
+              <label className="label">ဆိုင် ရွေးချယ်ရန်</label>
               <select
                 className="select select-bordered w-full focus:outline-offset-0"
                 value={shopId}
@@ -127,33 +133,34 @@ const SubmitPaymentProof = () => {
                 required
               >
                 <option value="" disabled>
-                  {ownedShops.length == 0 ? "No shop assigned" : "Select your shop"}
+                  {ownedShops.length == 0 ? "ဆိုင်မရှိပါ" : "သင်၏ ဆိုင် ရွေးပါ"}
                 </option>
                 {ownedShops.map((shop) => (
-                  <option key={shop._id} value={shop._id}>
-                    {shop.marketHallNo} - {shop.shopNo}
-                  </option>
+                <option key={shop._id} value={shop._id}>
+                  ({shop.marketHallNo}-{shop.shopNo}): {shop.chargeRate || "မသတ်မှတ်ရသေးပါ"} MMK
+                </option>
                 ))}
               </select>
             </div>
-
+  
             <div>
-              <label className="label">Payment Type</label>
+              <label className="label">ငွေပေးချေမှုအမျိုးအစား</label>
               <select
                 className="select select-bordered w-full focus:outline-offset-0"
                 value={paymentType}
                 onChange={(e) => setPaymentType(e.target.value)}
                 required
               >
-                <option value="" disabled>Select Payment Type</option>
-                <option value="NRC Register Cost">NRC Register Cost</option>
-                <option value="Land Rent Cost">Land Rent Cost</option>
-                <option value="Overdue Fee">Overdue Fee</option>
+                <option value="" disabled>ငွေ ပေးချေမှု အမျိုးအစား ရွေးပါ</option>
+                <option value="NRC Register Cost">မှတ်ပုံတင် အခကြေးငွေ</option>
+                <option value="Land Rent Cost">မြေနှုန်းထား အခကြေးငွေ</option>
+                <option value="Overdue Fee">အကြွေးကျန် ငွေ</option>
               </select>
             </div>
-
+  
+            {/* In the future change into Myanmar Value */}
             <div>
-              <label className="label">Upload Screenshot(eg.KBZPay screenshot)</label>
+              <label className="label">Screenshot တင်ပါ (ဥပမာ - KBZPay screenshot)</label>
               <input
                 type="file"
                 accept="image/*"
@@ -162,29 +169,39 @@ const SubmitPaymentProof = () => {
                 required
               />
             </div>
-
+  
             <div>
-              <label className="label">Confirm Amount</label>
+              <label className="label">ငွေပမာဏအတည်ပြုပါ</label>
               <input
-                type="number"
+                type="text"
+                inputMode="numeric"
+                pattern="[၀-၉]+"
+                placeholder="ဥပမာ - ၁၀၀၀၀"
                 value={amount}
-                onChange={(e) => e.target.value > 0 ? setAmount(e.target.value) : setAmount("")}
+                onChange={(e) => {
+                  const myanmarNumberRegex = /^[၀-၉]*$/;
+                  if (myanmarNumberRegex.test(e.target.value)) {
+                    setAmount(e.target.value);
+                  }
+                }}
                 className="input input-bordered w-full focus:outline-offset-0"
+                required
               />
             </div>
-
-
+  
             <button type="submit" className="btn btn-primary w-full">
-              {loading ? <span className="loading loading-spinner loading-xs"></span>
-                : "Submit Payment Proof"
-              }
+              {loading ? (
+                <span className="loading loading-spinner loading-xs"></span>
+              ) : (
+                "ငွေပေးချေမှု တင်သွင်းရန်"
+              )}
             </button>
           </form>
-
         </div>
       </div>
     </div>
   );
+  
 };
 
 export default SubmitPaymentProof;

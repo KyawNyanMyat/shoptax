@@ -31,7 +31,7 @@ export const createShop = async (req, res) => {
 // Get all shops
 export const getAllShops = async (req, res) => {
   try {
-    const shops = await Shop.find();
+    const shops = await Shop.find().populate("userId");
     res.status(200).json(shops);
   } catch (error) {
     console.error("Get Shops Error:", error);
@@ -88,7 +88,7 @@ export const getShopsByUserId = async(req, res)=>{
     const { id: userId } = req.params;
     const ownShopUsers = await Shop.find({ userId }).populate("userId","username");
     if(ownShopUsers.length == 0){
-      return res.status(404).json([])
+      return res.status(404).json({ message: "အရောင်းဆိုင် ပိုင်ဆိုင်မှုမရှိပါ"})
     }
 
     res.status(200).json(ownShopUsers)

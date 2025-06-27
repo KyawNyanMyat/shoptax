@@ -15,7 +15,7 @@ const useMarkWarningAsRead = () => {
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Failed to update");
+      if (!res.ok) throw new Error(data.message || "Update လုပ်တာမအောင်မြင်ပါ");
 
     } 
     catch (error) {

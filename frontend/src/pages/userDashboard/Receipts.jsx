@@ -4,12 +4,20 @@ import DashboardHeader from "../../components/DashboardHeader";
 import DashboardSidebar from "../../components/DashboardSidebar";
 import toast from "react-hot-toast";
 import UseReceiptMarkAsRead from "../../hooks/UseReceiptMarkAsRead";
+import { useUserAuthContext } from "../../context/userAuthContext";
+import { Navigate } from "react-router-dom";
+import seal from "../../assets/react.svg"
 
 const Receipts = () => {
-  const [userReceipts, setUserReceipts] = useState([]);
-  const userId = "68543412639f9a63f9dd50b3"; // in the future
+  const { userAuth } = useUserAuthContext();
+  if (!userAuth) {
+    return <Navigate to={"/"} />;
+  }
 
-  const {loadingId, markAsRead} = UseReceiptMarkAsRead()
+  const [userReceipts, setUserReceipts] = useState([]);
+  const userId = userAuth._id;
+
+  const { loadingId, markAsRead } = UseReceiptMarkAsRead();
 
   useEffect(() => {
     const getReceipt = async () => {
@@ -17,12 +25,11 @@ const Receipts = () => {
         const res = await fetch(`/api/receipts/user/${userId}`);
         const data = await res.json();
 
-        if (!res.ok) throw new Error(data.message || "Something went wrong");
+        if (!res.ok) throw new Error(data.message || "တစ်ခုခုမှားယွင်းနေပါသည်");
         setUserReceipts(data);
-        console.log("receipt", data)
       } catch (error) {
         console.log("Error in Receipt.jsx", error.message);
-        toast.error(error.message, { duration: 1500 });
+        toast.error(error.message, { id: "receipt-error", duration: 1500 });
       }
     };
 
@@ -30,16 +37,15 @@ const Receipts = () => {
   }, []);
 
   const formatDate = (iso) =>
-    new Date(iso).toLocaleDateString("en-GB", {
+    new Date(iso).toLocaleDateString("my-MM", {
       year: "numeric",
       month: "long",
       day: "numeric",
     });
 
   const handleReadClick = async (e) => {
-    await markAsRead(e.target.value)
-    //In the future # socket io
-  }
+    await markAsRead(e.target.value);
+  };
 
   return (
     <div className="flex min-h-screen">
@@ -47,10 +53,9 @@ const Receipts = () => {
       <div className="flex-1 flex flex-col">
         <DashboardHeader />
         <div className="p-6">
-          <h2 className="text-2xl font-bold mb-6">Your Receipts</h2> 
-          {/* Add spinner to the whole receipt In the future  */}
+          <h2 className="text-2xl font-bold mb-6">သင့်ရဲ့ ပြေစာများ</h2>
           {userReceipts.length === 0 ? (
-            <p className="text-sm text-gray-500 mt-4">No receipts available.</p>
+            <p className="text-sm text-gray-500 mt-4">ပြေစာများ မရှိသေးပါ။</p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {userReceipts.map((r) => (
@@ -59,47 +64,58 @@ const Receipts = () => {
                   className="bg-white shadow-md rounded-xl p-5 border border-base-200"
                 >
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-lg font-semibold">{r.paymentId.paymentType}</h3>
+                    <h3 className="text-lg font-semibold">
+                      {r.paymentId.paymentType}
+                    </h3>
                     <img
-                      src="/images/seal.png"
-                      alt="Seal"
+                      src={seal}
+                      alt="တံဆိပ်"
                       className="w-10 h-10 object-contain"
                     />
                   </div>
-                  <p className="text-sm text-gray-500 mb-1">Date: {formatDate(r.issueDate)}</p>
-                  <p className="text-sm text-gray-500 mb-1">Receipt ID: {r._id}</p>
                   <p className="text-sm text-gray-500 mb-1">
-                    Market Hall No: {r.paymentId.shopId.marketHallNo}
+                    ထုတ်ပြန်သည့်ရက်စွဲ - {formatDate(r.issueDate)}
                   </p>
                   <p className="text-sm text-gray-500 mb-1">
-                    Shop No: {r.paymentId.shopId.shopNo}
+                    ပြေစာအမှတ် - {r._id}
                   </p>
                   <p className="text-sm text-gray-500 mb-1">
-                    Shopkeeper: {r.paymentId.userId.username}
+                    ဈေးကွက်ခန်းနံပါတ် - {r.paymentId.shopId.marketHallNo}
                   </p>
                   <p className="text-sm text-gray-500 mb-1">
-                    For month: {new Date(r.paymentId.paidDate).toLocaleString("default", { month: "long", year: "numeric" })}
+                    ဆိုင်နံပါတ် - {r.paymentId.shopId.shopNo}
+                  </p>
+                  <p className="text-sm text-gray-500 mb-1">
+                    ဆိုင်ရှင်အမည် - {r.paymentId.userId.username}
+                  </p>
+                  <p className="text-sm text-gray-500 mb-1">
+                    ငွေပေးချေသည့်လ -{" "}
+                    {new Date(r.paymentId.paidDate).toLocaleString("my-MM", {
+                      month: "long",
+                      year: "numeric",
+                    })}
                   </p>
                   <p className="text-sm font-medium mt-2">
-                    Amount: <span className="text-primary">{r.amount} MMK</span>
+                    ပေးချေငွေ -{" "}
+                    <span className="text-primary">{r.amount} ကျပ်</span>
                   </p>
 
                   <div className="flex justify-between mt-4">
                     <div className="text-center">
                       <img
                         src={r.adminId.adminSignaturePhoto}
-                        alt="Admin Signature"
+                        alt="ဈေးတာ၀န်ခံလက်မှတ်"
                         className="h-12 object-contain mx-auto"
                       />
-                      <p className="text-xs mt-1">{r.adminId.adminName}</p>
+                      <p className="text-xs mt-1">{"ဈေးတာ၀န်ခံ"}</p>
                     </div>
                     <div className="text-center">
                       <img
                         src={r.superAdminSignaturePhoto}
-                        alt="Super Admin Signature"
+                        alt="အမှုဆောင်အရာရှိလက်မှတ်"
                         className="h-12 object-contain mx-auto"
                       />
-                      <p className="text-xs mt-1">Super Admin</p>
+                      <p className="text-xs mt-1">အမှုဆောင်အရာရှိ</p>
                     </div>
                   </div>
 
@@ -112,13 +128,11 @@ const Receipts = () => {
                     {loadingId == r._id ? (
                       <span className="loading loading-spinner loading-sm"></span>
                     ) : r.isRead ? (
-                      "Already Read"
+                      "ဖတ်ပြီးပြီးပါပြီ"
                     ) : (
-                      "Mark as Read"
+                      "ဖတ်ပြီးဟု သတ်မှတ်မည်"
                     )}
                   </button>
-
-
                 </div>
               ))}
             </div>

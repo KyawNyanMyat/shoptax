@@ -1,2 +1,8 @@
 @import "tailwindcss";
 @plugin "daisyui";
+
+body, html, select, option {
+  font-family: 'Pyidaungsu', sans-serif !important;
+}
+
+  

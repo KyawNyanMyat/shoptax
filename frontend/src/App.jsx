@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom"
+import { Navigate, Outlet, Route, Routes } from "react-router-dom"
 import Contact from "./pages/Contact"
 import './App.css'
 import Home from "./pages/Home"
@@ -20,25 +20,37 @@ import AdminManagePayments from "./adminpages/adminDashboard/AdminManagePayment"
 import AdminManageReceipts from "./adminpages/adminDashboard/AdminManageReceipts"
 import AdminViewWarnings from "./adminpages/adminDashboard/AdminViewWarning"
 import AdminSendWarning from "./adminpages/adminDashboard/AdminSendWarning"
+import { UserAuthContextProvider, useUserAuthContext } from "./context/userAuthContext"
+//import SocketTest from "./Test"
 function App() {
 
+  const UserProtectedLayout = () => (
+    <UserAuthContextProvider>
+      <Outlet />
+    </UserAuthContextProvider>
+  );
+  
   return (
     <>
-      <div className="flex flex-col min-h-screen">
-        <main className="bg-base-100">
+      <div className="flex flex-col min-h-screen" >
+        {/* <SocketTest/> */} 
+        <main className="bg-white">
           {/* In the future Add auth */}
           <Routes>
+            
             {/* User */}
-            <Route path="/" element={<Home />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/about" element={<About/>} />
             <Route path="/login" element={<Login/>} />
-            <Route path="/signup" element={<Signup/>} />
 
-            <Route path="/user" element={<DashboardHome/>} />
-            <Route path="/user/warningmessage" element={<WarningMessages />} />
-            <Route path="/user/receipt" element={<Receipts />} />
-            <Route path="/user/paymentproof" element={<SubmitPaymentProof />} />
+            <Route element={<UserProtectedLayout/>}>
+              <Route path="/" element={<Home />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/about" element={<About/>} />
+
+              <Route path="/user" element={ <DashboardHome />} />
+              <Route path="/user/warningmessage" element={<WarningMessages />} />
+              <Route path="/user/receipt" element={<Receipts />} />
+              <Route path="/user/paymentproof" element={<SubmitPaymentProof />} />
+            </Route>
 
             {/* Admin */}
             <Route path="/admin" element={<AdminLogin />} />
@@ -51,6 +63,7 @@ function App() {
             <Route path="/admin/sendwarning" element={<AdminSendWarning />} />
             <Route path="/admin/viewreceipt" element={<AdminManageReceipts />} />
             <Route path="/admin/viewwarning" element={<AdminViewWarnings />} />
+            <Route path="/admin/user/signup" element={<Signup/>} />
           </Routes>
           <Toaster/>
         </main>

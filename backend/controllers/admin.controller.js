@@ -1,10 +1,45 @@
 import Admin from '../models/admin.model.js';
+import myanmarToEnglishInitial from '../utils/myanmarInitialMap.js';
 // Create a new admin
 export const createAdmin = async (req, res) => {
   try {
     const { adminName, adminPassword, phoneNo, division, position } = req.body;
+    if (
+      !adminName?.trim() || !adminPassword?.trim() || !division?.trim() ||
+      !position?.trim() || !phoneNo?.trim()
+    ) {
+      return res.status(400).json({ message: "အချက်လက် အကုန်ဖြည့်ပါ" });
+    }
 
-    const profilePhoto = `https://avatar.iran.liara.run/username?username=${adminName}`
+    if(!/^[\u1000-\u109F\uAA60-\uAA7F\u102B-\u103E\u1039-\u103A\s၊။]+$/.test(adminName)) {
+      return res.status(400).json({ message: "နာမည်သည် မြန်မာလိုပဲဖြစ်ရမယ်"})
+    }
+
+    if (!/^၀၉\-([၀-၉]{7}|[၀-၉]{9})$/.test(phoneNo)) {
+      return res.status(400).json({  message: "ဖုန်းနံပါတ်သည် 09- နဲ့စပြီး ၇ သို့မဟုတ် ၉ လုံးရပါမည်။" });
+    }
+
+
+    if(!/^[\u1000-\u109F\uAA60-\uAA7F\u102B-\u103E\u1039-\u103A\s၊။]+$/.test(division)) {
+      return res.status(400).json({ message: "ဌာနသည် မြန်မာလိုပဲဖြစ်ရမယ်"})
+    }
+
+    if(!/^[\u1000-\u109F\uAA60-\uAA7F\u102B-\u103E\u1039-\u103A\s၊။]+$/.test(position)) {
+      return res.status(400).json({ message: "ရာထူးသည် မြန်မာလိုပဲဖြစ်ရမယ်"})
+    }
+    
+    const getMyanmarInitials = (name) => {
+      let initials = '';
+      for (const char of name) {
+        if (myanmarToEnglishInitial[char]) {
+          initials += myanmarToEnglishInitial[char][0]; // first letter only
+        }
+      }
+      return initials == '' ? 'New User' : initials.toUpperCase();
+    };
+
+    const avatarName = getMyanmarInitials(adminName)
+    const profilePhoto = `https://ui-avatars.com/api/?name=${avatarName}&background=random`
     
     const newAdmin = new Admin({
       adminName,
