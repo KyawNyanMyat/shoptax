@@ -18,14 +18,15 @@ const useAdminLogin = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || "Admin login failed");
+        throw new Error(data.message || "အုပ်ချုပ်ရေးဝင် ဝင်ရောက်မှု မအောင်မြင်ပါ");
       }
 
-      toast.success("Admin login successful");
-      navigate("/admin/dashboard"); // adjust route as needed
+      localStorage.setItem("admin-dashboard", JSON.stringify(data))
+      toast.success("ဝင်ရောက်မှု အောင်မြင်ပါသည်", {id: "admin-login"});
+      navigate("/admin/dashboard");
     } catch (err) {
-      toast.error(err.message, {duration:1500});
       console.log("Error in useAdminLogin", err.message)
+      toast.error(err.message, { id: "admin-login-error",duration: 1500 });
     } finally {
       setLoading(false);
     }

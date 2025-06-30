@@ -130,8 +130,9 @@ export const getPaymentByUserId = async (req, res) => {
     const { id } = req.params
     const user = await Payment.findOne({userId: id}).sort({paidDate: -1})
 
+    //In the future, do something
     if (!user) {
-      return res.status(404).json({ message: "မည်သည့်အချက်အလက်မျှ မတွေ့ရှိပါ။" });
+      return res.status(404).json({ message: "ငွေပေးချေမှုအချက်အလက်မတွေ့ရှိပါ။" });
     }
     res.status(200).json(user);
   } catch (error) {
@@ -148,13 +149,13 @@ export const getPendingPayments = async (req, res) => {
     .populate("shopId")
 
     if(!pendingPayments) {
-      return res.status(404).json({message: "No pending Payment is found"})
+      return res.status(404).json({message: "မပေးရသေးသော ငွေပေးချေမှု မရှိပါ"})
     }
 
     res.status(200).json(pendingPayments);
   } catch (error) {
     console.error("Error fetching pending payments:", error);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: "ဆာဗာ အခက်အခဲ ဖြစ်ပွားနေပါသည်။" });
   }
 };
 
@@ -176,76 +177,72 @@ export const getOverdueUsers = async (req, res) => {
     res.status(200).json(overduePayments);
   } catch (error) {
     console.error("Error fetching overdue payments:", error);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: "ဆာဗာ အခက်အခဲ ဖြစ်ပွားနေပါသည်။" });
   }
 };
 
 
 export const updatePaymentStatus = async (req, res) => {
-  //const userId = "684c2b1ec0a2a3d814a8d2ca"; //In the future
-  const adminId = "6854473584392169732eacf5"; // In the future
+  const adminId = req.admin?._id; // from Protect Route
+  if (!adminId) {
+    return res.status(401).json({ message: "အက်မင်အထောက်အထား မရှိပါ။ ဝင်ရောက်ခွင့်မပြုပါ။" });
+  }
+
   const { id } = req.params;
-  const { status, userId } = req.body;
+  const { status, userId, rejectionReason } = req.body;
 
   if (!['Pending', 'Finished', 'Rejected'].includes(status)) {
-    return res.status(400).json({ message: 'Invalid status value' });
+    return res.status(400).json({ message: 'မှန်ကန်သောအခြေအနေတန်ဖိုး မဟုတ်ပါ' });
   }
 
   let lock;
   const session = await mongoose.startSession();
-  // session.startTransaction({
-  //   readConcern: { level: "snapshot" },
-  //   writeConcern: { w: "majority" },
-  // });
 
   try {
-    lock = await redlock.acquire([`locks:payment:${id}`], 10000,
-      {
-        retryCount: 0,
-        retryDelay: 0,
-        retryJitter: 0
-      }
-    ); 
+    lock = await redlock.acquire([`locks:payment:${id}`], 10000, {
+      retryCount: 0,
+      retryDelay: 0,
+      retryJitter: 0
+    });
 
     session.startTransaction({
       readConcern: { level: "snapshot" },
       writeConcern: { w: "majority" },
     });
+
     const payment = await Payment.findById(id).session(session);
     if (!payment) {
       await session.abortTransaction();
       await lock.release();
-      return res.status(404).json({ message: "Payment not found" });
+      return res.status(404).json({ message: "ငွေပေးချေမှုအချက်အလက် မတွေ့ပါ" });
     }
 
-    //if admin accept payment, then create checkout and send to user
     if (status === "Finished") {
       await Receipt.create([{
         paymentId: payment._id,
-        adminId: adminId,  //In the future
+        adminId: adminId,
         amount: payment.amount,
         issueDate: new Date()
       }], { session });
     }
 
-    //if admin reject payment, then create warning and send to user
     if (status === "Rejected") {
       const shop = await Shop.findById(payment.shopId).session(session);
-      if (!shop) throw new Error("Shop not found");
-    
+      if (!shop) throw new Error("ဆိုင် မတွေ့ပါ");
+
       await Warning.create([{
-        warningTitle: "Payment Rejected",
-        warningContent: `Your ${payment.paymentType} has been rejected. Please resubmit a valid payment form again.`,
-        userId: userId, //In the future
+        warningTitle: "ငွေပေးချေမှု ပယ်ဖျက်ခြင်း",
+        warningContent: `သင်၏ ရုံ ${shop.marketHallNo}/ဆိုင် ${shop.shopNo} တွင် ပြုလုပ်သော ${payment.paymentType} သည်
+        ${rejectionReason} ကြောင့်ပယ်ဖျက်ခဲ့ပါသည်။ ကျေးဇူးပြု၍ မှန်ကန်သော ငွေပေးချေမှုဖောင်ကို ပြန်လည်တင်ပြပါ။`,
+        userId: userId,
         issueDate: new Date()
       }], { session });
     }
-    
 
     if (payment.status !== 'Pending') {
       await session.abortTransaction();
       await lock.release();
-      return res.status(409).json({ message: `Payment already ${payment.status}` });
+      return res.status(409).json({ message: `ငွေပေးချေမှုသည် ထပ်မံပြင်ဆင်လို့မရတော့ပါ။ (Status: ${payment.status})` });
     }
 
     payment.status = status;
@@ -263,15 +260,18 @@ export const updatePaymentStatus = async (req, res) => {
     if (session.inTransaction()) {
       await session.abortTransaction();
     }
-    console.error("Error in payment Controller, update payment status:", err);
+
+    console.error("ငွေပေးချေမှုအခြေအနေ ပြင်ဆင်ရာတွင် ပြဿနာရှိသည်:", err);
 
     if (err.name == "ExecutionError" || err instanceof Redlock.LockError) {
-      return res.status(423).json({ message: "Payment is currently being updated. Try again later." });
+      return res.status(423).json({ message: "ဤငွေပေးချေမှုကို တခြားအက်မင်မှ ပြင်ဆင်နေပါသည်။ ခဏစောင့်ပြီး ပြန်ကြိုးစားပါ။" });
     }
 
-    if(err.code == 112) return res.status(409).json({ message:"Another admin made changes"})
+    if (err.code == 112) {
+      return res.status(409).json({ message: "တခြားအက်မင်တစ်ဦးမှ ပြောင်းလဲမှုများ ပြုလုပ်ပြီးဖြစ်သည်။" });
+    }
 
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "ဆာဗာအတွင်းမှ အမှားတစ်ခု ဖြစ်ပွားခဲ့သည်" });
   } finally {
     session.endSession();
   }

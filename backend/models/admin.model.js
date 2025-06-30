@@ -17,7 +17,7 @@ const adminSchema = new mongoose.Schema({
         type: String, 
         required: true 
     },
-    division: { 
+    section: { 
         type: String, 
         required: true 
     },

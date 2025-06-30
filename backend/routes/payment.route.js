@@ -9,19 +9,20 @@ import {
 } from '../controllers/payment.controller.js';
 import upload from '../middleware/upload.js';
 import userProtectRoute from '../middleware/userProtectRoute.js';
+import adminProtectRoute from '../middleware/adminProtectRoute.js';
 
 
 const router = express.Router();
 
 router.post('/', userProtectRoute , upload.single("paymentPhoto"), createPayment); // used by user
 
-router.get("/pending", getPendingPayments);
+router.get("/pending", adminProtectRoute, getPendingPayments); // used by admin
 
-router.get('/', getAllPayments); // used by admin
+router.get('/', adminProtectRoute, getAllPayments); // used by admin
 
 router.get('/:id', getPaymentById);
 
-router.get('/user/overdue', getOverdueUsers);
+router.get('/user/overdue', adminProtectRoute, getOverdueUsers); // used by admin
 
 router.get('/user/:id', userProtectRoute , getPaymentByUserId); //used by user
 
@@ -29,7 +30,7 @@ router.put('/:id', updatePayment);
 
 router.delete('/:id', deletePayment);
 
-router.patch('/changestatus/:id/', updatePaymentStatus); // used by admin
+router.patch('/changestatus/:id/', adminProtectRoute, updatePaymentStatus); // used by admin
 
 
 

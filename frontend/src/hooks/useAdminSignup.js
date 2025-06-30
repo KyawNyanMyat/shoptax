@@ -18,14 +18,16 @@ const useAdminSignup = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || "Failed to register");
+        throw new Error(data.message || "အကောင့်ဖွင့်ခြင်း မအောင်မြင်ပါ");
       }
 
-      toast.success("Admin registered successfully!");
-      //navigate("/admin/dashboard"); //In the future uncomment
+      toast.success("အက်မင်အကောင့်အောင်မြင်စွာဖွင့်ပြီးပါပြီ!");
+      return true
+      //navigate("/admin/dashboard"); // အနာဂတ်တွင်ပြန်ဖွင့်ပါ
     } catch (err) {
-        console.log("Error in useAdminSignup hook", err.message)
-        toast.error(err.message, {duration: 1500});
+        console.log("useAdminSignup မှာ error ဖြစ်နေတယ်", err.message)
+        toast.error(err.message, { duration: 2500 });
+        return false
     } finally {
       setLoading(false);
     }

@@ -1,29 +1,29 @@
 import { FiBell } from "react-icons/fi";
+import { Navigate } from "react-router-dom";
+import { useAdminAuthContext } from "../context/adminAuthContext";
 
 const AdminDashboardHeader = () => {
-  let userPhoto = "https://avatar.iran.liara.run/username?username=Kyaw" // in the future
+  const { adminAuth } = useAdminAuthContext()
+  if (!adminAuth) {
+    return <Navigate to={"/admin"} />
+  }
+  let userPhoto = adminAuth.profilePhoto;
   return (
     <header className="bg-teal-700 text-white px-6 py-4 shadow flex justify-between items-center">
-      {/* Left - Title */}
+      {/* ဘယ်ဘက် - ခေါင်းစဉ် */}
       <div>
-        <h1 className="text-xl font-bold">TDD Admin Dashboard</h1>
-        <p className="text-sm text-amber-100">Oversee users and manage market operations</p>
+        <h1 className="text-xl font-bold">အုပ်ချုပ်ရေး ဒက်ရှ်ဘုတ်</h1>
+        <p className="text-sm text-amber-100">အသုံးပြုသူများနှင့် ဈေးကွက်စီမံခန့်ခွဲမှုများကို ကြီးကြပ်ခြင်း</p>
       </div>
 
-      {/* Right - Bell & Profile */}
+      {/* ညာဘက် - အသိပေးချက်နှင့် ပရိုဖိုင် */}
       <div className="flex items-center gap-6">
-        {/* Notification Bell */}
-        {/* <div className="relative cursor-pointer">
-          <FiBell className="text-white text-2xl" />
-          <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500 animate-ping"></span>
-        </div> */}
-
-        {/* Admin profile icon */}
+        {/* အုပ်ချုပ်ရေးဝင် ပရိုဖိုင်အိုင်ကွန် */}
         <div className="w-8 h-8 rounded-full overflow-hidden">
           {userPhoto && (
             <img
               src={userPhoto}
-              alt="Admin"
+              alt="အုပ်ချုပ်ရေးဝင်"
               className="w-full h-full object-cover"
             />
           )}

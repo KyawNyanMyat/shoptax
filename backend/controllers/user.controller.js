@@ -3,7 +3,7 @@ import Shop from "../models/shop.model.js";
 import myanmarToEnglishInitial from "../utils/myanmarInitialMap.js";
 import generateUserTokenAndCookie from "../utils/generateUserToken.js";
 
-// Create a new user
+// Create a new user, In the future, check the same username
 export const createUser = async (req, res) => {
   try {
     const {
@@ -27,13 +27,17 @@ export const createUser = async (req, res) => {
     }
   
 
-    const nrcRegex = /^(၁[၀-၄]|[၁-၉])\/[က-အ]{3}\((နိုင်|ဧည့်|ပြု|သာသနာ|ယာယီ|စ)\)([၀-၉]{5,6})$/;
+    const nrcRegex = /^(၁[၀-၄]|[၁-၉])\/[က-အ]{3}\((နိုင်|ဧည့်|ပြု|သာသနာ|ယာယီ|စ)\)([၀-၉]{6})$/;
     if (!nrcRegex.test(NRC)) {
-      return res.status(400).json({  message: "မှတ်ပုံတင်နံပါတ် မှားနေပါသည်" });
+      return res.status(400).json({  message: "မှတ်ပုံတင်နံပါတ်ပြန်စစ်ရန်" });
     }
 
-    if (!/^၀၉\-([၀-၉]{7}|[၀-၉]{9})$/.test(phoneNo)) {
-      return res.status(400).json({  message: "ဖုန်းနံပါတ်သည် 09- နဲ့စပြီး ၇ သို့မဟုတ် ၉ လုံးရပါမည်။" });
+    // if (!/^၀၉\-([၀-၉]{7}|[၀-၉]{9})$/.test(phoneNo)) {
+    //   return res.status(400).json({  message: "ဖုန်းနံပါတ်သည် 09- နဲ့စပြီး ၉ သို့မဟုတ် ၁၁ လုံးပါရပါမည်။" });
+    // }
+
+    if (!/^09\-([0-9]{7}|[0-9]{9})$/.test(phoneNo)){
+        return res.status(400).json({ message: "ဖုန်းနံပါတ်သည် 09- နဲ့စပြီး 9 သို့မဟုတ် 11 လုံးပါရပါမည်။" })
     }
 
 
@@ -70,10 +74,10 @@ export const createUser = async (req, res) => {
 
     // duplicate key error
     if (error.code == 11000) {
-      return res.status(409).json({ message: "NRC already registered." });
+      return res.status(409).json({ message: "NRC ရှိနေပြီးသားဖြစ်ပါသည်" });
     }
 
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: "ဆာဗာ အခက်အခဲ ဖြစ်ပွားနေပါသည်။" });
   }
 };
 
@@ -84,7 +88,7 @@ export const getAllUsers = async (req, res) => {
     res.status(200).json(users);
   } catch (error) {
     console.error("Get Users Error:", error);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: "ဆာဗာ အခက်အခဲ ဖြစ်ပွားနေပါသည်။" });
   }
 };
 

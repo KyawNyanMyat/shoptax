@@ -17,15 +17,15 @@ const useSendWarning = () => {
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.message || "Failed to send warning");
+        throw new Error(data.message || "သတိပေးချက် ပေးပို့မှု မအောင်မြင်ပါ။");
       }
 
       const data = await res.json();
-      toast.success("Send Successfully", {duration: 2000})
-      
+      toast.success("သတိပေးချက် ပေးပို့ပြီးပါပြီ။", { duration: 2000 });
+
     } catch (err) {
-      console.error("Send warning error:", err);
-      toast.error(err.message, {duration: 2000})
+      console.error("သတိပေးချက် ပေးပို့ရာတွင် ပြဿနာရှိသည်:", err);
+      toast.error(err.message, { duration: 2000 });
     } finally {
       setLoading(false);
     }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaShieldAlt } from 'react-icons/fa';
+import { FiEye, FiEyeOff } from "react-icons/fi";
 import useAdminLogin from '../../hooks/useAdminLogin';
 
 const AdminLogin = () => {
@@ -9,17 +10,17 @@ const AdminLogin = () => {
   const [formData, setFormData] = useState({
     adminName: '',
     adminPassword: '',
-    division: ''
+    position: ''
   });
+  const [showPassword, setShowPassword] = useState(false)
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.division) return alert('Please select a division');
-    adminLogin(formData);
+    await adminLogin(formData);
   };
 
   return (
@@ -29,18 +30,18 @@ const AdminLogin = () => {
           {/* Header */}
           <div className="flex items-center justify-center gap-3 mb-6">
             <FaShieldAlt className="text-blue-600 text-2xl" />
-            <span className="text-3xl font-semibold text-gray-800">Admin Login</span>
+            <span className="text-3xl font-semibold text-gray-800">အုပ်ချုပ်ရေးဝင် ဝင်ရောက်ခြင်း</span>
           </div>
 
           {/* Username */}
           <div className="mb-4">
-            <label className="block font-semibold py-2 text-gray-700">Admin ID</label>
+            <label className="block font-semibold py-2 text-gray-700">အုပ်ချုပ်ရေးဝင်နာမည်</label>
             <input
               type="text"
               name="adminName"
               value={formData.adminName}
               onChange={handleChange}
-              placeholder="Enter admin username"
+              placeholder="အုပ်ချုပ်ရေးအမည် ထည့်ပါ"
               className="w-full input input-bordered focus:outline-blue-500 focus:outline-offset-0"
               autoComplete="off"
               required
@@ -48,37 +49,60 @@ const AdminLogin = () => {
           </div>
 
           {/* Password */}
-          <div className="mb-4">
-            <label className="block font-semibold py-2 text-gray-700">Password</label>
+          <div className="mb-4 relative">
+            <label className="block font-semibold py-2 text-gray-700">စကားဝှက်</label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="adminPassword"
               value={formData.adminPassword}
               onChange={handleChange}
-              placeholder="Enter your password"
-              className="w-full input input-bordered focus:outline-blue-500 focus:outline-offset-0"
+              placeholder="စကားဝှက် ထည့်ပါ"
+              className="w-full input input-bordered focus:outline-blue-500 focus:outline-offset-0 pr-10"
               autoComplete="new-password"
               required
             />
+            <span
+              className="absolute right-3 top-13 z-10 cursor-pointer text-gray-500"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <FiEye className="text-xl" /> : <FiEyeOff className="text-xl" />}
+            </span>
           </div>
 
           {/* Division */}
           <div className="mb-4">
-            <label className="block font-medium text-gray-700 mb-1">Division</label>
+            <label className="block font-medium text-gray-700 mb-1">ရာထူး</label>
             <select
-              name="division"
-              value={formData.division}
+              name="position"
+              value={formData.position}
               onChange={handleChange}
               className="w-full select select-bordered focus:outline-offset-0"
               required
             >
-              <option value="" disabled>Select division</option>
-              <option value="Market Regulation and Slaughterhouse Management Division">
-                Market Regulation and Slaughterhouse Management Division
+              <option value="" disabled>
+                ရာထူး ရွေးရန်
               </option>
-              <option value="Taxation Division">Taxation Division</option>
-              <option value="Sanitation and Waste Management Division">
-                Sanitation and Waste Management Division
+              <option value="ဒုဦးစီးမှူး">
+                ဒုဦးစီးမှူး
+              </option>
+              <option value="အကြီးတန်းစာရေး">
+                အကြီးတန်းစာရေး
+              </option>
+              {/* In the future delete or just leave as it */}
+              <option value="အငယ်တန်းလက်နှိပ်စက်">
+                အငယ်တန်းလက်နှိပ်စက်
+              </option>
+              <option value="စက်မောင်းလေး">
+                စက်မောင်းလေး
+              </option>
+              <option value="အခွန်ကောက်">
+                အခွန်ကောက်
+              </option>
+              <option value="လုပ်သားသုံး">
+                လုပ်သားသုံး
+              </option>
+              <option value="နေ့ရှင်း">
+                နေ့ရှင်း
               </option>
             </select>
           </div>
@@ -90,7 +114,11 @@ const AdminLogin = () => {
               className="btn w-full bg-blue-600 hover:bg-blue-700 border-none text-white"
               disabled={loading}
             >
-              {loading ? <span className="loading loading-spinner loading-sm"></span> : 'Login'}
+              {loading ? (
+                <span className="loading loading-spinner loading-sm"></span>
+              ) : (
+                'ဝင်မည်'
+              )}
             </button>
           </div>
         </form>

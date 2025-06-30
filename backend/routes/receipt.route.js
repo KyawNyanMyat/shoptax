@@ -11,6 +11,7 @@ import {
   getAllUnreadReceiptsByUserId
 } from '../controllers/receipt.controller.js';
 import userProtectRoute from '../middleware/userProtectRoute.js';
+import adminProtectRoute from '../middleware/adminProtectRoute.js';
 
 const router = express.Router();
 
@@ -18,7 +19,7 @@ const router = express.Router();
 
 router.post('/', createReceipt);
 
-router.get('/', getAllReceipts); //used by admin
+router.get('/', adminProtectRoute, getAllReceipts); //used by admin
 
 router.get('/:id', getReceiptById);
 
@@ -30,6 +31,6 @@ router.get("/user/:userId", userProtectRoute ,getReceiptsByUser); // used by use
 
 router.get("/unread/:userId", userProtectRoute, getAllUnreadReceiptsByUserId); // used by user
 
-router.patch("/mark-read/:id", userProtectRoute, markReceiptAsRead);
+router.patch("/mark-read/:id", userProtectRoute, markReceiptAsRead); // used by user
 
 export default router;

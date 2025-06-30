@@ -69,28 +69,34 @@ const DashboardHome = () => {
         if (!userRes.ok) {
           throw new Error(userData.message || "အသုံးပြုသူ အချက်အလက်ရယူရာတွင် ပြဿနာတစ်ခုရှိနေသည်။");
         }
-        setUserName(userData.username)
 
         const res = await fetch(`/api/payments/user/${userId}`)
         const data = await res.json();
 
-        setLastPayment(data.paidDate)
-        setNextPaymentDueDate(data.nextPaymentDueDate)
+        if (!res.ok) {
+          throw new Error(data.message || "အသုံးပြုသူ အချက်အလက်ရယူရာတွင် ပြဿနာတစ်ခုရှိနေသည်။");
+        }
 
         const receiptRes = await fetch(`/api/receipts/unread/${userId}`)
         const receiptData = await receiptRes.json();
 
-        setUnReadReceipt(receiptData)
+        if (!receiptRes.ok) {
+          throw new Error(receiptData.message || "အသုံးပြုသူ အချက်အလက်ရယူရာတွင် ပြဿနာတစ်ခုရှိနေသည်။");
+        }
 
         const warningRes = await fetch(`/api/warnings/unread/${userId}`)
         const warningData = await warningRes.json();
 
+        if (!warningRes.ok) {
+          throw new Error(warningData.message || "အသုံးပြုသူ အချက်အလက်ရယူရာတွင် ပြဿနာတစ်ခုရှိနေသည်။");
+        }
+
+        setUserName(userData.username)
+        setLastPayment(data.paidDate)
+        setNextPaymentDueDate(data.nextPaymentDueDate)
+        setUnReadReceipt(receiptData)
         setUnReadWarning(warningData)
 
-        //console.log(lastPayment ,nextPaymentDueDate, unReadReceipt, unReadWarning)
-        if(!res.ok || !receiptRes.ok || !warningRes.ok) {
-          throw new Error(data.message)
-        }
       } catch (error) {
         console.log("Error in Dashboard Home", error.message)
         toast.error(error.message, { id: 'dashboard-error', duration: 2500 })

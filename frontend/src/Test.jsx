@@ -1,56 +1,30 @@
-// // client/test.jsx
-// import React, { useEffect, useState } from "react";
-// import { io } from "socket.io-client";
+// import React from "react";
 
-// const socket = io("http://localhost:5000");
-
-// const SocketTest = () => {
-//   const [message, setMessage] = useState("");
-//   const [allMessages, setAllMessages] = useState([]);
-
-//   const sendMessage = () => {
-//     if (message.trim()) {
-//       socket.emit("send_message", message);
-//       setAllMessages((prev) => [...prev, `You: ${message}`]);
-//       setMessage("");
-//     }
+// const Test = () => {
+//   const handleParentClick = () => {
+//     alert("Parent clicked!");
 //   };
 
-//   useEffect(() => {
-//     socket.on("receive_message", (data) => {
-//       setAllMessages((prev) => [...prev, `Other: ${data}`]);
-//     });
-
-//     return () => {
-//       socket.disconnect("receive_message");
-//     };
-//   }, []);
+//   const handleChildClick = (e) => {
+//     //e.stopPropagation(); // Stops the event from reaching the parent
+//     alert("Child clicked!");
+//   };
 
 //   return (
-//     <div className="p-4">
-//       <h2 className="text-xl font-bold mb-4">🧪 Socket.IO Test</h2>
-//       <div className="space-y-2">
-//         <input
-//           value={message}
-//           onChange={(e) => setMessage(e.target.value)}
-//           className="border border-gray-400 px-3 py-1 rounded"
-//           placeholder="Type your message"
-//         />
-//         <button
-//           onClick={sendMessage}
-//           className="ml-2 bg-blue-500 text-white px-3 py-1 rounded"
-//         >
-//           Send
-//         </button>
-//       </div>
+//     <div
+//       onClick={handleParentClick}
+//       className="p-10 bg-blue-100 rounded-lg cursor-pointer"
+//     >
+//       <p>Clicking this area will alert "Parent clicked!"</p>
 
-//       <div className="mt-4 border-t pt-2">
-//         {allMessages.map((msg, idx) => (
-//           <p key={idx} className="text-sm">{msg}</p>
-//         ))}
-//       </div>
+//       <button
+//         onClick={handleChildClick}
+//         className="mt-4 px-4 py-2 bg-green-500 text-white rounded"
+//       >
+//         Click Me (Child)
+//       </button>
 //     </div>
 //   );
 // };
 
-// export default SocketTest;
+// export default Test;

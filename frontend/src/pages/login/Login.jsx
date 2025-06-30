@@ -2,13 +2,15 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import useLogin from '../../hooks/useLogin.js'
 import logo from "../../assets/react.svg"
-import { FiUser } from 'react-icons/fi'
+import { FiUser, FiEye, FiEyeOff  } from 'react-icons/fi'
 
 const Login = () => {
   const [formData, setFormData] = useState({
     username:"",
     password: ""
   })
+  const [showPassword, setShowPassword] = useState(false)
+  
   const {loading, login} = useLogin();
 
   const handleSubmit = async (e)=>{
@@ -41,11 +43,17 @@ const Login = () => {
             />
           </div>
 
-          <div>
+          <div className='relative'>
             <label className='block font-semibold py-2'>လျို့၀ှက်နံပါတ်</label>
-            <input type="text" placeholder="လျို့၀ှက်နံပါတ်ထည့်ရန်" className='w-full input input-borded focus:outline-offset-0'
+            <input type={showPassword ? "text" :"password"} placeholder="လျို့၀ှက်နံပါတ်ထည့်ရန်" className='w-full input input-borded focus:outline-offset-0 pr-10'
               onChange={(e)=> setFormData({...formData, password: e.target.value})}
             />
+            <span
+              className="absolute right-3 top-13 z-10 cursor-pointer text-gray-500"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <FiEye className="text-xl" /> : <FiEyeOff className="text-xl" />}
+            </span>
           </div>
 
           <Link to='/' className='text-sm hover:underline hover:text-blue-700 mt-4 inline-block'> ပင်မစာမျက်နှာ သို့သွားရန်</Link>

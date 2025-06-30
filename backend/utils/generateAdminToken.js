@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 const generateAdminTokenAndCookie = (AdminId, res)=>{
-    const token = jwt.sign({AdminId},process.env.JWT_SECRET,{expiresIn:"15d"})//In the future change day
+    const token = jwt.sign({AdminId},process.env.JWT_SECRET_ADMIN,{expiresIn:"15d"})//In the future change day
 
     //store token in cookie
     res.cookie('admintoken',token, {

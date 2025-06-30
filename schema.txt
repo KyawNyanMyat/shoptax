@@ -16,7 +16,7 @@
     adminPassword
     ProfilePhoto
     PhoneNo
-    Division
+    Section
     Position
     //AdminSignaturePhoto(Don't add this for now)
     createdAt

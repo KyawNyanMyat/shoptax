@@ -15,7 +15,7 @@ const Home = () => {
     {
       title: "Water Distribution",
       description: "Updates and info about water supply services.",
-      image: <GiWaterTank className="w-full h-40 object-fit rounded-t-2xl"/>,
+      image: <GiWaterTank className="w-full h-40 object-fit rounded-t-2xl text-blue-500"/>,
     },
     {
       title: "Garbage Collection",
@@ -25,7 +25,7 @@ const Home = () => {
     {
       title: "Street Construction",
       description: "Track construction and small road maintenance.",
-      image: <LuConstruction className="w-full h-40 object-fit rounded-t-2xl"/>,
+      image: <LuConstruction className="w-full h-40 object-fit rounded-t-2xl text-amber-400"/>,
     },
   ];
 

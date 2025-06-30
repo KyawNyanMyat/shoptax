@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import useSignUp from '../../hooks/useSignUp.js';
 import logo from "../../assets/react.svg"
-import { FiUser } from "react-icons/fi";
+import { FiUser, FiEye, FiEyeOff } from "react-icons/fi";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -12,8 +12,10 @@ const Signup = () => {
     gender: '',
     NRC: '',
     phoneNo: '',
-    // shopId: ''
   })
+
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const [shops, setShops] = useState([]);
   
@@ -66,22 +68,34 @@ const Signup = () => {
             />
           </div>
 
-          <div>
+          <div className='relative'>
             <label className='block font-semibold py-2'>လျို့၀ှက်နံပါတ်</label>
-            <input type="password" required placeholder="ဥပမာ.၁၂၃၄fpass" 
-              className=' w-full input input-borded focus:outline-offset-0'
+            <input type={showPassword ? "text" :"password"} required placeholder="ဥပမာ.၁၂၃၄fpass" 
+              className=' w-full input input-borded focus:outline-offset-0 pr-10'
               value={formData.password}
               onChange={(e)=> setFormData({...formData, password: e.target.value})}
             />
+            <span
+              className="absolute right-3 top-13 z-10 cursor-pointer text-gray-500"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <FiEye className="text-xl" /> : <FiEyeOff className="text-xl" />}
+            </span>
           </div>
 
-          <div>
+          <div className='relative'>
             <label className='block font-semibold py-2'>လျို့၀ှက်နံပါတ် အတည်ပြုရန်</label>
-            <input type="password" required placeholder="ဥပမာ.၁၂၃၄fpass" 
-              className=' w-full input input-borded focus:outline-offset-0'
+            <input type={showConfirmPassword ? "text" :"password"} required placeholder="ဥပမာ.၁၂၃၄fpass" 
+              className=' w-full input input-borded focus:outline-offset-0 pr-10'
               value={formData.confirmPassword}
               onChange={(e)=> setFormData({...formData, confirmPassword: e.target.value})}
             />
+            <span
+              className="absolute right-3 top-13 z-10 cursor-pointer text-gray-500"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            >
+              {showConfirmPassword ? <FiEye className="text-xl" /> : <FiEyeOff className="text-xl" />}
+            </span>
           </div>
 
           <div>
@@ -109,9 +123,9 @@ const Signup = () => {
             <input
               type="radio"
               name="gender"
-              value="ယောက်ျား"
+              value="Male"
               required
-              checked={formData.gender === "ယောက်ျား"}
+              checked={formData.gender === "Male"}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, gender: e.target.value }))
               }
@@ -122,9 +136,9 @@ const Signup = () => {
             <input
               type="radio"
               name="gender"
-              value="မိန်းမ"
+              value="Female"
               required
-              checked={formData.gender === "မိန်းမ"}
+              checked={formData.gender === "Female"}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, gender: e.target.value }))
               }
@@ -132,7 +146,7 @@ const Signup = () => {
             />
           </div>
 
-          <Link to='/admin/dashboard' className='text-sm hover:underline text-green-600 hover:text-blue-700 mt-4 inline-block'> ပင်မစာမျက်နှာ သို့သွားရန်</Link>
+          <Link to='/admin/dashboard' className='text-sm hover:underline text-green-600 hover:text-blue-700 mt-4 inline-block'> အုပ်ချုပ်ရေးဒက်ရှ်ဘုတ် သို့သွားရန်</Link>
 
           <div className='pt-3'>
             <button className='btn btn-success w-full'>

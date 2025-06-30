@@ -3,13 +3,19 @@ import AdminDashboardSidebar from "../../components/AdminDashboardSidebar";
 import AdminDashboardHeader from "../../components/AdminDashboardHeader";
 import useSendWarning from "../../hooks/useSendWarning";
 import toast from "react-hot-toast";
+import { useAdminAuthContext } from "../../context/adminAuthContext";
+import { Navigate } from "react-router-dom";
 
 const AdminSendWarning = () => {
+  const { adminAuth } = useAdminAuthContext();
+  if (!adminAuth) {
+    return <Navigate to={"/admin"} />;
+  }
   const [form, setForm] = useState({
     warningTitle: "",
     warningContent: "",
     userId: "",
-    overdueFee: "၀"
+    overdueFee: "0"
   });
 
   const [users, setUsers] = useState([]);
@@ -43,9 +49,18 @@ const AdminSendWarning = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const res = await fetch("/api/users");
-      const data = await res.json();
-      setUsers(data);
+      try {
+        const res = await fetch("/api/users");
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.message || "အသုံးပြုသူ အချက်အလက်ရယူရာတွင် ပြဿနာတစ်ခုရှိနေသည်။");
+        }
+        setUsers(data);
+      } catch (error) {
+          console.error("သတိပေးစာနေရာတွင် ပြဿနာ:", error);
+          toast.error(error.message, { id: "admin-sendwarning-error" });
+      }
     };
     fetchUsers();
   }, []);
@@ -53,7 +68,7 @@ const AdminSendWarning = () => {
   return (
     <div className="flex min-h-screen">
       <AdminDashboardSidebar />
-      <div className="flex-1 h-full w-4/5">
+      <div className="flex-1 max-h-screen w-4/5 overflow-scroll">
         <AdminDashboardHeader />
         <h2 className="text-2xl font-bold text-teal-600 mb-4 px-6 py-4">သတိပေးစာ ပေးပို့ရန်</h2>
 
@@ -104,13 +119,21 @@ const AdminSendWarning = () => {
             <input
               type="text"
               inputMode="numeric"
-              pattern="[၀-၉]+"
               value={form.overdueFee}
-              onChange={(e) => {
-                  const myanmarNumberRegex = /^[၀-၉]*$/;
-                  const input = e.target.value;
-                  if (myanmarNumberRegex.test(input)) {
-                    setForm(prev => ({ ...prev, overdueFee: input }));
+              onChange={
+                (e) => {
+                  //Myanmar
+                  // const myanmarNumberRegex = /^[၀-၉]*$/;
+                  // const input = e.target.value;
+                  // if (myanmarNumberRegex.test(input)) {
+                  //   setForm(prev => ({ ...prev, overdueFee: input }));
+                  // }
+
+                  //English
+                  const value = e.target.value;
+                  const pattern = /^(0|[1-9][0-9]*)?$/; // Allows empty string or positive numbers without leading zero
+                  if (pattern.test(value)) {
+                    setForm(prev => ({ ...prev, overdueFee: value }));
                   }
                 }
               }

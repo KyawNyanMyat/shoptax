@@ -24,8 +24,7 @@ const useSignUp = () => {
 
             toast.success("အကောင့်ဖန်တီးမှု အောင်မြင်ပါသည်", {duration: 3000})
             return true
-            //In the future change navigation
-            //navigate("/login")
+
         } catch (error) {
             console.log('Error in useLogin hook',error)
             toast.error(error.message, {duration: 1500})

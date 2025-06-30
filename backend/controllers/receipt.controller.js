@@ -30,7 +30,7 @@ export const getAllReceipts = async (req, res) => {
     res.status(200).json(receipts);
   } catch (error) {
     console.error("Get Receipts Error:", error);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: "ဆာဗာအတွင်း အမှားရှိနေသည်။" });
   }
 };
 

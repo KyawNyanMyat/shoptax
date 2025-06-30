@@ -1,10 +1,10 @@
-import { useUserAuthContext } from "../context/userAuthContext"
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useAdminAuthContext } from "../context/adminAuthContext";
 
-const useLogout = () => {
-  const { setUserAuth } = useUserAuthContext();
+const useAdminLogout = () => {
+  const { setAdminAuth } = useAdminAuthContext();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -12,7 +12,7 @@ const useLogout = () => {
     setLoading(true)
     try {
 
-      const res = await fetch("/api/users/logout", {
+      const res = await fetch("/api/admins/logout", {
         method: "POST",
         credentials: "include", // Send cookies
       });
@@ -23,15 +23,14 @@ const useLogout = () => {
         throw new Error(data.message || "တခုခုမှားယွင်းနေပါသည်");
       }
 
-      // Clear frontend data
-      localStorage.removeItem("user-dashboard");
-      setUserAuth(null);
-      toast.success(data.message, {id: "logout-error", duration: 2500})
-      navigate("/");
+      localStorage.removeItem("admin-dashboard");
+      setAdminAuth(null);
+      toast.success(data.message, {id: "admin-logout-error", duration: 2500})
+      navigate("/admin");
 
     } catch (error) {
       console.error("Logout Error:", error.message);
-      toast.error(error.message, {id: "logout-error", duration: 2500})
+      toast.error(error.message, {id: "admin-logout-error", duration: 2500})
     }finally {
         setLoading(false);
     }
@@ -40,4 +39,4 @@ const useLogout = () => {
   return { loading, logout };
 };
 
-export default useLogout;
+export default useAdminLogout;

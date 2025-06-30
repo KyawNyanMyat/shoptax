@@ -1,30 +1,44 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { FaUserShield } from "react-icons/fa";
 import useAdminSignup from "../../hooks/useAdminSignup"; 
 import toast from "react-hot-toast";
+import { FiEye, FiEyeOff } from "react-icons/fi";
+import { useAdminAuthContext } from "../../context/adminAuthContext";
 
 const AdminSignup = () => {
+  const { adminAuth } = useAdminAuthContext()
+  if (!adminAuth) {
+    return <Navigate to={"/admin"} />
+  }
   const { adminSignup, loading } = useAdminSignup();
   const [formData, setFormData] = useState({
     adminName: "",
     adminPassword: "",
     phoneNo: "",
     position: "",
-    division: "စျေးနှင့်သားသတ်ဌာနစိတ်",
+    section: "စျေးနှင့်သားသတ်ဌာနစိတ်",
   });
+  const [showPassword, setShowPassword] = useState(false)
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    const success = await adminSignup(formData);
 
-    if (!formData.division) {
-      return alert("Please select a division");
+    if(success)
+    {
+      setFormData({
+        adminName: "",
+        adminPassword: "",
+        phoneNo: "",
+        position: "",
+        section: "စျေးနှင့်သားသတ်ဌာနစိတ်",
+      })
     }
-    adminSignup(formData);
   };
 
   return (
@@ -56,18 +70,24 @@ const AdminSignup = () => {
               />
             </div>
 
-            <div>
+            <div className="relative">
               <label className="block font-medium text-gray-700 mb-1">လျို့၀ှက်နံပါတ်</label>
               <input
-                type="text"
+                type={showPassword ? "text" : "password"}
                 name="adminPassword"
                 autoComplete="new-password"
                 value={formData.adminPassword}
                 onChange={handleChange}
                 placeholder="ဥပမာ.၁၂၃၄fpass"
-                className="w-full input input-bordered focus:outline-offset-0"
+                className="w-full input input-bordered focus:outline-offset-0 pr-10"
                 required
               />
+               <span
+                  className="absolute right-3 top-10 z-10 cursor-pointer text-gray-500"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <FiEye className="text-xl" /> : <FiEyeOff className="text-xl" />}
+                </span>
             </div>
 
             <div>
@@ -77,7 +97,7 @@ const AdminSignup = () => {
                 name="phoneNo"
                 value={formData.phoneNo}
                 onChange={handleChange}
-                placeholder="၀၉-၆၇၇၈၅၅၄၉၈"
+                placeholder="09-988657844"
                 className="w-full input input-bordered focus:outline-offset-0"
                 required
               />
@@ -88,15 +108,12 @@ const AdminSignup = () => {
                 ငှာနစိတ်
               </label>
               <select
-                name="division"
-                value={formData.division}
+                name="section"
+                value={formData.section}
                 onChange={handleChange}
                 className="w-full select select-bordered focus:outline-offset-0"
                 required
               >
-                {/* <option value="" disabled>
-                  ဌာနစိတ် ရွေးရန်
-                </option> */}
                 <option value="စျေးနှင့်သားသတ်ဌာနစိတ်">
                   စျေးနှင့်သားသတ်ဌာနစိတ်
                 </option>
@@ -123,6 +140,7 @@ const AdminSignup = () => {
                 <option value="အကြီးတန်းစာရေး">
                   အကြီးတန်းစာရေး
                 </option>
+                {/* In the future delete or just leave as it */}
                 <option value="အငယ်တန်းလက်နှိပ်စက်">
                   အငယ်တန်းလက်နှိပ်စက်
                 </option>
@@ -152,12 +170,6 @@ const AdminSignup = () => {
             >
               {loading ? <span className="loading loading-spinner loading-sm"></span> : "အကောင့်ဖွင့်ရန်"}
             </button>
-            {/* <Link
-              to="/admin"
-              className="block text-center text-sm hover:underline hover:text-blue-600 text-gray-600"
-            >
-              အကောင့်၀င်ရန်
-            </Link> */}
 
             <Link
               to="/admin/dashboard"

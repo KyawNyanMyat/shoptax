@@ -21,7 +21,9 @@ import AdminManageReceipts from "./adminpages/adminDashboard/AdminManageReceipts
 import AdminViewWarnings from "./adminpages/adminDashboard/AdminViewWarning"
 import AdminSendWarning from "./adminpages/adminDashboard/AdminSendWarning"
 import { UserAuthContextProvider, useUserAuthContext } from "./context/userAuthContext"
-//import SocketTest from "./Test"
+import { AdminAuthContextProvider } from "./context/adminAuthContext"
+import AdminCreateShop from "./adminpages/adminDashboard/AdminCreateShop"
+// import SocketTest from "./Test"
 function App() {
 
   const UserProtectedLayout = () => (
@@ -29,11 +31,18 @@ function App() {
       <Outlet />
     </UserAuthContextProvider>
   );
+
+
+  const AdminProtectedLayout = ()=> (
+    <AdminAuthContextProvider>
+      <Outlet />
+    </AdminAuthContextProvider>
+  )
   
   return (
     <>
       <div className="flex flex-col min-h-screen" >
-        {/* <SocketTest/> */} 
+        {/* <SocketTest/>  */}
         <main className="bg-white">
           {/* In the future Add auth */}
           <Routes>
@@ -54,16 +63,20 @@ function App() {
 
             {/* Admin */}
             <Route path="/admin" element={<AdminLogin />} />
-            <Route path="/admin/signup" element={<AdminSignup />} />
-            <Route path="/admin/dashboard" element={<AdminDashboardHome />} />
-            <Route path="/admin/manageuser" element={<AdminManageUsers />} />
-            <Route path="/admin/manageadmin" element={<ManageAdmins />} />
-            <Route path="/admin/manageshop" element={<AdminManageShops />} />
-            <Route path="/admin/managepayment" element={<AdminManagePayments />} />
-            <Route path="/admin/sendwarning" element={<AdminSendWarning />} />
-            <Route path="/admin/viewreceipt" element={<AdminManageReceipts />} />
-            <Route path="/admin/viewwarning" element={<AdminViewWarnings />} />
-            <Route path="/admin/user/signup" element={<Signup/>} />
+
+            <Route element={<AdminProtectedLayout />} >
+              <Route path="/admin/signup" element={<AdminSignup />} />
+              <Route path="/admin/dashboard" element={<AdminDashboardHome />} />
+              <Route path="/admin/manageuser" element={<AdminManageUsers />} />
+              <Route path="/admin/manageadmin" element={<ManageAdmins />} />
+              <Route path="/admin/manageshop" element={<AdminManageShops />} />
+              <Route path="/admin/manageshop/create-shop" element={<AdminCreateShop />} />
+              <Route path="/admin/managepayment" element={<AdminManagePayments />} />
+              <Route path="/admin/sendwarning" element={<AdminSendWarning />} />
+              <Route path="/admin/viewreceipt" element={<AdminManageReceipts />} />
+              <Route path="/admin/viewwarning" element={<AdminViewWarnings />} />
+              <Route path="/admin/user/signup" element={<Signup/>} />
+            </Route>
           </Routes>
           <Toaster/>
         </main>

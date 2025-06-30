@@ -51,7 +51,7 @@ const WarningMessages = () => {
                     <div
                         key={warn._id}
                         className={`border-l-4 p-4 rounded-xl shadow-sm text-red-800 border-red-200
-                          ${warn.warningTitle == "Payment Rejected" ? "bg-amber-200" : "bg-red-200"}`}
+                          ${warn.warningTitle == "ငွေပေးချေမှု ပယ်ဖျက်ခြင်း" ? "bg-amber-100" : "bg-red-200"}`}
                     >
                         <div className="flex items-start gap-3">
                         <FiAlertCircle className="text-xl mt-1" />

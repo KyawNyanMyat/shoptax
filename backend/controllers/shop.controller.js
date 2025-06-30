@@ -6,25 +6,24 @@ import mongoose from 'mongoose';
 // Create a new shop
 export const createShop = async (req, res) => {
   try {
-    const { _id,marketHallNo, shopNo, chargeRate } = req.body;
+    const { marketHallNo, shopNo, chargeRate } = req.body;
 
-    if(!marketHallNo || !shopNo || !chargeRate){
-        return res.status(400).json({ message:"Fill the required field"})
+    if (!marketHallNo || !shopNo || !chargeRate) {
+      return res.status(400).json({ message: "လိုအပ်သောအချက်အလက်များ ဖြည့်စွက်ပါ။" });
     }
 
-    // Optional: prevent duplicate shop numbers in same hall
     const exists = await Shop.findOne({ marketHallNo, shopNo });
     if (exists) {
-        return res.status(400).json({ message: "Shop already exists in this hall" });
+      return res.status(400).json({ message: "ဈေးရုံတွင် ဤဆိုင် နံပါတ်သည် ရှိပြီးသား ဖြစ်ပါသည်။" });
     }
 
-    const newShop = new Shop({ _id,marketHallNo, shopNo , chargeRate});
+    const newShop = new Shop({ marketHallNo, shopNo, chargeRate });
     await newShop.save();
 
     res.status(201).json(newShop);
   } catch (error) {
-    console.error("Create Shop Error:", error);
-    res.status(500).json({ message: "Server Error" });
+    console.error("ဆိုင်ဖန်တီးရာတွင် ပြဿနာ:", error);
+    res.status(500).json({ message: "ဆာဗာအမှား ဖြစ်ပွားခဲ့သည်။" });
   }
 };
 
@@ -35,7 +34,7 @@ export const getAllShops = async (req, res) => {
     res.status(200).json(shops);
   } catch (error) {
     console.error("Get Shops Error:", error);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: "ဆာဗာ အခက်အခဲ ဖြစ်ပွားနေပါသည်။" });
   }
 };
 
@@ -105,14 +104,13 @@ export const assignUserToShop = async (req, res) => {
   const { userId } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(shopId) || !mongoose.Types.ObjectId.isValid(userId)) {
-    return res.status(400).json({ message: "Invalid shopId or userId" });
+    return res.status(400).json({ message: "Shop ID သို့မဟုတ် User ID မှားယွင်းနေပါသည်။" });
   }
 
   const lockKey = `locks:shop:${shopId}`;
 
   try {
-
-    const lock = await redlock.acquire([lockKey], 10000,{
+    const lock = await redlock.acquire([lockKey], 10000, {
       retryCount: 0,
       retryDelay: 0,
       retryJitter: 0,
@@ -123,35 +121,35 @@ export const assignUserToShop = async (req, res) => {
       writeConcern: { w: "majority" },
     });
 
-    // Find shop and assign userId
     const shop = await Shop.findById(shopId).session(session);
     if (!shop) {
       await session.abortTransaction();
       await lock.release();
-      return res.status(404).json({ message: "Shop not found" });
+      return res.status(404).json({ message: "ဖော်ပြထားသော ဆိုင်ကို မတွေ့ပါ။" });
     }
 
-    shop.userId = userId; // assign user
+    shop.userId = userId;
     await shop.save({ session });
 
     await session.commitTransaction();
-
     await lock.release();
 
-    res.status(200).json({ message: "User assigned to shop successfully" });
+    res.status(200).json({ message: "အသုံးပြုသူအား ဆိုင်အပ်နှင်းခြင်း အောင်မြင်ပါသည်။" });
   } catch (error) {
     await session.abortTransaction();
 
-    // In case lock not acquired, or any other error
-    if (error instanceof Redlock.LockError || error.name == "ExecutionError") {
-      return res.status(423).json({ message: "Resource is locked, please retry" });
+    if (error instanceof Redlock.LockError || error.name === "ExecutionError") {
+      return res.status(423).json({ message: "အရင်းအမြစ်ကို တခြားသူအသုံးပြုနေသည်။ နောက်မှပြန်ကြိုးစားပါ။" });
     }
 
-    if(error.code == 112) return res.status(409).json({error:"Another admin made changes"})
+    if (error.code == 112) {
+      return res.status(409).json({ error: "တခြားအုပ်ချုပ်သူတစ်ဦးမှ အချက်အလက်ပြောင်းလဲမှုများ ပြုလုပ်ထားသည်။" });
+    }
 
-    console.error("Assign user to shop error:", error);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("အသုံးပြုသူအား ဆိုင်အပ်နှင်းရာတွင် ပြဿနာ:", error);
+    res.status(500).json({ message: "ဆာဗာအတွင်းအမှား ဖြစ်ပွားခဲ့သည်။" });
   } finally {
     session.endSession();
   }
 };
+

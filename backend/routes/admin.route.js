@@ -1,15 +1,18 @@
 // routes/admin.routes.js
 import express from 'express';
-import { createAdmin, deleteAdmin, getAdminById, getAllAdmins, loginAdmin, updateAdmin } from '../controllers/admin.controller.js';
+import { createAdmin, deleteAdmin, getAdminById, getAllAdmins, loginAdmin, logoutAdmin, updateAdmin } from '../controllers/admin.controller.js';
+import adminProtectRoute from '../middleware/adminProtectRoute.js';
 
 
 const router = express.Router();
 
-router.post('/login', loginAdmin);
+router.post('/login', loginAdmin); // used by admin
 
-router.post('/signup', createAdmin);
+router.post("/logout", logoutAdmin); 
 
-router.get('/', getAllAdmins);
+router.post('/signup', adminProtectRoute, createAdmin); // used by admin
+
+router.get('/', adminProtectRoute, getAllAdmins); // used by admin
 
 router.get('/:id', getAdminById);
 

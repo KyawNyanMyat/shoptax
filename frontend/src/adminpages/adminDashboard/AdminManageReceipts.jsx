@@ -1,9 +1,16 @@
-// pages/admin/AdminManageReceipts.jsx
 import React, { useEffect, useState } from "react";
 import AdminDashboardHeader from "../../components/AdminDashboardHeader";
 import AdminDashboardSidebar from "../../components/AdminDashboardSidebar";
+import { useAdminAuthContext } from "../../context/adminAuthContext";
+import { Navigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const AdminManageReceipts = () => {
+  const { adminAuth } = useAdminAuthContext();
+  if (!adminAuth) {
+    return <Navigate to={"/admin"} />;
+  }
+
   const [receipts, setReceipts] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -11,12 +18,17 @@ const AdminManageReceipts = () => {
     const fetchReceipts = async () => {
       setLoading(true);
       try {
-        const res = await fetch("/api/receipts"); // proxy set already
+        const res = await fetch("/api/receipts");
         const data = await res.json();
-        console.log(data)
+
+        if (!res.ok) {
+          throw new Error(data.message || "ငွေလက်ခံဖြတ်ပိုင်းအချက်အလက်များ ရယူရာတွင် ပြဿနာတစ်ခု ဖြစ်ပွားနေသည်။");
+        }
+
         setReceipts(data);
       } catch (err) {
-        console.error("Error fetching receipts:", err);
+        console.error("ငွေလက်ခံဖြတ်ပိုင်းများ ရယူမှုအမှား:", err);
+        toast.error(err.message, { id: "admin-manageReceipt-error" });
       } finally {
         setLoading(false);
       }
@@ -28,30 +40,30 @@ const AdminManageReceipts = () => {
   return (
     <div className="flex min-h-screen">
       <AdminDashboardSidebar />
-      <div className="flex-1 flex flex-col h-full w-4/5">
+      <div className="flex-1 flex flex-col max-h-screen w-4/5 overflow-scroll">
         <AdminDashboardHeader />
 
-        <div className="p-6 bg-gray-50 min-h-full">
-          <h2 className="text-2xl font-bold text-teal-600 mb-6">Manage Receipts</h2>
+        <div className="p-6 bg-gray-50">
+          <h2 className="text-2xl font-bold text-teal-600 mb-6">ငွေလက်ခံဖြတ်ပိုင်း စီမံခြင်း</h2>
 
           {loading ? (
-            <p>Loading receipts...</p>
+            <p>ငွေလက်ခံဖြတ်ပိုင်းများ တင်ဆက်နေသည်...</p>
           ) : receipts.length === 0 ? (
-            <p>No receipts found.</p>
+            <p>လက်ခံဖြတ်ပိုင်း မတွေ့ရှိပါ။</p>
           ) : (
-            <div className="overflow-x-auto bg-white rounded-xl shadow">
+            <div className=" bg-white rounded-xl shadow">
               <table className="table w-full">
                 <thead className="bg-teal-100 text-teal-800 text-sm">
                   <tr>
-                    <th>No</th>
-                    <th>Receipt ID</th>
-                    <th>Admin</th>
-                    <th>Payment Type</th>
-                    <th>User</th>
-                    <th>Amount</th>
-                    <th>Issue Date</th>
-                    <th>isRead</th>
-                    <th>Signature</th>
+                    <th>စဉ်</th>
+                    <th>ဖြတ်ပိုင်းအမှတ်</th>
+                    <th>အက်မင်အမည်</th>
+                    <th>ငွေပေးချေမှုအမျိုးအစား</th>
+                    <th>အသုံးပြုသူအမည်</th>
+                    <th>ပမာဏ</th>
+                    <th>ထုတ်ပေးသည့်ရက်</th>
+                    <th>ဖတ်ပြီး/မဖတ်ရသေး</th>
+                    <th>လက်မှတ်</th>
                   </tr>
                 </thead>
                 <tbody className="text-sm">
@@ -61,16 +73,14 @@ const AdminManageReceipts = () => {
                       <td>{r._id}</td>
                       <td>{r.adminId?.adminName}</td>
                       <td>{r.paymentId?.paymentType}</td>
-                      {/* In the future change */}
                       <td>{r.paymentId?.userId?.username}</td>
                       <td>{r.amount} Ks</td>
                       <td>{new Date(r.issueDate).toLocaleDateString()}</td>
-                      <td>{r.isRead ? "Yes" : "No"}</td>
+                      <td>{r.isRead ? "ဖတ်ပြီး" : "မဖတ်ရသေးပါ"}</td>
                       <td>
-                        {/* In the future change */}
                         <img
                           src={r.superAdminSignaturePhoto}
-                          alt="Signature"
+                          alt="လက်မှတ်"
                           className="w-10 h-10 object-cover"
                         />
                       </td>

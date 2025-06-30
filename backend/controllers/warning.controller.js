@@ -2,16 +2,16 @@ import mongoose from 'mongoose';
 import Warning from '../models/warning.model.js';
 import redlock from '../utils/redlock.js';
 
-// Create a new warning
+// Create a new warning //In the future, choose one person per warning, also session Expire??
 export const createWarning = async (req, res) => {
   const session = await mongoose.startSession();
   const { warningTitle, warningContent, userId } = req.body;
 
   if (!warningContent || !userId || !warningTitle) {
-    return res.status(400).json({ message: "Fill all required fields" });
+    return res.status(400).json({ message: "လိုအပ်သောအချက်အလက်များအားလုံးကို ဖြည့်ပါ။" });
   }
 
-  const lockKey = `locks:warning:user:${userId}`; // Lock key per user
+  const lockKey = `locks:warning:user:${userId}`; // အသုံးပြုသူအလိုက် Lock key
 
   try {
     const lock = await redlock.acquire([lockKey], 10000, {
@@ -24,7 +24,6 @@ export const createWarning = async (req, res) => {
       readConcern: { level: "snapshot" },
       writeConcern: { w: "majority" },
     });
-    
 
     const newWarning = new Warning({ warningTitle, warningContent, userId });
     await newWarning.save({ session });
@@ -39,13 +38,15 @@ export const createWarning = async (req, res) => {
     }
 
     if (error instanceof redlock.LockError || error.name == "ExecutionError") {
-      return res.status(423).json({ message: "Another admin is creating a warning. Please try again shortly." });
+      return res.status(423).json({ message: "အခြားအက်မင်တစ်ဦးက သတိပေးချက်တစ်ခုဖန်တီးနေသည်။ ခဏစောင့်ပြီးမှ ထပ်မံကြိုးစားပါ။" });
     }
 
-    if(err.code == 112) return res.status(409).json({error:"Another admin is also sending"})
+    if (error.code == 112) {
+      return res.status(409).json({ error: "အခြားအက်မင်မှလည်း ပေးပို့နေပါသည်။" });
+    }
 
-    console.error("Create Warning Error:", error);
-    res.status(500).json({ message: "Server Error" });
+    console.error("သတိပေးချက်ဖန်တီးရာတွင် ပြဿနာဖြစ်ပွားသည်:", error);
+    res.status(500).json({ message: "Server မှာ အမှားအယွင်း ဖြစ်ပွားနေသည်။" });
   } finally {
     session.endSession();
   }
@@ -58,7 +59,7 @@ export const getAllWarnings = async (req, res) => {
     res.status(200).json(warnings);
   } catch (error) {
     console.error("Get Warnings Error:", error);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: "ဆာဗာအမှား ဖြစ်ပွားခဲ့သည်။" });
   }
 };
 

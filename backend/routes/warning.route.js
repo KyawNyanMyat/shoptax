@@ -10,12 +10,13 @@ import {
   updateWarningIsRead,
 } from '../controllers/warning.controller.js';
 import userProtectRoute from '../middleware/userProtectRoute.js';
+import adminProtectRoute from '../middleware/adminProtectRoute.js';
 
 const router = express.Router();
 
-router.post('/', createWarning); // use by admin
+router.post('/', adminProtectRoute, createWarning); // use by admin
 
-router.get('/', getAllWarnings); // use by admin
+router.get('/', adminProtectRoute, getAllWarnings); // use by admin
 
 router.get('/:id', getWarningById);
 
