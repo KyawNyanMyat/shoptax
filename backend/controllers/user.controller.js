@@ -2,6 +2,9 @@ import User from "../models/user.model.js";
 import Shop from "../models/shop.model.js";
 import myanmarToEnglishInitial from "../utils/myanmarInitialMap.js";
 import generateUserTokenAndCookie from "../utils/generateUserToken.js";
+import { redis, redlock } from "../utils/redlock.js";
+import jwt from "jsonwebtoken"
+import { getIO } from "../socket/socket.js";
 
 // Create a new user, In the future, check the same username
 export const createUser = async (req, res) => {
@@ -65,7 +68,10 @@ export const createUser = async (req, res) => {
 
     await newUser.save();
     const userObj = newUser.toObject();
-    delete userObj.password
+    delete userObj.password;
+
+    const io = getIO();
+    io.emit("newUserCreated", userObj)
 
     res.status(201).json(userObj);
 
@@ -83,8 +89,16 @@ export const createUser = async (req, res) => {
 
 // Get all users
 export const getAllUsers = async (req, res) => {
+  const { search } = req.query;
+
   try {
-    const users = await User.find()
+    let query = {};
+
+    if (search) {
+      query.username = { $regex: search, $options: "i" }; // case-insensitive search
+    }
+
+    const users = await User.find(query);
     res.status(200).json(users);
   } catch (error) {
     console.error("Get Users Error:", error);
@@ -92,14 +106,10 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
+
 // Get one user by ID
 export const getUserById = async (req, res) => {
   try {
-    // const doesCookieExist = req.user;
-    // if(!doesCookieExist){
-    //   return res.status(403).json({ message: "အကောင့်အရင်၀င်ပါ" })
-    // }
-
     const user = await User.findById(req.params.id).select("-password");
     if (!user) return res.status(404).json({ message: "အသုံပြုသူကိုမတွေ့ရှိပါ" });
 
@@ -154,11 +164,33 @@ export const loginUser = async (req, res) => {
     const userObj = user.toObject();
     delete userObj.password;
     
-    generateUserTokenAndCookie(userObj._id, res)
+    // const lockkey = `locks:user:${userObj._id}`; // for every user that try to login
+    // const locksession = `locks:user:active:${userObj._id}`;
+
+    // const lock = await redlock.acquire([lockkey], 5000); // for every user that try to login
+
+    // try{
+    //   const existingToken = await redis.get(locksession);
+    //   if(existingToken){
+    //     return res.status(403).json({ message: "အကောင့်သည် တခြားတစ်နေရာတွင် အသုံးပြုနေသည်။" });
+    //   }
+
+    //   const token = generateUserTokenAndCookie(userObj._id, res)
+    //   await redis.set(locksession, token, "EX", 60 * 60 * 24 * 15); // 15 days //In the future change this time
+
+    //   res.status(200).json(userObj);
+    // }finally{
+    //   await lock.release()
+    // }
+    const token = generateUserTokenAndCookie(userObj._id, res)
     res.status(200).json(userObj);
     
   } catch (error) {
     console.error("Login error:", error);
+
+    if (error.name === "LockError"|| error.name == "ExecutionError") {
+      return res.status(423).json({ message: "အကောင့်သည် တခြားတစ်နေရာတွင် အသုံးပြုနေသည်။" });
+    }
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -166,11 +198,16 @@ export const loginUser = async (req, res) => {
 
 export const logoutUser = async (req, res) => {
   try {
+    // const token = req.cookies.usertoken;
+    // const decoded = jwt.verify(token, process.env.JWT_SECRET_USER);
+
     res.clearCookie("usertoken", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // use HTTPS in production
       sameSite: "strict",
     });
+
+    //await redis.del(`locks:user:active:${decoded.UserId}`);
 
     res.status(200).json({ message: "ထွက်ခွာခြင်း အောင်မြင်ပါသည်။" });
   } catch (error) {

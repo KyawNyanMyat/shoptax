@@ -1,7 +1,8 @@
 import Redlock from 'redlock';
 import Shop from '../models/shop.model.js';
-import redlock from '../utils/redlock.js';
+import { redlock } from '../utils/redlock.js';
 import mongoose from 'mongoose';
+import { getIO } from '../socket/socket.js';
 
 // Create a new shop
 export const createShop = async (req, res) => {
@@ -30,7 +31,8 @@ export const createShop = async (req, res) => {
 // Get all shops
 export const getAllShops = async (req, res) => {
   try {
-    const shops = await Shop.find().populate("userId");
+
+    const shops = await Shop.find().populate("userId", "username");
     res.status(200).json(shops);
   } catch (error) {
     console.error("Get Shops Error:", error);
@@ -134,11 +136,21 @@ export const assignUserToShop = async (req, res) => {
     await session.commitTransaction();
     await lock.release();
 
+    //for socket to get updated data
+    const updatedShop = await Shop.findById(shopId)
+    .populate("userId", "username")
+    .session(session);
+
+    //socket
+    const io = getIO();
+    io.emit("shopAssignedToUser",updatedShop) // for admin
+    io.to(userId).emit("shopAssigned", updatedShop) // for user
+
     res.status(200).json({ message: "အသုံးပြုသူအား ဆိုင်အပ်နှင်းခြင်း အောင်မြင်ပါသည်။" });
   } catch (error) {
     await session.abortTransaction();
 
-    if (error instanceof Redlock.LockError || error.name === "ExecutionError") {
+    if (error.name === "LockError" || error.name === "ExecutionError") {
       return res.status(423).json({ message: "အရင်းအမြစ်ကို တခြားသူအသုံးပြုနေသည်။ နောက်မှပြန်ကြိုးစားပါ။" });
     }
 
@@ -150,6 +162,52 @@ export const assignUserToShop = async (req, res) => {
     res.status(500).json({ message: "ဆာဗာအတွင်းအမှား ဖြစ်ပွားခဲ့သည်။" });
   } finally {
     session.endSession();
+  }
+};
+
+
+export const removeUserFromShop = async (req, res) => {
+  const { shopId } = req.params;
+  const session = await mongoose.startSession();
+  const lockKey = `lock:shop:${shopId}`;
+  let lock;
+
+  try {
+    lock = await redlock.acquire([lockKey], 8000);
+    session.startTransaction();
+
+    const shop = await Shop.findById(shopId).session(session);
+    if (!shop) {
+      await session.abortTransaction();
+      return res.status(404).json({ message: "ဆိုင်ကိုမတွေ့ရှိနိုင်ပါ" });
+    }
+
+    if (!shop.userId) {
+      await session.abortTransaction();
+      return res.status(400).json({ message: "ဤဆိုင်တွင် အသုံးပြုသူမရှိသေးပါ" });
+    }
+    const forSocketUserId = shop.userId
+    shop.userId = null;
+    await shop.save({ session });
+
+    await session.commitTransaction();
+
+    //socket
+    const io = getIO();
+    // const updatedShop = await Shop.findById(shopId)
+    io.emit("shopUserRemoved",shop) // for admin
+    io.to(forSocketUserId.toString()).emit("shopRemoved", shop) // for user
+
+    res.status(200).json({ message: "အသုံးပြုသူကို ဆိုင်မှအောင်မြင်စွာ ဖယ်ရှားပြီးပါပြီ" });
+  } catch (err) {
+    await session.abortTransaction();
+    console.error("Remove user error:", err.message);
+    res.status(500).json({ message: "အသုံးပြုသူကို ဆိုင်မှဖယ်ရှားရာတွင် မအောင်မြင်ပါ" });
+  } finally {
+    session.endSession();
+    if (lock) {
+      await lock.release().catch(() => {});
+    }
   }
 };
 

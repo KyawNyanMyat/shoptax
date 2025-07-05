@@ -5,6 +5,7 @@ import DashboardHeader from "../../components/DashboardHeader";
 import useMarkWarningAsRead from "../../hooks/useMarkWarningAsRead";
 import { useUserAuthContext } from "../../context/userAuthContext";
 import toast from "react-hot-toast";
+import { useSocketContext } from "../../context/socketContext";
 
 
 const WarningMessages = () => {
@@ -15,6 +16,7 @@ const WarningMessages = () => {
   const userId = userAuth._id;
   const [warnings, setWarnings] = useState([])
   const { markAsRead, loadingId } = useMarkWarningAsRead() 
+  const socket = useSocketContext()
 
   useEffect(() => {
     const getWarning = async () => {
@@ -33,9 +35,32 @@ const WarningMessages = () => {
     getWarning();
   }, []);
 
+  useEffect(()=>{
+    if(!socket) return;
+
+    socket.on("rejectWarning", (warning)=>{
+      setWarnings(prev => [...prev, warning])
+    })
+
+    socket.on("justWarning", (warning) => {
+      setWarnings(prev => [...prev, warning]);
+    });
+
+    socket.on("warningMarkedAsRead", (updatedWarning) => {
+      setWarnings(prev =>
+        prev.map(w => w._id === updatedWarning._id ? updatedWarning : w)
+      );
+    }); 
+
+    return ()=>{
+      socket.off("rejectWarning")
+      socket.off("justWarning")
+      socket.off("warningMarkedAsRead")
+    }
+  },[socket])
+
   const handleMarkAsRead = async (e) => {
     await markAsRead(e.target.value)
-    //In the future # socket io
   }
     return (
         <div className="flex min-h-screen">
@@ -59,6 +84,7 @@ const WarningMessages = () => {
                           {/* In the future, add penalty fee */}
                             <h3 className="font-semibold">{warn.warningTitle}</h3>
                             <p className="text-sm mb-1">{warn.warningContent}</p>
+                            <p className="text-sm mb-1">အခကြေးငွေ{warn.overdueFee}</p>
                             <p className="text-xs text-gray-500">ထုတ်ပေးသည့်ရက်စွဲ: {warn.issueDate}</p>
                             <button
                               className="btn btn-success mt-4"

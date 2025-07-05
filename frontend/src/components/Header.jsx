@@ -19,6 +19,15 @@ const Header = () => {
     }
   };
 
+  const toDashboard = (e)=>{
+    e.preventDefault();
+    if(!userAuth){
+      navigate("/login")
+    }else{
+      navigate("/user")
+    }
+  }
+
 
   return (
     <header className="bg-primary text-white px-8 py-4 shadow flex justify-between items-center">
@@ -40,7 +49,11 @@ const Header = () => {
         <Link to='/' className="hover:underline">ပင်မစာမျက်နှာ</Link>
         <Link to='/about' className="hover:underline">အကြောင်းအရာ</Link>
         <Link to='/contact' className="hover:underline">ဆက်သွယ်ရန်</Link>
-        <Link to='/login' className="btn btn-sm btn-accent text-white">အကောင့်ဝင်ရန်</Link>
+        <button className="btn btn-sm btn-accent text-white" onClick={toDashboard}>
+          {
+            userAuth ? "အသုံးပြုသူစာမျက်နှာသို့သွားပါ" : "အကောင့်ဝင်ရန်"
+          }
+        </button>
 
         {/* User Icon */}
         <div className="cursor-pointer" onClick={handleClick}>

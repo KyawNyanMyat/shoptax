@@ -6,6 +6,7 @@ import { FaUserShield } from "react-icons/fa";
 import { useAdminAuthContext } from "../../context/adminAuthContext";
 import { Navigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { useSocketContext } from "../../context/socketContext";
 
 const AdminDashboardHome = () => {
   const { adminAuth } = useAdminAuthContext();
@@ -17,6 +18,8 @@ const AdminDashboardHome = () => {
   const [totalAdmins, setTotalAdmins] = useState(0);
   const [pendingPayment, setPendingPayments] = useState(0);
   const [overdueUsers, setOverdueUsers] = useState(0);
+
+  const socket = useSocketContext()
 
   useEffect(() => {
     const fetchCounts = async () => {
@@ -61,6 +64,38 @@ const AdminDashboardHome = () => {
 
     fetchCounts();
   }, []);
+
+  //socket
+  useEffect(()=>{
+    if(!socket) return;
+
+    socket.on("newAdminCreated",(adminObj)=>{
+      setTotalAdmins(prev => prev + 1)
+    })
+
+    socket.on("newUserCreated",(userObj)=>{
+      setTotalUsers(prev => prev + 1)
+    })
+
+    socket.on("newPayment",(populatedPayment)=>{
+      setPendingPayments(prev => prev + 1)
+    })
+
+    socket.on("finishedPayment",(updated)=>{
+      setPendingPayments(prev => prev - 1)
+    })
+
+    socket.on("rejectedPayment",(updated)=>{
+      setPendingPayments(prev => prev - 1)
+    })
+    return ()=>{
+      socket.off("newAdminCreated")
+      socket.off("newUserCreated")
+      socket.off("newPayment")
+      socket.off("finishedPayment")
+      socket.off("rejectedPayment")
+    }
+  },[socket])
 
   return (
     <div className="flex min-h-screen">

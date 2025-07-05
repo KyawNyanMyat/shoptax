@@ -1,6 +1,9 @@
 import Admin from '../models/admin.model.js';
+import { getIO } from '../socket/socket.js';
 import generateAdminTokenAndCookie from '../utils/generateAdminToken.js';
 import myanmarToEnglishInitial from '../utils/myanmarInitialMap.js';
+import { redis, redlock } from '../utils/redlock.js';
+import jwt from "jsonwebtoken"
 
 // Create a new admin, In the future, check the same username
 export const createAdmin = async (req, res) => {
@@ -59,6 +62,10 @@ export const createAdmin = async (req, res) => {
     const adminObj = newAdmin.toObject();
     delete adminObj.adminPassword;
 
+    //socket io
+    const io = getIO();
+    io.emit("newAdminCreated", adminObj)
+
     res.status(201).json(adminObj);
   } catch (error) {
     console.error("Create Admin Error:", error);
@@ -69,7 +76,12 @@ export const createAdmin = async (req, res) => {
 // Get all admins
 export const getAllAdmins = async (req, res) => {
   try {
-    const admins = await Admin.find();
+    const { search } = req.query;
+    const query = {}
+    if(search) {
+      query.adminName = {$regex: search, $options: "i"}
+    }
+    const admins = await Admin.find(query);
     res.status(200).json(admins);
   } catch (error) {
     console.error("Get Admins Error:", error);
@@ -132,8 +144,33 @@ export const loginAdmin = async (req, res) => {
       return res.status(404).json({ message: "အချက်အလက်မှားနေပါသည်" });
     }
 
-    generateAdminTokenAndCookie(admin._id, res);
+    // const lockkey = `locks:admin:${admin._id}`; // for every user that try to login
+    // const locksession = `locks:admin:active:${admin._id}`;
 
+    // const lock = await redlock.acquire([lockkey], 5000); // for every user that try to login
+
+    // try{
+    //   const existingToken = await redis.get(locksession);
+    //   if(existingToken){
+    //     return res.status(403).json({ message: "အကောင့်သည် တခြားတစ်နေရာတွင် အသုံးပြုနေသည်။" });
+    //   }
+    //   const token = generateAdminTokenAndCookie(admin._id, res);
+    //   await redis.set(locksession, token, "EX", 60 * 60 * 24 * 15); // 15 days //In the future change this time
+
+    //   res.status(200).json({
+    //     _id: admin._id,
+    //     adminName: admin.adminName,
+    //     section: admin.section,
+    //     phoneNo: admin.phoneNo,
+    //     position: admin.position,
+    //     profilePhoto: admin.profilePhoto
+    //   });
+
+    // }finally{
+    //   await lock.release()
+    // }
+    const token = generateAdminTokenAndCookie(admin._id, res)
+    
     res.status(200).json({
       _id: admin._id,
       adminName: admin.adminName,
@@ -142,8 +179,14 @@ export const loginAdmin = async (req, res) => {
       position: admin.position,
       profilePhoto: admin.profilePhoto
     });
+
   } catch (error) {
     console.error("Login Admin Error:", error);
+
+    if (error.name === "LockError" || error.name == "ExecutionError") {
+      return res.status(423).json({ message: "အကောင့်သည် တခြားတစ်နေရာတွင် အသုံးပြုနေသည်။" });
+    }
+    
     res.status(500).json({ message: "ဆာဗာအတွင်း အမှားရှိနေသည်။" });
   }
 };
@@ -151,11 +194,16 @@ export const loginAdmin = async (req, res) => {
 
 export const logoutAdmin = async (req, res) => {
   try {
+    // const token = req.cookies.admintoken;
+    // const decoded = jwt.verify(token, process.env.JWT_SECRET_ADMIN);
+
     res.clearCookie("admintoken", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // use HTTPS in production
       sameSite: "strict",
     });
+
+    //await redis.del(`locks:admin:active:${decoded.AdminId}`);
 
     res.status(200).json({ message: "ထွက်ခွာခြင်း အောင်မြင်ပါသည်။" });
   } catch (error) {

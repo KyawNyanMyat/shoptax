@@ -4,6 +4,7 @@ import DashboardSidebar from "../../components/DashboardSidebar";
 import toast from "react-hot-toast";
 import { useUserAuthContext } from "../../context/userAuthContext";
 import { Navigate, useNavigate } from "react-router-dom";
+import { useSocketContext } from "../../context/socketContext";
 
 const DashboardHome = () => {
   const { userAuth, setUserAuth } = useUserAuthContext()
@@ -19,6 +20,7 @@ const DashboardHome = () => {
   const [nextPaymentDueDate, setNextPaymentDueDate] = useState(null)
   const [unReadWarning, setUnReadWarning] = useState([])
   const [unReadReceipt, setUnReadReceipt] = useState([])
+  const socket = useSocketContext()
 
   const summary = [
     {
@@ -41,7 +43,7 @@ const DashboardHome = () => {
       color: "bg-red-100 text-red-800",
     },
     {
-      label: "မဖတ်ရသေးသော ငွေသက်သေ စာရွက်များ",
+      label: "မဖတ်ရသေးသောပြေစာများ",
       value: unReadReceipt.length > 0 ? unReadReceipt.length : 0,
       color: "bg-blue-100 text-blue-800",
     },
@@ -105,6 +107,38 @@ const DashboardHome = () => {
 
     forDashBoard()
   },[])
+
+  useEffect(()=>{
+    if(!socket) return;
+
+    socket.on("userNewReceipt", (receipt)=>{
+      setUnReadReceipt(prev => [...prev, receipt])
+    })
+
+    socket.on("rejectWarning", (warning)=>{
+      setUnReadWarning(prev => [...prev, warning])
+    })
+
+    socket.on("justWarning", (warning) => {
+      setUnReadWarning(prev => [...prev, warning]);
+    });
+
+    socket.on("warningMarkedAsRead", (updatedWarning) => {
+      setUnReadWarning(prev => prev.filter(w => w._id !== updatedWarning._id));
+    });
+
+    socket.on("receiptMarkedAsRead", (updatedReceipt) => {
+      setUnReadReceipt(prev => prev.filter(w => w._id !== updatedReceipt._id));
+    });
+
+    return ()=> {
+      socket.off("userNewReceipt")
+      socket.off("rejectWarning")
+      socket.off("justWarning")
+      socket.off("warningMarkedAsRead")
+      socket.off("receiptMarkedAsRead")
+    }
+  }, [socket])
 
   return (
     <div className="flex min-h-screen">

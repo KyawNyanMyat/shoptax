@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 import Admin from '../models/admin.model.js';
+import { redis } from '../utils/redlock.js';
 
 const adminProtectRoute = async (req, res, next)=>{
     try {
@@ -12,7 +13,12 @@ const adminProtectRoute = async (req, res, next)=>{
         if(!decoded){
             return res.status(401).json({message: "Token မရှိပါ"})
         }
-        
+
+        // const activeToken = await redis.get(`locks:admin:active:${decoded.AdminId}`); // get from login user controller
+        // if(activeToken != token){
+        //     return res.status(403).json({ message: "အကောင့်သည် တခြားနေရာ၌ အသုံးပြုနေသည်။" });
+        // }
+
         const admin = await Admin.findOne({_id: decoded.AdminId}).select("-adminPassword")
 
         if(!admin){

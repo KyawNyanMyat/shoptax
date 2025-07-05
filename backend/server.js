@@ -10,7 +10,9 @@ import ReceiptRoutes from "./routes/receipt.route.js"
 import WarningRoutes from "./routes/warning.route.js"
 import path from 'path';
 import cors from "cors";
-
+import { connectToRedis } from "./utils/redlock.js";
+import http from "http"
+import { initSocket } from "./socket/socket.js";
 
 dotenv.config()
 
@@ -19,7 +21,10 @@ const app = express()
 
 
 app.use("/uploads", express.static(path.join(path.resolve(),"backend", "uploads")));
-
+// app.use(cors({
+//     origin: "http://localhost:3000",
+//     credentials: true
+// }))
 app.use(express.json())
 app.use(cookieParser())
 
@@ -32,13 +37,21 @@ app.use('/api/payments', PaymentRoutes);
 app.use('/api/receipts', ReceiptRoutes);
 app.use('/api/warnings', WarningRoutes);
 
+const startServer = async ()=>{
+    try {
+        await connectToDB();
+        await connectToRedis()
 
-connectToDB()
-.then(()=>{
-    app.listen(port,()=>{
-        console.log("Server is running at port", port)
-    })
-})
-.catch((error)=>{
-    console.log("Error in connecting to DB",error.message)
-})
+        const server = http.createServer(app)
+        initSocket(server)
+
+        server.listen(port, ()=>{
+            console.log("Server is running in port ",port)
+        })
+    } catch (error) {
+        console.log("failed to start server", error.message)
+        process.exit(1)
+    }
+}
+
+startServer()

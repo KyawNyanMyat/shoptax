@@ -8,4 +8,18 @@ const redis = new Redis({
 
 const redlock = new Redlock([redis])
 
-export default redlock
+const connectToRedis = ()=>{
+    return new Promise((resolve, reject)=>{
+        redis.on("ready",()=>{
+            console.log("Connected to Redis")
+            resolve()
+        })
+
+        redis.on("error",(err)=>{
+            console.log("Redis connection error", err.message)
+            reject()
+        })
+    })
+}
+
+export { redlock, redis, connectToRedis }

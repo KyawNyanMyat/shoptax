@@ -7,6 +7,7 @@ import UseReceiptMarkAsRead from "../../hooks/UseReceiptMarkAsRead";
 import { useUserAuthContext } from "../../context/userAuthContext";
 import { Navigate } from "react-router-dom";
 import seal from "../../assets/react.svg"
+import { useSocketContext } from "../../context/socketContext";
 
 const Receipts = () => {
   const { userAuth } = useUserAuthContext();
@@ -18,6 +19,7 @@ const Receipts = () => {
   const userId = userAuth._id;
 
   const { loadingId, markAsRead } = UseReceiptMarkAsRead();
+  const socket = useSocketContext()
 
   useEffect(() => {
     const getReceipt = async () => {
@@ -35,6 +37,25 @@ const Receipts = () => {
 
     getReceipt();
   }, []);
+
+  useEffect(()=>{
+    if(!socket) return;
+
+    socket.on("userNewReceipt", (receipt)=>{
+      setUserReceipts(prev => [...prev, receipt])
+    })
+
+    socket.on("receiptMarkedAsRead", (updatedReceipt)=>{
+      setUserReceipts(prev =>
+        prev.map(w => w._id === updatedReceipt._id ? updatedReceipt : w)
+      );
+    })
+
+    return ()=>{
+      socket.off("userNewReceipt")
+      socket.off("receiptMarkedAsRead")
+    }
+  }, [socket])
 
   const formatDate = (iso) =>
     new Date(iso).toLocaleDateString("my-MM", {
@@ -68,9 +89,9 @@ const Receipts = () => {
                       {r.paymentId.paymentType}
                     </h3>
                     <img
-                      src={seal}
+                      src={"/receiptimages/Seal.jpg"}
                       alt="တံဆိပ်"
-                      className="w-10 h-10 object-contain"
+                      className="w-30 h-15 object-fill"
                     />
                   </div>
                   <p className="text-sm text-gray-500 mb-1">
@@ -80,7 +101,7 @@ const Receipts = () => {
                     ပြေစာအမှတ် - {r._id}
                   </p>
                   <p className="text-sm text-gray-500 mb-1">
-                    ဈေးကွက်ခန်းနံပါတ် - {r.paymentId.shopId.marketHallNo}
+                    ဈေးရုံနံပါတ် - {r.paymentId.shopId.marketHallNo}
                   </p>
                   <p className="text-sm text-gray-500 mb-1">
                     ဆိုင်နံပါတ် - {r.paymentId.shopId.shopNo}
@@ -100,10 +121,10 @@ const Receipts = () => {
                     <span className="text-primary">{r.amount} ကျပ်</span>
                   </p>
 
-                  <div className="flex justify-between mt-4">
+                  <div className="flex justify-around mt-4">
                     <div className="text-center">
                       <img
-                        src={r.adminId.adminSignaturePhoto}
+                        src={"/receiptimages/Seal.jpg"}
                         alt="ဈေးတာ၀န်ခံလက်မှတ်"
                         className="h-12 object-contain mx-auto"
                       />
@@ -111,7 +132,7 @@ const Receipts = () => {
                     </div>
                     <div className="text-center">
                       <img
-                        src={r.superAdminSignaturePhoto}
+                        src={"/receiptimages/Seal.jpg"}
                         alt="အမှုဆောင်အရာရှိလက်မှတ်"
                         className="h-12 object-contain mx-auto"
                       />

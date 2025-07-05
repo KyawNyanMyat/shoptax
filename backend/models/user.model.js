@@ -27,13 +27,7 @@ const userSchema = new mongoose.Schema({
         type: String, 
         enum: ['Male', 'Female'], 
         required: true 
-    },
-    //In the future delete shopId
-    // shopId: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'Shop',
-    //     require: true
-    // }
+    }
 }, {timestamps: true});
 
 export default mongoose.model('User', userSchema);

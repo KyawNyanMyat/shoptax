@@ -1,11 +1,12 @@
 import mongoose from 'mongoose';
 import Payment from '../models/payment.model.js';
-import redlock from '../utils/redlock.js';
 import Shop from '../models/shop.model.js';
 import Warning from '../models/warning.model.js';
 import Receipt from '../models/receipt.model.js';
 import Redlock from 'redlock';
 import { myanmarToEnglish } from '../utils/numberConverter.js';
+import { redlock } from '../utils/redlock.js';
+import { getIO } from '../socket/socket.js';
 
 // Create a new payment
 export const createPayment = async (req, res) => {
@@ -29,7 +30,7 @@ export const createPayment = async (req, res) => {
       return res.status(400).json({ message: "ပမာဏသည် ငွေပမာဏဖြစ်ပြီး သုညထက်ကြီးရမည်။" });
     }
 
-    const validTypes = ["NRC Register Cost", "Land Rent Cost", "Overdue Fee"];
+    const validTypes = ["NRC Register Cost", "Shop Rent Cost", "Overdue Fee"];
     if (!validTypes.includes(paymentType)) {
       return res.status(400).json({ message: "ငွေပေးချေမှု အမျိုးအစား မမှန်ကန်ပါ။" });
     }
@@ -44,6 +45,16 @@ export const createPayment = async (req, res) => {
     });
 
     await newPayment.save();
+
+    //socket
+    // Populate the saved payment before emitting
+    const populatedPayment = await Payment.findById(newPayment._id)
+    .populate('userId', 'username')
+    .populate('shopId', 'marketHallNo shopNo');
+
+    const io = getIO();
+    io.to("adminRoom").emit("newPayment", populatedPayment) // for admin(send to admin)
+
     res.status(201).json(newPayment);
   } catch (error) {
     console.error("Create Payment Error:", error);
@@ -55,7 +66,12 @@ export const createPayment = async (req, res) => {
 // Get all payments
 export const getAllPayments = async (req, res) => {
   try {
-    const payments = await Payment.find()
+    const { status, search } = req.query;
+    const query = {}
+    if(status){
+      query.status = status
+    }
+    const payments = await Payment.find(query)
       .populate('userId', 'username')
       .populate('shopId', 'marketHallNo shopNo');
 
@@ -251,10 +267,36 @@ export const updatePaymentStatus = async (req, res) => {
     await session.commitTransaction();
     await lock.release();
 
+    //socket
     const updated = await Payment.findById(id)
       .populate("userId", "username")
       .populate("shopId", "marketHallNo shopNo");
 
+      if (status === "Finished") {
+        const io = getIO();
+        const receipt = await Receipt.findOne({ paymentId: payment._id })
+          .populate("adminId", "adminName")
+          .populate({
+            path: "paymentId",
+            populate: [
+              { path: "shopId", select: "marketHallNo shopNo" },
+              { path: "userId", select: "username" },
+            ]        
+          })
+
+        io.to("adminRoom").emit("newReceipt", receipt); // send to admin
+        io.to("adminRoom").emit("finishedPayment", updated); // send to admin
+        io.to(userId).emit("userNewReceipt", receipt);  //send to user
+      }
+
+      if (status === "Rejected") {
+        const io = getIO();
+        const warning = await Warning.findOne({ userId: userId }).sort({ issueDate: -1 }).populate("userId","username");
+        io.to("adminRoom").emit("rejectedPayment", updated);
+        io.to("adminRoom").emit("adminRejectedWarning", warning)
+        io.to(userId).emit("rejectWarning", warning);
+      }
+      
     res.status(200).json(updated);
   } catch (err) {
     if (session.inTransaction()) {
@@ -263,7 +305,7 @@ export const updatePaymentStatus = async (req, res) => {
 
     console.error("ငွေပေးချေမှုအခြေအနေ ပြင်ဆင်ရာတွင် ပြဿနာရှိသည်:", err);
 
-    if (err.name == "ExecutionError" || err instanceof Redlock.LockError) {
+    if (err.name == "ExecutionError" || error.name === "LockError") {
       return res.status(423).json({ message: "ဤငွေပေးချေမှုကို တခြားအက်မင်မှ ပြင်ဆင်နေပါသည်။ ခဏစောင့်ပြီး ပြန်ကြိုးစားပါ။" });
     }
 

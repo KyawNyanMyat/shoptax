@@ -22,11 +22,11 @@ const useLogin = ()=>{
             }
 
             localStorage.setItem("user-dashboard", JSON.stringify(data))
-            toast.success("Login Success", {duration: 2000});
+            toast.success("အကောင့်၀င်ချင်းအောင်မြင်ပါသည်", {id:'user-login',duration: 2000});
             navigate("/user") //In the future uncomment this
         } catch (error) {
             console.log('Error in useLogin hook',error)
-            toast.error(error.message, {duration: 1500})
+            toast.error(error.message, {id:"user-login-error",duration: 1500})
         }
         finally{
             setloading(false)

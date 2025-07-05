@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import AdminDashboardHeader from "../../components/AdminDashboardHeader";
 import AdminDashboardSidebar from "../../components/AdminDashboardSidebar";
 import usePaymentStatusUpdate from "../../hooks/usePaymentStatusUpdate";
 import { useAdminAuthContext } from "../../context/adminAuthContext";
 import { Navigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import useDownloadPaymentsPDF from "../../hooks/useDownloadPaymentsPDF";
+import { useSocketContext } from "../../context/socketContext";
 
 const AdminManagePayments = () => {
   const { adminAuth } = useAdminAuthContext();
@@ -18,28 +20,68 @@ const AdminManagePayments = () => {
   const { updateStatus, loading: statusLoading } = usePaymentStatusUpdate();
   const [selectedReject, setSelectedReject] = useState(null); 
   const [rejectionReason, setRejectionReason] = useState("");
+  const [searchTerm, setSearchTerm] = useState("Pending");
+  const downloadPDF = useDownloadPaymentsPDF();
+
+  const socket = useSocketContext()
+  
+  const fetchPayments = async (status="Pending", search="") => {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/payments?search=${encodeURIComponent(search)}&status=${encodeURIComponent(status)}`);
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "ငွေပေးချေမှုအချက်အလက် ရယူရာတွင် ပြဿနာတစ်ခု ဖြစ်ပွားနေပါသည်။");
+      }
+      setPayments(data);
+    } catch (err) {
+      console.error("ငွေပေးချေမှုများကို ရယူခြင်း မအောင်မြင်ပါ", err);
+      toast.error(err.message, { id: "admin-managePayment-error" });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchPayments = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch("/api/payments");
-        const data = await res.json();
-
-        if (!res.ok) {
-          throw new Error(data.message || "ငွေပေးချေမှုအချက်အလက် ရယူရာတွင် ပြဿနာတစ်ခု ဖြစ်ပွားနေပါသည်။");
-        }
-        setPayments(data);
-      } catch (err) {
-        console.error("ငွေပေးချေမှုများကို ရယူခြင်း မအောင်မြင်ပါ", err);
-        toast.error(err.message, { id: "admin-managePayment-error" });
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchPayments();
   }, []);
+
+  useEffect(()=>{
+    if(!socket) return;
+
+    socket.on("newPayment", (populatedPayment)=>{
+      if (searchTerm === "Pending" || searchTerm === "") {
+        setPayments((prev) => [...prev, populatedPayment]);
+      }
+    })
+
+    socket.on("finishedPayment", (updatedPayment) => {
+      // Remove it if you're in Pending tab
+      if (searchTerm === "Pending") {
+        setPayments((prev) => prev.filter(p => p._id !== updatedPayment._id));
+      }
+
+      if (searchTerm === "Finished" || searchTerm === "") {
+        setPayments((prev) => [...prev, updatedPayment]);
+      }
+    })
+
+    socket.on("rejectedPayment", (rejectedPayment) => {
+      if (searchTerm === "Pending") {
+        setPayments((prev) => prev.filter(p => p._id !== rejectedPayment._id));
+      }
+      if (searchTerm === "Rejected" || searchTerm === "") {
+        setPayments((prev) => [...prev, rejectedPayment]);
+      }
+    });
+
+    return ()=> {
+      socket.off("newPayment")
+      socket.off("finishedPayment")
+      socket.off("rejectedPayment")
+    }
+  },[socket, searchTerm])
 
   return (
     <div className="flex min-h-screen">
@@ -48,6 +90,29 @@ const AdminManagePayments = () => {
         <AdminDashboardHeader />
 
         <div className="p-6 bg-gray-50 overflow-scroll">
+          <div className="flex items-center gap-4 mb-4">
+            <span>အခြေအနေ</span>
+            <select
+              className="select select-bordered select-sm focus:outline-offset-0"
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                fetchPayments(e.target.value);
+              }}
+            >
+              <option value="">အားလုံး ပြမည်</option>
+              <option value="Pending">စောင့်ဆိုင်း</option>
+              <option value="Finished">အောင်မြင်ပြီး</option>
+              <option value="Rejected">ငြင်းဆိုခဲ့သည်</option>
+            </select>
+            <button
+              className="btn btn-sm btn-accent"
+              onClick={() => downloadPDF(payments)}
+            >
+              PDF ထုတ်ယူမည်
+            </button>
+          </div>
+
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-teal-600">ငွေပေးချေမှုများ စီမံခန့်ခွဲမှု</h2>
           </div>
@@ -122,7 +187,7 @@ const AdminManagePayments = () => {
                                 className="btn bg-success text-white"
                                 disabled={payment.status === "Pending" ? false : true}
                                 onClick={async () => {
-                                  await updateStatus(payment._id, "Finished", payment.userId);
+                                  await updateStatus(payment._id, "Finished", payment.userId._id);
                                 }}
                               >
                                 လက်ခံမည်
@@ -196,7 +261,7 @@ const AdminManagePayments = () => {
                   await updateStatus(
                     selectedReject._id,
                     "Rejected",
-                    selectedReject.userId,
+                    selectedReject.userId._id,
                     rejectionReason
                   );
                   setSelectedReject(null);

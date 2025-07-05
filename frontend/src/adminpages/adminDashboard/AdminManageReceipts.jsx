@@ -4,6 +4,7 @@ import AdminDashboardSidebar from "../../components/AdminDashboardSidebar";
 import { useAdminAuthContext } from "../../context/adminAuthContext";
 import { Navigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { useSocketContext } from "../../context/socketContext";
 
 const AdminManageReceipts = () => {
   const { adminAuth } = useAdminAuthContext();
@@ -13,6 +14,7 @@ const AdminManageReceipts = () => {
 
   const [receipts, setReceipts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const socket = useSocketContext()
 
   useEffect(() => {
     const fetchReceipts = async () => {
@@ -37,13 +39,32 @@ const AdminManageReceipts = () => {
     fetchReceipts();
   }, []);
 
+  useEffect(()=>{
+    if(!socket) return;
+
+    socket.on("newReceipt", (receipt)=>{
+      setReceipts(prev => [...prev, receipt])
+    })
+
+    socket.on("userReceiptMarkedAsRead", (updatedReceipt) => {
+      setReceipts(prev =>
+        prev.map(w => w._id === updatedReceipt._id ? updatedReceipt : w)
+      );
+    }); 
+
+    return ()=>{
+      socket.off("newReceipt")
+      socket.off("userReceiptMarkedAsRead")
+    }
+  }, [socket])
+
   return (
     <div className="flex min-h-screen">
       <AdminDashboardSidebar />
-      <div className="flex-1 flex flex-col max-h-screen w-4/5 overflow-scroll">
+      <div className="flex-1 flex flex-col max-h-screen w-4/5">
         <AdminDashboardHeader />
 
-        <div className="p-6 bg-gray-50">
+        <div className="p-6 bg-gray-50 overflow-scroll">
           <h2 className="text-2xl font-bold text-teal-600 mb-6">ငွေလက်ခံဖြတ်ပိုင်း စီမံခြင်း</h2>
 
           {loading ? (
@@ -79,7 +100,7 @@ const AdminManageReceipts = () => {
                       <td>{r.isRead ? "ဖတ်ပြီး" : "မဖတ်ရသေးပါ"}</td>
                       <td>
                         <img
-                          src={r.superAdminSignaturePhoto}
+                          src={"#"}
                           alt="လက်မှတ်"
                           className="w-10 h-10 object-cover"
                         />

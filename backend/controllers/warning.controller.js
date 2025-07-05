@@ -1,17 +1,18 @@
 import mongoose from 'mongoose';
 import Warning from '../models/warning.model.js';
-import redlock from '../utils/redlock.js';
+import { redlock } from '../utils/redlock.js';
+import { getIO } from '../socket/socket.js';
 
 // Create a new warning //In the future, choose one person per warning, also session Expire??
 export const createWarning = async (req, res) => {
   const session = await mongoose.startSession();
-  const { warningTitle, warningContent, userId } = req.body;
+  const { warningTitle, warningContent, userId, overdueFee } = req.body;
 
-  if (!warningContent || !userId || !warningTitle) {
+  if (!warningContent || !userId || !warningTitle || !overdueFee) {
     return res.status(400).json({ message: "လိုအပ်သောအချက်အလက်များအားလုံးကို ဖြည့်ပါ။" });
   }
 
-  const lockKey = `locks:warning:user:${userId}`; // အသုံးပြုသူအလိုက် Lock key
+  const lockKey = `locks:warning:user:${userId}`;
 
   try {
     const lock = await redlock.acquire([lockKey], 10000, {
@@ -25,11 +26,18 @@ export const createWarning = async (req, res) => {
       writeConcern: { w: "majority" },
     });
 
-    const newWarning = new Warning({ warningTitle, warningContent, userId });
+    const newWarning = new Warning({ warningTitle, warningContent, userId, overdueFee });
     await newWarning.save({ session });
 
     await session.commitTransaction();
     await lock.release();
+
+    //socket
+    const io = getIO()
+    const populatedWarning = await Warning.findById(newWarning._id).populate("userId", "username");
+    io.to("adminRoom").emit("adminJustWarning", populatedWarning);
+    io.to(userId).emit("justWarning", populatedWarning);
+    
 
     res.status(201).json(newWarning);
   } catch (error) {
@@ -37,7 +45,7 @@ export const createWarning = async (req, res) => {
       await session.abortTransaction();
     }
 
-    if (error instanceof redlock.LockError || error.name == "ExecutionError") {
+    if (error.name === "LockError" || error.name == "ExecutionError") {
       return res.status(423).json({ message: "အခြားအက်မင်တစ်ဦးက သတိပေးချက်တစ်ခုဖန်တီးနေသည်။ ခဏစောင့်ပြီးမှ ထပ်မံကြိုးစားပါ။" });
     }
 
@@ -152,6 +160,12 @@ export const updateWarningIsRead = async (req, res) => {
 
     if (!updated) {
       return res.status(404).json({ message: "Warning not found" });
+    }
+
+    if (isRead) {
+      const io = getIO();
+      io.to("adminRoom").emit("userWarningMarkedAsRead", updated); // for admin
+      io.to(updated.userId.toString()).emit("warningMarkedAsRead", updated) // for user
     }
 
     res.status(200).json(updated);

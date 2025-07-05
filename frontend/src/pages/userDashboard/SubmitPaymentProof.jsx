@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import useSubmitPayment from "../../hooks/useSubmitPayment";
 import { useUserAuthContext } from "../../context/userAuthContext";
 import { Navigate } from "react-router-dom";
+import { useSocketContext } from "../../context/socketContext";
 
 const SubmitPaymentProof = () => {
   const { userAuth } = useUserAuthContext()
@@ -22,6 +23,7 @@ const SubmitPaymentProof = () => {
   const [ownedShops, setOwnedShops] = useState([]);
 
   const { loading, submitPayment } = useSubmitPayment()
+  const socket = useSocketContext()
 
   useEffect(() => {
     const getUserInfo = async () => {
@@ -51,6 +53,24 @@ const SubmitPaymentProof = () => {
 
     getUserInfo();
   }, []);
+
+  useEffect(()=>{
+    if(!socket) return;
+
+    socket.on("shopAssigned",(updatedShop)=>{
+      setOwnedShops(prevShops => [...prevShops, updatedShop])
+    })
+
+    socket.on("shopRemoved", (shop)=>{
+      setOwnedShops(prevShops => {
+        return prevShops.filter((s)=> s._id != shop._id)
+      })
+    })
+    return ()=>{
+      socket.off("shopAssigned")
+      socket.off("shopRemoved")
+    }
+  },[socket])
 
   // For select option only
   const handleShopChange = (e) => {
@@ -152,8 +172,8 @@ const SubmitPaymentProof = () => {
                 required
               >
                 <option value="" disabled>ငွေ ပေးချေမှု အမျိုးအစား ရွေးပါ</option>
-                <option value="NRC Register Cost">မှတ်ပုံတင် အခကြေးငွေ</option>
-                <option value="Land Rent Cost">မြေနှုန်းထား အခကြေးငွေ</option>
+                {/* <option value="NRC Register Cost">မှတ်ပုံတင် အခကြေးငွေ</option> */}
+                <option value="Shop Rent Cost">ဆိုင်ဌားခ အခကြေးငွေ</option>
                 <option value="Overdue Fee">အကြွေးကျန် ငွေ</option>
               </select>
             </div>

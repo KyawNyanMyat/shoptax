@@ -10,6 +10,8 @@ const generateAdminTokenAndCookie = (AdminId, res)=>{
         secure: process.env.NODE_ENV === "production",
         maxAge: 1000 * 60 * 60 * 24 * 15
     })
+
+    return token
 }
 
 export default generateAdminTokenAndCookie

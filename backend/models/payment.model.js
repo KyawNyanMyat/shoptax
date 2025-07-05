@@ -14,7 +14,7 @@ const paymentSchema = new mongoose.Schema({
     },
     paymentType: { 
         type: String,
-        enum: ["NRC Register Cost", "Land Rent Cost", "Overdue Fee"],
+        enum: ["Shop Rent Cost", "Overdue Fee"],
         required: true 
     },
     paymentPhoto: { 

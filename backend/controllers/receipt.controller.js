@@ -1,5 +1,6 @@
 import Payment from '../models/payment.model.js';
 import Receipt from '../models/receipt.model.js';
+import { getIO } from '../socket/socket.js';
 
 // Create a new receipt
 export const createReceipt = async (req, res) => {
@@ -104,7 +105,7 @@ export const getReceiptsByUser = async (req, res) => {
           { path: "userId", select: "username" },
         ]        
       })
-      .populate("adminId", "adminName adminSignaturePhoto")
+      .populate("adminId", "adminName")
       .sort({ issueDate: -1 });
 
     res.status(200).json(receipts);
@@ -149,11 +150,24 @@ export const markReceiptAsRead = async (req, res) => {
       id,
       { isRead: true },
       { new: true }
-    );
+    )
+    .populate({
+      path: "paymentId",
+      populate: [
+        { path: "shopId", select: "marketHallNo shopNo" },
+        { path: "userId", select: "username" },
+      ]        
+    })
+    .populate("adminId", "adminName");
 
     if (!updatedReceipt) {
       return res.status(404).json({ message: "Receipt not found" });
     }
+
+    //socket
+    const io = getIO();
+    io.to("adminRoom").emit("userReceiptMarkedAsRead", updatedReceipt); // for admin
+    io.to(updatedReceipt.paymentId.userId._id.toString()).emit("receiptMarkedAsRead", updatedReceipt) // for user
 
     res.status(200).json(updatedReceipt);
   } catch (error) {

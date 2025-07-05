@@ -1,4 +1,3 @@
-// pages/AdminManageShops.jsx
 import React, { useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import AdminDashboardSidebar from "../../components/AdminDashboardSidebar";
@@ -7,6 +6,8 @@ import AssignUserToShop from "../../components/AssignUserToShop";
 import toast from "react-hot-toast";
 import { useAdminAuthContext } from "../../context/adminAuthContext";
 import useCreateShop from "../../hooks/useCreateShop";
+import { useRemoveUserFromShop } from "../../hooks/useRemoveUserFromShop";
+import { useSocketContext } from "../../context/socketContext";
 
 const AdminManageShops = () => {
     const { adminAuth } = useAdminAuthContext();
@@ -17,6 +18,16 @@ const AdminManageShops = () => {
     const [shops, setShops] = useState([]);
     const [loading, setLoading] = useState(false);
     const { shoploading, createShop } = useCreateShop()
+
+    const [selectedShop, setSelectedShop] = useState(null);
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const { removeUserFromShop } = useRemoveUserFromShop();
+    const socket = useSocketContext()
+
+    const handleRemoveUser = async (shopId) => {
+        await removeUserFromShop(shopId);
+        setSelectedShop(null);
+    };
 
     useEffect(() => {
         const fetchShops = async () => {
@@ -39,6 +50,42 @@ const AdminManageShops = () => {
 
         fetchShops();
     }, []);
+
+    useEffect(()=>{
+        if(!socket) return;
+
+        socket.on("shopAssignedToUser",(updatedShop)=>{
+            setShops((prevShops)=> {
+                const index = prevShops.findIndex((s) => s._id === updatedShop._id);
+
+                if (index !== -1) {
+                const newShops = [...prevShops];
+                newShops[index] = updatedShop;
+                return newShops;
+                }
+
+                // Don't add if shop not found
+                return prevShops;
+            })
+        })
+
+        socket.on("shopUserRemoved", (updatedShop) => {
+            setShops((prev) => {
+              const idx = prev.findIndex((s) => s._id === updatedShop._id);
+              if (idx !== -1) {
+                const updated = [...prev];
+                updated[idx] = updatedShop;
+                return updated;
+              }
+              return prev;
+            });
+          });
+          
+        return ()=>{
+            socket.off("shopAssignedToUser")
+            socket.off("shopUserRemoved")
+        }
+    },[socket])
 
     const handleAssign = async (shopId, userId) => {
         try {
@@ -106,7 +153,19 @@ const AdminManageShops = () => {
                                                         onAssign={(shopId, userId) => handleAssign(shopId, userId)}
                                                     />
                                                 ) : (
-                                                    s.userId.username
+                                                    <div className="flex justify-around gap-2">
+                                                        <span>{s.userId.username}</span>
+                                                        <button
+                                                        className="btn btn-sm btn-error"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setSelectedShop(s);
+                                                            setShowConfirmModal(true);
+                                                        }}
+                                                        >
+                                                        ဆိုင်မှဖယ်ရှားရန်
+                                                        </button>
+                                                    </div>
                                                 )}
                                             </td>
                                             <td>{s.chargeRate}</td>
@@ -115,7 +174,36 @@ const AdminManageShops = () => {
                                 </tbody>
                             </table>
                         </div>
-                    </div>
+                        {showConfirmModal && selectedShop && (
+                        <dialog className="modal modal-open" onClick={() => setShowConfirmModal(false)}>
+                            <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+                            <h3 className="font-bold text-lg text-red-600">အတည်ပြုချက်</h3>
+                            <p className="py-2">
+                                ဆိုင် <span className="font-semibold">{selectedShop.shopNo}</span> မှ 
+                                အသုံးပြုသူ <span className="font-semibold">{selectedShop.userId?.username}</span> ကို 
+                                ဖယ်ရှားရန် သေချာပါသလား?
+                            </p>
+                            <div className="modal-action">
+                                <button
+                                className="btn"
+                                onClick={() => setShowConfirmModal(false)}
+                                >
+                                ပိတ်မည်
+                                </button>
+                                <button
+                                className="btn btn-error"
+                                onClick={() => {
+                                    handleRemoveUser(selectedShop._id);
+                                    setShowConfirmModal(false);
+                                }}
+                                >
+                                အတည်ပြုမည်
+                                </button>
+                            </div>
+                            </div>
+                        </dialog>
+                        )}
+                    </div>    
                 )}
             </div>
         </div>

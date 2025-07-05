@@ -4,6 +4,7 @@ import AdminDashboardHeader from "../../components/AdminDashboardHeader";
 import { useAdminAuthContext } from "../../context/adminAuthContext";
 import { Navigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { useSocketContext } from "../../context/socketContext";
 
 const AdminViewWarnings = () => {
   const { adminAuth } = useAdminAuthContext();
@@ -13,6 +14,7 @@ const AdminViewWarnings = () => {
 
   const [warnings, setWarnings] = useState([]);
   const [loading, setLoading] = useState(false);
+  const socket = useSocketContext()
 
   useEffect(() => {
     const fetchWarnings = async () => {
@@ -34,6 +36,30 @@ const AdminViewWarnings = () => {
     fetchWarnings();
   }, []);
 
+  useEffect(()=>{
+    if(!socket) return;
+
+    socket.on("adminRejectedWarning", (warning)=>{
+      setWarnings(prev => [...prev, warning])
+    })
+
+    socket.on("adminJustWarning", (warning) => {
+      setWarnings(prev => [...prev, warning]);
+    });
+
+    socket.on("userWarningMarkedAsRead", (updatedWarning) => {
+      setWarnings(prev =>
+        prev.map(w => w._id === updatedWarning._id ? updatedWarning : w)
+      );
+    }); 
+
+    return ()=>{
+      socket.off("adminRejectedWarning")
+      socket.off("adminJustdWarning")
+      socket.off("userWarningMarkedAsRead")
+    }
+  },[socket])
+  
   return (
     <div className="flex min-h-screen">
       <AdminDashboardSidebar />

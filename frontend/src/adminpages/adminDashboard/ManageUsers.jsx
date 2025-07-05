@@ -5,6 +5,7 @@ import AdminDashboardSidebar from "../../components/AdminDashboardSidebar";
 import AdminDashboardHeader from "../../components/AdminDashboardHeader";
 import { useAdminAuthContext } from "../../context/adminAuthContext";
 import toast from "react-hot-toast";
+import { useSocketContext } from "../../context/socketContext";
 
 const AdminManageUsers = () => {
   const { adminAuth } = useAdminAuthContext();
@@ -14,28 +15,43 @@ const AdminManageUsers = () => {
 
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const socket = useSocketContext()
+
+  const fetchUsers = async (search = "") => {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/users?search=${encodeURIComponent(search)}`);
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "အသုံးပြုသူအချက်အလက်များကို ရယူရာတွင် ပြဿနာတစ်ခု ဖြစ်ပွားနေပါသည်။");
+      }
+      setUsers(data);
+    } catch (error) {
+      console.error("အသုံးပြုသူများကို မရယူနိုင်ပါ", error);
+      toast.error(error.message, { id: "admin-user-error" });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch("/api/users");
-        const data = await res.json();
-
-        if (!res.ok) {
-          throw new Error(data.message || "အသုံးပြုသူအချက်အလက်များကို ရယူရာတွင် ပြဿနာတစ်ခု ဖြစ်ပွားနေပါသည်။");
-        }
-        setUsers(data);
-      } catch (error) {
-        console.error("အသုံးပြုသူများကို မရယူနိုင်ပါ", error);
-        toast.error(error.message, { id: "admin-user-error" });
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchUsers();
   }, []);
+
+  useEffect(() => {
+
+    if(!socket) return;
+
+    socket.on("newUserCreated", (userObj)=>{
+      setUsers((prev) => [...prev, userObj])
+    })
+
+    return ()=> {
+      socket.off("newUserCreated")
+    }
+  }, [socket]);
 
   return (
     <div className="flex min-h-screen">
@@ -49,6 +65,22 @@ const AdminManageUsers = () => {
           <p className="text-gray-500">အသုံးပြုသူမတွေ့ပါ။</p>
         ) : (
           <div className="p-6 space-y-4 overflow-scroll">
+            <div className="flex items-center gap-4">
+              <input
+                type="text"
+                placeholder="အမည်ဖြင့် ရှာဖွေရန်..."
+                className="input input-bordered w-full max-w-xs focus:outline-offset-0"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <button
+                className="btn btn-primary btn-sm"
+                onClick={() => fetchUsers(searchTerm)} // we'll update fetchUsers soon
+              >
+                ရှာဖွေရန်
+              </button>
+            </div>
+
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold text-teal-600">အသုံးပြုသူများ စီမံခန့်ခွဲမှု</h2>
               <Link

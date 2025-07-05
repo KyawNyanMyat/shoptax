@@ -5,6 +5,7 @@ import AdminDashboardSidebar from "../../components/AdminDashboardSidebar";
 import { LiaUserPlusSolid } from "react-icons/lia";
 import toast from "react-hot-toast";
 import { useAdminAuthContext } from "../../context/adminAuthContext";
+import { useSocketContext } from "../../context/socketContext";
 
 const ManageAdmins = () => {
   const { adminAuth } = useAdminAuthContext();
@@ -15,30 +16,45 @@ const ManageAdmins = () => {
   const [admins, setAdmins] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate()
+  const [searchTerm, setSearchTerm] = useState("");
+  const socket = useSocketContext()
   const myposition = "ဒုဦးစီးမှူး"
 
-  useEffect(() => {
-    const fetchAdmins = async () => {
-      setLoading(true)
-      try {
-        const res = await fetch("/api/admins");
-        const data = await res.json();
+  const fetchAdmins = async (search="") => {
+    setLoading(true)
+    try {
+      const res = await fetch(`/api/admins?search=${encodeURIComponent(search)}`);
+      const data = await res.json();
 
-        if (!res.ok) {
-          throw new Error(data.message || "အုပ်ချုပ်သူ အချက်အလက်များ ရယူရာတွင် ပြဿနာ တစ်ခု ဖြစ်ပွားနေပါသည်။");
-        }
-
-        setAdmins(data);
-      } catch (err) {
-        console.error("အုပ်ချုပ်သူများကို မရယူနိုင်ပါ:", err);
-        toast.error(err.message, { id: "admin-admin-error" });
-      } finally {
-        setLoading(false);
+      if (!res.ok) {
+        throw new Error(data.message || "အုပ်ချုပ်သူ အချက်အလက်များ ရယူရာတွင် ပြဿနာ တစ်ခု ဖြစ်ပွားနေပါသည်။");
       }
-    };
 
+      setAdmins(data);
+    } catch (err) {
+      console.error("အုပ်ချုပ်သူများကို မရယူနိုင်ပါ:", err);
+      toast.error(err.message, { id: "admin-admin-error" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(()=>{
     fetchAdmins();
-  }, []);
+  }, [])
+
+  useEffect(() => {
+
+    if(!socket) return;
+
+    socket.on("newAdminCreated", (adminObj)=>{
+      setAdmins((prev) => [...prev, adminObj])
+    })
+
+    return ()=> {
+      socket.off("newAdminCreated")
+    }
+  }, [socket]);
 
   const handleAuthorization = (e) => {
     if (myposition !== "ဒုဦးစီးမှူး") {
@@ -55,6 +71,21 @@ const ManageAdmins = () => {
         <AdminDashboardHeader />
 
         <div className="p-6 bg-gray-50 overflow-scroll">
+            <div className="flex items-center gap-4">
+              <input
+                type="text"
+                placeholder="အမည်ဖြင့် ရှာဖွေရန်..."
+                className="input input-bordered w-full max-w-xs focus:outline-offset-0"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <button
+                className="btn btn-primary btn-sm"
+                onClick={() => fetchAdmins(searchTerm)} // we'll update fetchUsers soon
+              >
+                ရှာဖွေရန်
+              </button>
+            </div>
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-teal-600">အုပ်ချုပ်သူ စီမံခန့်ခွဲမှု</h2>
             <button
