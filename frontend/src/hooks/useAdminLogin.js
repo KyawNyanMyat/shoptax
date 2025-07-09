@@ -21,7 +21,13 @@ const useAdminLogin = () => {
         throw new Error(data.message || "အုပ်ချုပ်ရေးဝင် ဝင်ရောက်မှု မအောင်မြင်ပါ");
       }
 
-      localStorage.setItem("admin-dashboard", JSON.stringify(data))
+      const now = new Date();
+      const userWithExpiry = {
+          value: data,
+          expiry: now.getTime() + 1000 * 60 * 60 * 24,
+      };
+
+      localStorage.setItem("admin-dashboard", JSON.stringify(userWithExpiry))
       toast.success("ဝင်ရောက်မှု အောင်မြင်ပါသည်", {id: "admin-login"});
       navigate("/admin/dashboard");
     } catch (err) {

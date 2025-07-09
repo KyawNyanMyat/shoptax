@@ -1,6 +1,6 @@
 import { FiHome, FiUser, FiSettings } from "react-icons/fi";
 import { RiFileList2Line } from "react-icons/ri";
-import { CiLogout } from "react-icons/ci";
+import { CiLogout, CiShop } from "react-icons/ci";
 import { IoReceiptOutline } from "react-icons/io5";
 import { Link } from 'react-router-dom';
 import useLogout from "../hooks/useLogout";
@@ -11,7 +11,7 @@ const DashboardSidebar = () => {
     <aside className="bg-base-200 w-64 min-h-screen p-6 shadow-md">
       {/* ခေါင်းစဉ် / တံဆိပ် */}
       <div className="mb-10">
-        <h2 className="text-xl font-bold text-primary">TDD စီမံခန့်ခွဲမှု</h2>
+        <h2 className="text-xl font-bold text-primary">အသုံးပြုသူရဲ့ထိန်းချုပ်မှုများ</h2>
         <p className="text-sm text-gray-500">ပြန်လည်ကြိုဆိုပါတယ်!</p>
       </div>
 
@@ -32,6 +32,10 @@ const DashboardSidebar = () => {
         <Link to="/user/receipt" className="flex items-center gap-3 hover:text-primary">
           <IoReceiptOutline className="text-lg" />
           ပြေစာများ
+        </Link>
+        <Link to="/user/viewshops" className="flex items-center gap-3 hover:text-primary">
+          <CiShop className="text-lg" />
+          ကိုယ်ပိုင်သောဆိုင်များ
         </Link>
         <Link
           to="#"

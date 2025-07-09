@@ -44,6 +44,7 @@ const AdminLogin = () => {
               placeholder="အုပ်ချုပ်ရေးအမည် ထည့်ပါ"
               className="w-full input input-bordered focus:outline-blue-500 focus:outline-offset-0"
               autoComplete="off"
+              maxLength={50}
               required
             />
           </div>
@@ -59,6 +60,7 @@ const AdminLogin = () => {
               placeholder="စကားဝှက် ထည့်ပါ"
               className="w-full input input-bordered focus:outline-blue-500 focus:outline-offset-0 pr-10"
               autoComplete="new-password"
+              maxLength={30}
               required
             />
             <span
@@ -88,8 +90,8 @@ const AdminLogin = () => {
               <option value="အကြီးတန်းစာရေး">
                 အကြီးတန်းစာရေး
               </option>
-              {/* In the future delete or just leave as it */}
-              <option value="အငယ်တန်းလက်နှိပ်စက်">
+              {/* delete or just leave as it */}
+              {/* <option value="အငယ်တန်းလက်နှိပ်စက်">
                 အငယ်တန်းလက်နှိပ်စက်
               </option>
               <option value="စက်မောင်းလေး">
@@ -103,7 +105,7 @@ const AdminLogin = () => {
               </option>
               <option value="နေ့ရှင်း">
                 နေ့ရှင်း
-              </option>
+              </option> */}
             </select>
           </div>
 

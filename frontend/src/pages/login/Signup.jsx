@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import useSignUp from '../../hooks/useSignUp.js';
-import logo from "../../assets/react.svg"
+import logo from "/logo.png"
 import { FiUser, FiEye, FiEyeOff } from "react-icons/fi";
 
 const Signup = () => {
@@ -42,16 +42,16 @@ const Signup = () => {
 
   return (
     <div className='flex flex-col h-full items-center justify-center md:mt-10 min-h-screen'>
-      <div className='bg-gray-200 py-10 sm:mt-0 p-5 w-11/12 md:w-1/3'>
+      <div className='bg-gray-200 py-10 sm:mt-0 p-5 w-11/12 md:w-1/3 rounded-t-4xl border-t-4 border-green-500 shadow shadow-green-400'>
 
           {/* Header */}
           <div className="flex flex-col items-center mb-6">
             <div className="bg-blue-100 p-3 rounded-full mb-3">
-              <FiUser className="text-blue-600 text-5xl" />
+              <Link to="/admin/dashboard"><img src={logo} alt="Logo"  className='rounded-full w-20 h-24 cursor-pointer'/></Link>
             </div>
             <h1 className="text-2xl font-bold text-gray-800">
               <div className='flex items-center justify-center'>
-                <Link to="/admin/dashboard"><img src={logo} alt="Logo"  className='rounded-full w-20 h-10 cursor-pointer'/></Link>
+                <FiUser className="text-blue-600 text-5xl" />
                 <span className='text-3xl font-semibold'>အကောင့်ဖွင့်ရန်</span>
               </div>
             </h1>
@@ -61,7 +61,7 @@ const Signup = () => {
 
           <div>
             <label className='block font-semibold py-2'>နာမည်</label>
-            <input type="text" required placeholder="ဦးကျော်လင်း"
+            <input type="text" maxLength={50} required placeholder="ဦးကျော်လင်း"
               className=' w-full input input-borded focus:outline-offset-0'
               value={formData.username}
               onChange={(e)=> setFormData({...formData, username: e.target.value})}
@@ -74,6 +74,7 @@ const Signup = () => {
               className=' w-full input input-borded focus:outline-offset-0 pr-10'
               value={formData.password}
               onChange={(e)=> setFormData({...formData, password: e.target.value})}
+              maxLength={30}
             />
             <span
               className="absolute right-3 top-13 z-10 cursor-pointer text-gray-500"
@@ -89,6 +90,7 @@ const Signup = () => {
               className=' w-full input input-borded focus:outline-offset-0 pr-10'
               value={formData.confirmPassword}
               onChange={(e)=> setFormData({...formData, confirmPassword: e.target.value})}
+              maxLength={30}
             />
             <span
               className="absolute right-3 top-13 z-10 cursor-pointer text-gray-500"

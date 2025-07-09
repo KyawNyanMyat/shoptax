@@ -7,45 +7,47 @@ const About = () => {
       <Header />
 
       <main className="flex-grow px-6 py-10 max-w-5xl mx-auto">
-        <h1 className="text-3xl font-bold mb-4">About the Township Development Department</h1>
+        <h1 className="text-3xl font-bold mb-4">ဆိုင်ခန်းအခွန်ပေးသွင်းမှု စနစ်အကြောင်း</h1>
+
         <p className="text-gray-700 mb-6 text-lg">
-          The Township Development Department (TDD) is committed to improving the quality of life for all residents
-          through essential public services and infrastructure development. We focus on transparency, community involvement,
-          and sustainable urban planning to ensure a better future for our township.
+          ဆိုင်ခန်းအခွန်ပေးသွင်းမှု စနစ်သည် မြို့နယ်ဖွံ့ဖြိုးရေးဌာန၏ အရေးကြီးဆုံး ဝန်ဆောင်မှုတစ်ခုဖြစ်ပြီး၊
+          ဆိုင်ရှင်များအနေဖြင့် မိမိတို့၏ အခွန်များကို အချိန်မရွေး၊နေရာမရွေး အွန်လိုင်းမှ လွယ်ကူလျှင်မြန်စွာ
+          ကြည့်ရှု၊ပေးသွင်းနိုင်ရန် ရည်ရွယ်ထားပါသည်။
         </p>
 
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-2">Our Core Services</h2>
+          <h2 className="text-2xl font-semibold mb-2">စနစ်၏ အဓိကအင်္ဂါရပ်များ</h2>
           <ul className="list-disc pl-6 text-gray-700 space-y-2">
-            <li><strong>Shop Taxes:</strong> Helping business owners manage taxes efficiently and transparently.</li>
-            <li><strong>Water Distribution:</strong> Ensuring clean and reliable water supply across all wards.</li>
-            <li><strong>Garbage Collection:</strong> Scheduled waste removal and sanitation for a cleaner environment.</li>
-            <li><strong>Street Construction:</strong> Upgrading and maintaining roads for safer and smoother transportation.</li>
+            <li><strong>အခွန်ကြည့်ရှုခြင်း:</strong> ဆိုင်ပိုင်ရှင်အနေဖြင့် မိမိအတွက် တင်ထားသောအခွန်များကို ကြည့်ရှုနိုင်သည်။</li>
+            <li><strong>အခွန်ပေးသွင်းခြင်း:</strong> တစ်လစာအခွန်ကို အွန်လိုင်းမှ တိုက်ရိုက်ပေးသွင်းနိုင်သည်။</li>
+            <li><strong>ငွေလွှဲပြေစာ:</strong> ပေးသွင်းပြီးသောအခွန်များအတွက် ပြေစာများကို ကြည့်ရှုနိုင်သည်။</li>
+            <li><strong>သတိပေးစာ:</strong> အချိန်မီမပေးသွင်းသည့်အခါ သတိပေးစာများကိုလည်း စနစ်တွင် ကြည့်ရှုနိုင်သည်။</li>
           </ul>
         </section>
 
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-2">Our Mission</h2>
+          <h2 className="text-2xl font-semibold mb-2">စနစ်၏ ရည်ရွယ်ချက်</h2>
           <p className="text-gray-700 text-lg">
-            We strive to build a well-managed, responsive, and citizen-focused township. Through community engagement,
-            digital transformation, and dedicated personnel, we aim to deliver services that matter most to the people.
+            မြို့နယ်အတွင်းရှိ ဆိုင်ပိုင်ရှင်များအတွက် အခွန်ဆိုင်ရာ ဝန်ဆောင်မှုများကို စနစ်တကျဖြင့်
+            ပေးဆောင်နိုင်ရန်နှင့် မြို့နယ်ဖွံ့ဖြိုးရေးအတွက် လုပ်ငန်းအကောင်အထည်ဖော်နိုင်ရန် ရည်ရွယ်ပါသည်။
+            သက်ဆိုင်ရာဌာနများအနေဖြင့်လည်း အချိန်နဲ့ တပြေးညီ စစ်ဆေးနိုင်ရန် အထောက်အကူဖြစ်စေပါသည်။
           </p>
         </section>
 
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-2">Community Engagement</h2>
+          <h2 className="text-2xl font-semibold mb-2">အသုံးပြုသူအတွက် အကျိုးကျေးဇူးများ</h2>
           <p className="text-gray-700 text-lg">
-            Every <strong>Friday</strong>, we organize township-wide <strong>cleaning activities</strong> involving residents,
-            shop owners, and volunteers. These events not only improve sanitation but also build strong civic relationships
-            and pride in our neighborhoods.
+            ယခုစနစ်ဖြင့် ပေးသွင်းခြင်းသည် ပုံမှန်အခွန်ပေးသွင်းမှုထက် ပိုမိုလွယ်ကူသည်။  
+            စနစ်တကျသိမ်းဆည်းထားသည့် မှတ်တမ်းများ၊ ပြေစာများနှင့် သတိပေးစာများသည် အသုံးပြုသူအတွက် အချိန်ကုန်သက်သာစေပြီး
+            မြို့နယ်ဖွံ့ဖြိုးရေးအတွက် တက်ကြွစွာပါဝင်နိုင်သည်။
           </p>
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold mb-2">Contact Us</h2>
+          <h2 className="text-2xl font-semibold mb-2">ဆက်သွယ်ရန်</h2>
           <p className="text-gray-700 text-lg">
-            We welcome your feedback, concerns, and suggestions. Feel free to reach out via email, phone, or visit our office
-            during working hours. Our team is here to serve you.
+            အကြံပြုချက်များ သို့မဟုတ် အခက်အခဲများရှိပါက ကျွန်ုပ်တို့အား အီးမေးလ် သို့မဟုတ် ဖုန်းဖြင့် ဆက်သွယ်နိုင်ပါသည်။
+            ကျွန်ုပ်တို့၏ အဖွဲ့ဝင်များမှ အမြန်ဆုံး ပြန်လည်ဖြေကြားပေးပါမည်။
           </p>
         </section>
       </main>

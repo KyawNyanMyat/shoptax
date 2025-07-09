@@ -116,6 +116,8 @@ const SubmitPaymentProof = () => {
 
     // Submit to database
     await submitPayment(formData)
+
+    // In the future, make formData reset
   };
 
 
@@ -178,18 +180,31 @@ const SubmitPaymentProof = () => {
               </select>
             </div>
   
-            {/* In the future change into Myanmar Value */}
             <div>
-              <label className="label">Screenshot တင်ပါ (ဥပမာ - KBZPay screenshot)</label>
+              <label className="label">
+                Screenshot တင်ပါ (ဥပမာ - KBZPay screenshot)
+              </label>
               <input
                 type="file"
                 accept="image/*"
-                onChange={(e) => setPaymentPhoto(e.target.files[0])}
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  const maxSize = 2 * 1024 * 1024; // 2MB
+
+                  if (file && file.size > maxSize) {
+                    toast.error("ဓာတ်ပုံအရွယ်အစားသည် 2MB ထက်မကြီးရပါ။ ကျေးဇူးပြု၍ သေးငယ်သောဖိုင်တင်ပါ။", {id:"imageError", duration: 4000});
+                    e.target.value = ""; // reset file input
+                    return;
+                  }
+
+                  setPaymentPhoto(file);
+                }}
                 className="file-input file-input-bordered w-full focus:outline-offset-0"
                 required
               />
             </div>
-  
+            <small className="text-red-500 ">(ဓာတ်ပုံသည် 2MB ထက်မကျော်ရပါ)</small>
+
             <div>
               <label className="label">ငွေပမာဏအတည်ပြုပါ</label>
               <input

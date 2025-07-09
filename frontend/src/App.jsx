@@ -23,8 +23,15 @@ import AdminSendWarning from "./adminpages/adminDashboard/AdminSendWarning"
 import { UserAuthContextProvider, useUserAuthContext } from "./context/userAuthContext"
 import { AdminAuthContextProvider } from "./context/adminAuthContext"
 import AdminCreateShop from "./adminpages/adminDashboard/AdminCreateShop"
+import AdminViewOverdues from "./adminpages/adminDashboard/AdminViewOverdues"
+import UserViewShops from "./pages/userDashboard/UserViewShops"
 // import SocketTest from "./Test"
 function App() {
+  const NotFound = ()=>{
+    return(
+      <h1 className="flex items-center justify-center text-4xl h-screen">404- Page Not Found</h1>
+    )
+  }
 
   const UserProtectedLayout = () => (
     <UserAuthContextProvider>
@@ -44,7 +51,6 @@ function App() {
       <div className="flex flex-col min-h-screen" >
         {/* <SocketTest/>  */}
         <main className="bg-white">
-          {/* In the future Add auth */}
           <Routes>
             
             {/* User */}
@@ -59,6 +65,8 @@ function App() {
               <Route path="/user/warningmessage" element={<WarningMessages />} />
               <Route path="/user/receipt" element={<Receipts />} />
               <Route path="/user/paymentproof" element={<SubmitPaymentProof />} />
+              <Route path="/user/viewshops" element={<UserViewShops />} />
+              <Route path="*" element={<NotFound/>} />
             </Route>
 
             {/* Admin */}
@@ -75,7 +83,9 @@ function App() {
               <Route path="/admin/sendwarning" element={<AdminSendWarning />} />
               <Route path="/admin/viewreceipt" element={<AdminManageReceipts />} />
               <Route path="/admin/viewwarning" element={<AdminViewWarnings />} />
+              <Route path="/admin/viewoverdue" element={<AdminViewOverdues />} />
               <Route path="/admin/user/signup" element={<Signup/>} />
+              <Route path="*" element={<NotFound/>} />
             </Route>
           </Routes>
           <Toaster/>

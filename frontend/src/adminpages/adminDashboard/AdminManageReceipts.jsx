@@ -42,19 +42,22 @@ const AdminManageReceipts = () => {
   useEffect(()=>{
     if(!socket) return;
 
-    socket.on("newReceipt", (receipt)=>{
+    const handleNewReceipt = (receipt)=>{
       setReceipts(prev => [...prev, receipt])
-    })
+    }
 
-    socket.on("userReceiptMarkedAsRead", (updatedReceipt) => {
+    const handleUserReceiptMarkedAsRead = (updatedReceipt) => {
       setReceipts(prev =>
         prev.map(w => w._id === updatedReceipt._id ? updatedReceipt : w)
       );
-    }); 
+    }
+
+    socket.on("newReceipt", handleNewReceipt)
+    socket.on("userReceiptMarkedAsRead", handleUserReceiptMarkedAsRead ); 
 
     return ()=>{
-      socket.off("newReceipt")
-      socket.off("userReceiptMarkedAsRead")
+      socket.off("newReceipt", handleNewReceipt)
+      socket.off("userReceiptMarkedAsRead", handleUserReceiptMarkedAsRead)
     }
   }, [socket])
 

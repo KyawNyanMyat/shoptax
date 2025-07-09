@@ -44,12 +44,14 @@ const AdminManageUsers = () => {
 
     if(!socket) return;
 
-    socket.on("newUserCreated", (userObj)=>{
+    const handleNewUserCreated =  (userObj)=>{
       setUsers((prev) => [...prev, userObj])
-    })
+    }
+
+    socket.on("newUserCreated", handleNewUserCreated)
 
     return ()=> {
-      socket.off("newUserCreated")
+      socket.off("newUserCreated", handleNewUserCreated)
     }
   }, [socket]);
 

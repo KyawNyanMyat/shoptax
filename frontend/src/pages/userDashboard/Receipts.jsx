@@ -41,19 +41,22 @@ const Receipts = () => {
   useEffect(()=>{
     if(!socket) return;
 
-    socket.on("userNewReceipt", (receipt)=>{
+    const handleUserNewReceipt = (receipt)=>{
       setUserReceipts(prev => [...prev, receipt])
-    })
-
-    socket.on("receiptMarkedAsRead", (updatedReceipt)=>{
+    }
+    
+    const handleReceiptMarkedAsRead = (updatedReceipt)=>{
       setUserReceipts(prev =>
         prev.map(w => w._id === updatedReceipt._id ? updatedReceipt : w)
       );
-    })
+    }
+
+    socket.on("userNewReceipt", handleUserNewReceipt)
+    socket.on("receiptMarkedAsRead", handleReceiptMarkedAsRead)
 
     return ()=>{
-      socket.off("userNewReceipt")
-      socket.off("receiptMarkedAsRead")
+      socket.off("userNewReceipt", handleUserNewReceipt)
+      socket.off("receiptMarkedAsRead", handleReceiptMarkedAsRead)
     }
   }, [socket])
 
@@ -91,7 +94,7 @@ const Receipts = () => {
                     <img
                       src={"/receiptimages/Seal.jpg"}
                       alt="တံဆိပ်"
-                      className="w-30 h-15 object-fill"
+                      className="w-20 h-20 object-fill rounded-full"
                     />
                   </div>
                   <p className="text-sm text-gray-500 mb-1">
@@ -110,10 +113,20 @@ const Receipts = () => {
                     ဆိုင်ရှင်အမည် - {r.paymentId.userId.username}
                   </p>
                   <p className="text-sm text-gray-500 mb-1">
-                    ငွေပေးချေသည့်လ -{" "}
+                    ငွေပေးချေသည့်နေ့ -{" "}
                     {new Date(r.paymentId.paidDate).toLocaleString("my-MM", {
                       month: "long",
                       year: "numeric",
+                      day: "numeric"
+                    })}
+                  </p>
+                  <p className="text-sm text-gray-500 mb-1">
+                    {/* In the future change this name */}
+                    နောက်လပေးရမည့်နေ့ -{" "}
+                    {new Date(r.paymentId.nextPaymentDueDate).toLocaleString("my-MM", {
+                      month: "long",
+                      year: "numeric",
+                      day: "numeric"
                     })}
                   </p>
                   <p className="text-sm font-medium mt-2">
@@ -124,17 +137,17 @@ const Receipts = () => {
                   <div className="flex justify-around mt-4">
                     <div className="text-center">
                       <img
-                        src={"/receiptimages/Seal.jpg"}
+                        src={"/receiptimages/mSup.png"}
                         alt="ဈေးတာ၀န်ခံလက်မှတ်"
-                        className="h-12 object-contain mx-auto"
+                        className="h-12 object-contain mx-auto rounded-full"
                       />
                       <p className="text-xs mt-1">{"ဈေးတာ၀န်ခံ"}</p>
                     </div>
                     <div className="text-center">
                       <img
-                        src={"/receiptimages/Seal.jpg"}
+                        src={"/receiptimages/DDSig.png"}
                         alt="အမှုဆောင်အရာရှိလက်မှတ်"
-                        className="h-12 object-contain mx-auto"
+                        className="h-12 object-contain mx-auto rounded-full"
                       />
                       <p className="text-xs mt-1">အမှုဆောင်အရာရှိ</p>
                     </div>

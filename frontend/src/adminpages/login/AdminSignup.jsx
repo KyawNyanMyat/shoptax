@@ -66,6 +66,7 @@ const AdminSignup = () => {
                 onChange={handleChange}
                 placeholder="ဦးကျော်လင်း"
                 className="w-full input input-bordered focus:outline-offset-0"
+                maxLength={50}
                 required
               />
             </div>
@@ -80,6 +81,7 @@ const AdminSignup = () => {
                 onChange={handleChange}
                 placeholder="ဥပမာ.၁၂၃၄fpass"
                 className="w-full input input-bordered focus:outline-offset-0 pr-10"
+                maxLength={30}
                 required
               />
                <span
@@ -140,8 +142,8 @@ const AdminSignup = () => {
                 <option value="အကြီးတန်းစာရေး">
                   အကြီးတန်းစာရေး
                 </option>
-                {/* In the future delete or just leave as it */}
-                <option value="အငယ်တန်းလက်နှိပ်စက်">
+                {/* delete or just leave as it */}
+                {/* <option value="အငယ်တန်းလက်နှိပ်စက်">
                   အငယ်တန်းလက်နှိပ်စက်
                 </option>
                 <option value="စက်မောင်းလေး">
@@ -155,7 +157,7 @@ const AdminSignup = () => {
                 </option>
                 <option value="နေ့ရှင်း">
                 နေ့ရှင်း
-                </option>
+                </option> */}
               </select>
             </div>
           </div>

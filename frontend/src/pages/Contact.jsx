@@ -1,5 +1,6 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import MyMap from "../components/MyMap";
 
 const Contact = () => {
   return (
@@ -7,50 +8,26 @@ const Contact = () => {
       <Header />
 
       <main className="flex-grow px-6 py-10 max-w-5xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6">Contact Us</h1>
+        <h1 className="text-3xl font-bold mb-6">ဆက်သွယ်ရန်</h1>
 
         {/* Contact Info */}
         <section className="mb-10 space-y-4 text-gray-700">
           <p>
-            Have questions, suggestions, or need assistance? Reach out to us through any of the methods below.
+            မေးခွန်းများ၊ အကြံပြုချက်များ သို့မဟုတ် အကူအညီလိုအပ်ပါက ကျွန်ုပ်တို့ကို ဆက်သွယ်နိုင်ပါသည်။
           </p>
 
           <div>
-            <p><strong>📍 Address:</strong> Yamethin, Mandalay Region, Myanmar</p>
-            <p><strong>📞 Phone:</strong> +95 9743 37432</p>
-            <p><strong>📧 Email:</strong> kyawnyanmyat40@gmail.com</p>
-            <p><strong>🕒 Office Hours:</strong> Mon - Fri, 9:00 AM - 5:00 PM</p>
+            <p><strong>📍 လိပ်စာ:</strong> ရမည်းသင်းမြို့, မန္တလေးတိုင်းဒေသကြီး, မြန်မာ</p>
+            <p><strong>📞 ဖုန်း:</strong> ၀၉ ၄၄၉၈၇ ၀၁၁၅</p>
+            <p><strong>🕒 ရုံးဖွင့်ချိန်:</strong> တနင်္လာ - သောကြာ၊ မနက် ၉:၃၀ မှ ညနေ ၅:၀၀</p>
           </div>
         </section>
 
-        {/* Contact Form */}
+        {/* Map */}
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-4">Send Us a Message</h2>
-          <form className="space-y-4">
-            <input
-              type="text"
-              placeholder="Your Name"
-              className="input input-bordered w-full"
-            />
-            <input
-              type="email"
-              placeholder="Your Email"
-              className="input input-bordered w-full"
-            />
-            <textarea
-              placeholder="Your Message"
-              rows="4"
-              className="textarea textarea-bordered w-full"
-            ></textarea>
-            <button className="btn btn-primary">Submit</button>
-          </form>
-        </section>
-
-        {/* Map Placeholder */}
-        <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-4">Our Location</h2>
-          <div className="w-full h-64 bg-base-200 flex items-center justify-center rounded-xl text-gray-500">
-            [ Google Map Placeholder ]
+          <h2 className="text-2xl font-semibold mb-4">တည်နေရာမြေပုံ</h2>
+          <div className="w-full h-64 bg-base-200 rounded-xl overflow-hidden">
+            <MyMap />
           </div>
         </section>
       </main>

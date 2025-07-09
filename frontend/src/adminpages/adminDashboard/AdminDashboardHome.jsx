@@ -69,31 +69,44 @@ const AdminDashboardHome = () => {
   useEffect(()=>{
     if(!socket) return;
 
-    socket.on("newAdminCreated",(adminObj)=>{
+    const handleNewAdminCreated = (adminObj)=>{
       setTotalAdmins(prev => prev + 1)
-    })
+    }
 
-    socket.on("newUserCreated",(userObj)=>{
+    const handleNewUserCreated = (userObj)=>{
       setTotalUsers(prev => prev + 1)
-    })
+    }
 
-    socket.on("newPayment",(populatedPayment)=>{
+    const handleNewPayment = (populatedPayment)=>{
       setPendingPayments(prev => prev + 1)
-    })
+    }
 
-    socket.on("finishedPayment",(updated)=>{
+    const handleFinishedPayment = (updated)=>{
       setPendingPayments(prev => prev - 1)
-    })
+    }
 
-    socket.on("rejectedPayment",(updated)=>{
+    const handleRejectedPayment = (updated)=>{
       setPendingPayments(prev => prev - 1)
-    })
+    }
+
+    const handleOverdueUpdated = (count) => {
+      setOverdueUsers(count);
+    }
+
+    socket.on("newAdminCreated", handleNewAdminCreated)
+    socket.on("newUserCreated", handleNewUserCreated)
+    socket.on("newPayment",handleNewPayment)
+    socket.on("finishedPayment",handleFinishedPayment)
+    socket.on("rejectedPayment",handleRejectedPayment)
+    socket.on("overdueUpdated", handleOverdueUpdated);
+
     return ()=>{
-      socket.off("newAdminCreated")
-      socket.off("newUserCreated")
-      socket.off("newPayment")
-      socket.off("finishedPayment")
-      socket.off("rejectedPayment")
+      socket.off("newAdminCreated", handleNewAdminCreated)
+      socket.off("newUserCreated", handleNewUserCreated)
+      socket.off("newPayment", handleNewPayment)
+      socket.off("finishedPayment", handleFinishedPayment)
+      socket.off("rejectedPayment", handleRejectedPayment)
+      socket.off("overdueUpdated", handleOverdueUpdated)
     }
   },[socket])
 
@@ -106,7 +119,7 @@ const AdminDashboardHome = () => {
         <div className="p-6 space-y-6 bg-gray-50 min-h-full">
           {/* ကြိုဆိုစာသား */}
           <div>
-            <h2 className="text-2xl font-bold text-teal-600">မင်္ဂလာပါ၊ အုပ်ချုပ်ရေးဝင်</h2>
+            <h2 className="text-2xl font-bold text-teal-600">မင်္ဂလာပါ၊ {adminAuth?.adminName}</h2>
             <p className="text-sm text-gray-600">မြို့နယ်ဆိုင်ရာ လုပ်ဆောင်ချက်များအတွက် အနှစ်ချုပ်</p>
           </div>
 
@@ -140,7 +153,7 @@ const AdminDashboardHome = () => {
               <FiAlertCircle className="text-2xl text-teal-600" />
               <div>
                 <p className="text-lg font-bold">{overdueUsers}</p>
-                <p className="text-sm text-gray-500">ငွေပေးချေရန်ရက်ကျော်သွားသူများ</p>
+                <p className="text-sm text-gray-500">ငွေပေးချေရန်ရက်ကျော်ဆိုင်များ</p>
               </div>
             </div>
           </div>

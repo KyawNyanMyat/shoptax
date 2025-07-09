@@ -35,29 +35,34 @@ const WarningMessages = () => {
     getWarning();
   }, []);
 
-  useEffect(()=>{
-    if(!socket) return;
-
-    socket.on("rejectWarning", (warning)=>{
-      setWarnings(prev => [...prev, warning])
-    })
-
-    socket.on("justWarning", (warning) => {
+  useEffect(() => {
+    if (!socket) return;
+  
+    const handleRejectWarning = (warning) => {
       setWarnings(prev => [...prev, warning]);
-    });
-
-    socket.on("warningMarkedAsRead", (updatedWarning) => {
+    };
+  
+    const handleJustWarning = (warning) => {
+      setWarnings(prev => [...prev, warning]);
+    };
+  
+    const handleWarningMarkedAsRead = (updatedWarning) => {
       setWarnings(prev =>
         prev.map(w => w._id === updatedWarning._id ? updatedWarning : w)
       );
-    }); 
-
-    return ()=>{
-      socket.off("rejectWarning")
-      socket.off("justWarning")
-      socket.off("warningMarkedAsRead")
-    }
-  },[socket])
+    };
+  
+    socket.on("rejectWarning", handleRejectWarning);
+    socket.on("justWarning", handleJustWarning);
+    socket.on("warningMarkedAsRead", handleWarningMarkedAsRead);
+  
+    return () => {
+      socket.off("rejectWarning", handleRejectWarning);
+      socket.off("justWarning", handleJustWarning);
+      socket.off("warningMarkedAsRead", handleWarningMarkedAsRead);
+    };
+  }, [socket]);
+  
 
   const handleMarkAsRead = async (e) => {
     await markAsRead(e.target.value)
@@ -81,7 +86,6 @@ const WarningMessages = () => {
                         <div className="flex items-start gap-3">
                         <FiAlertCircle className="text-xl mt-1" />
                         <div>
-                          {/* In the future, add penalty fee */}
                             <h3 className="font-semibold">{warn.warningTitle}</h3>
                             <p className="text-sm mb-1">{warn.warningContent}</p>
                             <p className="text-sm mb-1">အခကြေးငွေ{warn.overdueFee}</p>

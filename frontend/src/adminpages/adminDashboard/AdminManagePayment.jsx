@@ -50,13 +50,13 @@ const AdminManagePayments = () => {
   useEffect(()=>{
     if(!socket) return;
 
-    socket.on("newPayment", (populatedPayment)=>{
+    const handleNewPayment = (populatedPayment)=>{
       if (searchTerm === "Pending" || searchTerm === "") {
         setPayments((prev) => [...prev, populatedPayment]);
       }
-    })
+    }
 
-    socket.on("finishedPayment", (updatedPayment) => {
+    const handleFinishedPayment = (updatedPayment) => {
       // Remove it if you're in Pending tab
       if (searchTerm === "Pending") {
         setPayments((prev) => prev.filter(p => p._id !== updatedPayment._id));
@@ -65,21 +65,25 @@ const AdminManagePayments = () => {
       if (searchTerm === "Finished" || searchTerm === "") {
         setPayments((prev) => [...prev, updatedPayment]);
       }
-    })
+    }
 
-    socket.on("rejectedPayment", (rejectedPayment) => {
+    const handleRejectedPayment = (rejectedPayment) => {
       if (searchTerm === "Pending") {
         setPayments((prev) => prev.filter(p => p._id !== rejectedPayment._id));
       }
       if (searchTerm === "Rejected" || searchTerm === "") {
         setPayments((prev) => [...prev, rejectedPayment]);
       }
-    });
+    }
+
+    socket.on("newPayment", handleNewPayment)
+    socket.on("finishedPayment", handleFinishedPayment)
+    socket.on("rejectedPayment", handleRejectedPayment);
 
     return ()=> {
-      socket.off("newPayment")
-      socket.off("finishedPayment")
-      socket.off("rejectedPayment")
+      socket.off("newPayment", handleNewPayment)
+      socket.off("finishedPayment", handleFinishedPayment)
+      socket.off("rejectedPayment", handleRejectedPayment)
     }
   },[socket, searchTerm])
 

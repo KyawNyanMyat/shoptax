@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import useLogin from '../../hooks/useLogin.js'
-import logo from "../../assets/react.svg"
+import logo from "/logo.png"
 import { FiUser, FiEye, FiEyeOff  } from 'react-icons/fi'
 
 const Login = () => {
@@ -20,17 +20,17 @@ const Login = () => {
   return (
 
     <div className='flex flex-col items-center justify-center min-h-screen'>
-      <div className='bg-gray-200 p-6 w-11/12 md:w-1/3'>
+      <div className='bg-gray-200 p-6 w-11/12 md:w-1/3 rounded-t-4xl border-t-6 border-green-500 shadow shadow-green-400'>
 
         <form onSubmit={handleSubmit}>
          {/* Header */}
          <div className="flex flex-col items-center mb-6">
-            <div className="bg-blue-100 p-3 rounded-full mb-3">
-              <FiUser className="text-blue-600 text-4xl" />
+            <div className="bg-blue-100 rounded-full mb-3">
+              <Link to="/"><img src={logo} alt="Logo"  className='rounded-full w-20 h-24 cursor-pointer'/></Link>
             </div>
             <h1 className="text-2xl font-bold text-gray-800">
-              <div className='flex items-center justify-center'>
-                <Link to="/"><img src={logo} alt="Logo"  className='rounded-full w-20 h-10 cursor-pointer'/></Link>
+              <div className='flex items-center justify-around'>
+                <FiUser className="text-cyan-600 text-5xl" />
                 <span className='text-3xl font-semibold'>အကောင့်၀င်ရန်</span>
               </div>
             </h1>
@@ -38,14 +38,14 @@ const Login = () => {
 
           <div>
             <label className='block font-semibold py-2'>နာမည်</label>
-            <input type="text" placeholder="နာမည်ထည့်ရန်" className='w-full input input-borded focus:outline-offset-0'
+            <input type="text" maxLength={30} placeholder="နာမည်ထည့်ရန်" className='w-full input input-borded focus:outline-offset-0'
               onChange={(e)=> setFormData({...formData, username: e.target.value})}
             />
           </div>
 
           <div className='relative'>
             <label className='block font-semibold py-2'>လျို့၀ှက်နံပါတ်</label>
-            <input type={showPassword ? "text" :"password"} placeholder="လျို့၀ှက်နံပါတ်ထည့်ရန်" className='w-full input input-borded focus:outline-offset-0 pr-10'
+            <input type={showPassword ? "text" :"password"} maxLength={50} placeholder="လျို့၀ှက်နံပါတ်ထည့်ရန်" className='w-full input input-borded focus:outline-offset-0 pr-10'
               onChange={(e)=> setFormData({...formData, password: e.target.value})}
             />
             <span

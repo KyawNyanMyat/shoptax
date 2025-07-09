@@ -4,6 +4,7 @@ import { CiLogout, CiShop } from "react-icons/ci";
 import { MdAdminPanelSettings } from "react-icons/md";
 import { IoReceiptOutline, IoWarningOutline } from "react-icons/io5";
 import { PiShieldWarning } from "react-icons/pi";
+import { TbShoppingCartDollar } from "react-icons/tb";
 import { Link } from 'react-router-dom';
 import useAdminLogout from "../hooks/useAdminLogout";
 
@@ -57,6 +58,11 @@ const AdminDashboardSidebar = () => {
         <Link to="/admin/viewwarning" className="flex items-center gap-3 hover:text-slate-300">
           <IoWarningOutline className="text-lg" />
           သတိပေးချက်အားလုံး ကြည့်ရန်
+        </Link>
+
+        <Link to="/admin/viewoverdue" className="flex items-center gap-3 hover:text-slate-300">
+          <TbShoppingCartDollar className="text-lg" />
+          ရက်ကျော်ဆိုင်များကြည့်ရန် ကြည့်ရန်
         </Link>
 
         <Link

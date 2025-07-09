@@ -47,12 +47,14 @@ const ManageAdmins = () => {
 
     if(!socket) return;
 
-    socket.on("newAdminCreated", (adminObj)=>{
+    const handleNewAdminCreated = (adminObj)=>{
       setAdmins((prev) => [...prev, adminObj])
-    })
+    }
+
+    socket.on("newAdminCreated", handleNewAdminCreated)
 
     return ()=> {
-      socket.off("newAdminCreated")
+      socket.off("newAdminCreated", handleNewAdminCreated)
     }
   }, [socket]);
 

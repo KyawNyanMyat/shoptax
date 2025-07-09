@@ -7,6 +7,7 @@ import Redlock from 'redlock';
 import { myanmarToEnglish } from '../utils/numberConverter.js';
 import { redlock } from '../utils/redlock.js';
 import { getIO } from '../socket/socket.js';
+import { getOverdueUsersData } from '../utils/overdueHelpers.js';
 
 // Create a new payment
 export const createPayment = async (req, res) => {
@@ -146,9 +147,8 @@ export const getPaymentByUserId = async (req, res) => {
     const { id } = req.params
     const user = await Payment.findOne({userId: id}).sort({paidDate: -1})
 
-    //In the future, do something
     if (!user) {
-      return res.status(404).json({ message: "ငွေပေးချေမှုအချက်အလက်မတွေ့ရှိပါ။" });
+      return res.status(200).json({ message: "ငွေပေးချေမှုအချက်အလက်မတွေ့ရှိပါ။" });
     }
     res.status(200).json(user);
   } catch (error) {
@@ -179,21 +179,15 @@ export const getPendingPayments = async (req, res) => {
 // controllers/paymentController.js
 export const getOverdueUsers = async (req, res) => {
   try {
-    const today = new Date();
-
-    const overduePayments = await Payment.find({
-      nextPaymentDueDate: { $lt: today },
-      status: "Pending"
-    }).populate("userId", "username shopId").populate("shopId");
-
-    if (!overduePayments.length) {
-      return res.status(200).json([]); // return empty array
-    }
-
-    res.status(200).json(overduePayments);
+    //Important In the future change it to today 
+    const dummytoday = new Date(2025, 6, 12); // July 11, 2025
+    const data = await getOverdueUsersData(dummytoday);
+    res.status(200).json(data);
   } catch (error) {
     console.error("Error fetching overdue payments:", error);
-    res.status(500).json({ message: "ဆာဗာ အခက်အခဲ ဖြစ်ပွားနေပါသည်။" });
+    res.status(500).json({
+      message: "ဆာဗာ အမှားအယွင်း ဖြစ်ပွားနေပါသည်။",
+    });
   }
 };
 
@@ -287,6 +281,11 @@ export const updatePaymentStatus = async (req, res) => {
         io.to("adminRoom").emit("newReceipt", receipt); // send to admin
         io.to("adminRoom").emit("finishedPayment", updated); // send to admin
         io.to(userId).emit("userNewReceipt", receipt);  //send to user
+
+        //Important In the future change it to today 
+        const dummytoday = new Date(2025, 6, 11); // July 11, 2025
+        const overdue = await getOverdueUsersData(dummytoday);
+        io.to("adminRoom").emit("overdueUpdated", overdue.length)
       }
 
       if (status === "Rejected") {

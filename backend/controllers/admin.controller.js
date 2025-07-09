@@ -155,7 +155,7 @@ export const loginAdmin = async (req, res) => {
     //     return res.status(403).json({ message: "အကောင့်သည် တခြားတစ်နေရာတွင် အသုံးပြုနေသည်။" });
     //   }
     //   const token = generateAdminTokenAndCookie(admin._id, res);
-    //   await redis.set(locksession, token, "EX", 60 * 60 * 24 * 15); // 15 days //In the future change this time
+    //   await redis.set(locksession, token, "EX", 60 * 60 * 24 * 15);
 
     //   res.status(200).json({
     //     _id: admin._id,

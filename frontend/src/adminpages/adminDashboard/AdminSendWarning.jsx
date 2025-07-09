@@ -138,7 +138,7 @@ const AdminSendWarning = () => {
                 }
               }
               className="input input-bordered w-full focus:outline-offset-0"
-              placeholder="ဥပမာ - ၅၀၀၀"
+              placeholder="ဥပမာ - 100"
               required
             />
           </div>

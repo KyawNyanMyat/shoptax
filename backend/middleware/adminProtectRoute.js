@@ -30,6 +30,17 @@ const adminProtectRoute = async (req, res, next)=>{
         next()
     } catch (error) {
         console.log("Error in userProtectRoute", error)
+        if (error.name === "TokenExpiredError") {
+            return res.status(401).json({
+              message: "သင့် session သက်တမ်းကုန်သွားပါပြီ။ ပြန်လည် login ဝင်ပါ။"
+            });
+        }
+
+        if (error.name === "JsonWebTokenError") {
+            return res.status(401).json({
+                message: "မမှန်ကန်သော Token ဖြစ်ပါသည်။"
+            });
+        }
         res.status(500).json({message: "Server ပြဿနာဖြစ်ပေါ်နေပါသည်"})
     }
 }

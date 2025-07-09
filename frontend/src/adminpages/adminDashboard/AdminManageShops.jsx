@@ -54,7 +54,7 @@ const AdminManageShops = () => {
     useEffect(()=>{
         if(!socket) return;
 
-        socket.on("shopAssignedToUser",(updatedShop)=>{
+        const handleShopAssignedToUser = (updatedShop)=>{
             setShops((prevShops)=> {
                 const index = prevShops.findIndex((s) => s._id === updatedShop._id);
 
@@ -67,9 +67,9 @@ const AdminManageShops = () => {
                 // Don't add if shop not found
                 return prevShops;
             })
-        })
+        }
 
-        socket.on("shopUserRemoved", (updatedShop) => {
+        const handleShopUserRemoved = (updatedShop) => {
             setShops((prev) => {
               const idx = prev.findIndex((s) => s._id === updatedShop._id);
               if (idx !== -1) {
@@ -79,11 +79,14 @@ const AdminManageShops = () => {
               }
               return prev;
             });
-          });
+          }
+
+        socket.on("shopAssignedToUser", handleShopAssignedToUser)
+        socket.on("shopUserRemoved", handleShopUserRemoved);
           
         return ()=>{
-            socket.off("shopAssignedToUser")
-            socket.off("shopUserRemoved")
+            socket.off("shopAssignedToUser", handleShopAssignedToUser)
+            socket.off("shopUserRemoved", handleShopUserRemoved)
         }
     },[socket])
 
@@ -128,7 +131,7 @@ const AdminManageShops = () => {
                         </div>
 
                         <div className="">
-                            <table className="table table-zebra w-full text-sm">
+                            <table className="table table-zebra w-full text-sm text-center">
                                 <thead className="bg-gray-200 text-gray-700">
                                     <tr>
                                         <th>စဉ်</th>
@@ -153,7 +156,7 @@ const AdminManageShops = () => {
                                                         onAssign={(shopId, userId) => handleAssign(shopId, userId)}
                                                     />
                                                 ) : (
-                                                    <div className="flex justify-around gap-2">
+                                                    <div className="flex justify-between gap-2">
                                                         <span>{s.userId.username}</span>
                                                         <button
                                                         className="btn btn-sm btn-error"

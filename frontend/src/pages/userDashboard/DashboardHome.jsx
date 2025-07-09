@@ -17,7 +17,7 @@ const DashboardHome = () => {
 
   const [userName, setUserName] = useState("")
   const [lastPayment, setLastPayment] = useState(null)
-  const [nextPaymentDueDate, setNextPaymentDueDate] = useState(null)
+  const [shopCount, setShopCount] = useState([])
   const [unReadWarning, setUnReadWarning] = useState([])
   const [unReadReceipt, setUnReadReceipt] = useState([])
   const socket = useSocketContext()
@@ -31,10 +31,8 @@ const DashboardHome = () => {
       color: "bg-green-100 text-green-800",
     },
     {
-      label: "လာမည့် ပေးချေရမည့် ရက်စွဲ",
-      value: nextPaymentDueDate
-        ? new Date(nextPaymentDueDate).toLocaleDateString("en-CA")
-        : "မရှိသေးပါ",
+      label: "သင်ပိုင်ဆိုင်သောဆိုင် အရေတွက်",
+      value: shopCount.length > 0 ? shopCount.length : 0,
       color: "bg-yellow-100 text-yellow-800",
     },
     {
@@ -52,6 +50,7 @@ const DashboardHome = () => {
 
   const regulations = [
     "အရောင်းဆိုင်များသည် လစဉ်ဆိုင်ခွန်ကို တစ်လတစ်ကြိမ် ပြန်လည်ပေးဆောင်ရမည်။",
+    "ရက်ကျော်ပါက ရက်ကျော်ခနှင့် လစဥ်ဆိုင်ခွန်ခ ကိုပါတခါတည်းပေးဆောင်ရမည်။",
     "အမှိုက်များကို အသုံးမပြုရသောနေရာများတွင် ပစ်ချပေးခွင့်မရှိပါ။",
     "ဆိုင်အမှတ်နှင့် စျေးအမှတ်တို့ကို ဖျက်ဆီးခြင်း မပြုရ။",
     "အများသုံးလမ်းများတွင် ကုန်ပစ္စည်းများ ချထားခြင်းကို တားမြစ်ပါသည်။",
@@ -93,9 +92,16 @@ const DashboardHome = () => {
           throw new Error(warningData.message || "အသုံးပြုသူ အချက်အလက်ရယူရာတွင် ပြဿနာတစ်ခုရှိနေသည်။");
         }
 
+        const ownShops = await fetch(`/api/shops/user/${userId}`)
+        const ownShopsData = await ownShops.json()
+
+        if(!ownShops.ok) {
+          throw new Error(ownShopsData.message || "အသုံးပြုသူ အချက်အလက်ရယူရာတွင် ပြဿနာတစ်ခုရှိနေသည်။")
+        }
+
         setUserName(userData.username)
         setLastPayment(data.paidDate)
-        setNextPaymentDueDate(data.nextPaymentDueDate)
+        setShopCount(ownShopsData)
         setUnReadReceipt(receiptData)
         setUnReadWarning(warningData)
 
@@ -108,37 +114,62 @@ const DashboardHome = () => {
     forDashBoard()
   },[])
 
-  useEffect(()=>{
-    if(!socket) return;
-
-    socket.on("userNewReceipt", (receipt)=>{
-      setUnReadReceipt(prev => [...prev, receipt])
-    })
-
-    socket.on("rejectWarning", (warning)=>{
-      setUnReadWarning(prev => [...prev, warning])
-    })
-
-    socket.on("justWarning", (warning) => {
+  useEffect(() => {
+    if (!socket) return;
+  
+    const handleUserNewReceipt = (receipt) => {
+      setUnReadReceipt(prev => [...prev, receipt]);
+    };
+  
+    const handleRejectWarning = (warning) => {
       setUnReadWarning(prev => [...prev, warning]);
-    });
-
-    socket.on("warningMarkedAsRead", (updatedWarning) => {
+    };
+  
+    const handleJustWarning = (warning) => {
+      setUnReadWarning(prev => [...prev, warning]);
+    };
+  
+    const handleWarningMarkedAsRead = (updatedWarning) => {
       setUnReadWarning(prev => prev.filter(w => w._id !== updatedWarning._id));
-    });
-
-    socket.on("receiptMarkedAsRead", (updatedReceipt) => {
-      setUnReadReceipt(prev => prev.filter(w => w._id !== updatedReceipt._id));
-    });
-
-    return ()=> {
-      socket.off("userNewReceipt")
-      socket.off("rejectWarning")
-      socket.off("justWarning")
-      socket.off("warningMarkedAsRead")
-      socket.off("receiptMarkedAsRead")
-    }
-  }, [socket])
+    };
+  
+    const handleReceiptMarkedAsRead = (updatedReceipt) => {
+      setUnReadReceipt(prev => prev.filter(r => r._id !== updatedReceipt._id));
+    };
+  
+    const handleShopRemoved = (shop) => {
+      setShopCount(prevShops => prevShops.filter(s => s._id !== shop._id));
+    };
+  
+    const handleShopAssigned = (updatedShop) => {
+      setShopCount(prevShops => [...prevShops, updatedShop]);
+    };
+  
+    const handleNewPayment = (populatedPayment) => {
+      setLastPayment(populatedPayment.paidDate);
+    };
+  
+    socket.on("userNewReceipt", handleUserNewReceipt);
+    socket.on("rejectWarning", handleRejectWarning);
+    socket.on("justWarning", handleJustWarning);
+    socket.on("warningMarkedAsRead", handleWarningMarkedAsRead);
+    socket.on("receiptMarkedAsRead", handleReceiptMarkedAsRead);
+    socket.on("shopRemoved", handleShopRemoved);
+    socket.on("shopAssigned", handleShopAssigned);
+    socket.on("newPayment", handleNewPayment);
+  
+    return () => {
+      socket.off("userNewReceipt", handleUserNewReceipt);
+      socket.off("rejectWarning", handleRejectWarning);
+      socket.off("justWarning", handleJustWarning);
+      socket.off("warningMarkedAsRead", handleWarningMarkedAsRead);
+      socket.off("receiptMarkedAsRead", handleReceiptMarkedAsRead);
+      socket.off("shopRemoved", handleShopRemoved);
+      socket.off("shopAssigned", handleShopAssigned);
+      socket.off("newPayment", handleNewPayment);
+    };
+  }, [socket]);
+  
 
   return (
     <div className="flex min-h-screen">

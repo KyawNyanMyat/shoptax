@@ -2,33 +2,37 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { FcShop } from "react-icons/fc";
 import { FcFullTrash } from "react-icons/fc";
-import { LuConstruction } from "react-icons/lu";
-import { GiWaterTank } from "react-icons/gi";
+import { FaPeopleArrows } from "react-icons/fa";
+import { LiaIdCard } from "react-icons/lia";
+import { useUserAuthContext } from "../context/userAuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
+  const { userAuth } = useUserAuthContext()
+  const navigate = useNavigate()
   const services = [
     {
-      title: "Shop Taxes",
-      description: "Manage and pay shop taxes online securely.",
-      image: <FcShop className="w-full h-40 object-fit rounded-t-2xl"/>,
+      title: "ဆိုင်ခန်းအခွန်ပေးသွင်းမှု",
+      description: "ဆိုင်ခန်းအခွန်များကို အွန်လိုင်းမှ လွယ်ကူစွာ ပေးသွင်းနိုင်ပါသည်။",
+      image: <FcShop className="w-full h-40 object-fit rounded-t-2xl" />,
     },
     {
-      title: "Water Distribution",
-      description: "Updates and info about water supply services.",
-      image: <GiWaterTank className="w-full h-40 object-fit rounded-t-2xl text-blue-500"/>,
+      title: "သားသတ်လိုင်စင်ထုတ်ပေးမှု",
+      description: "သားသတ်လုပ်ငန်းများအတွက်လိုင်စင် တောင်းခံနိုင်ပါသည်။",
+      image: <LiaIdCard className="w-full h-40 object-fit rounded-t-2xl text-blue-500" />,
     },
     {
-      title: "Garbage Collection",
-      description: "Schedules and requests for garbage collection.",
-      image: <FcFullTrash className="w-full h-40 object-fit rounded-t-2xl"/>,
+      title: "ဈေးသန့်ရှင်းရေးဝန်ဆောင်မှု",
+      description: "အမှိုက်ကောက်သိမ်းမှုဇယားများနှင့် တောင်းဆိုမှုများကို ကြည့်ရှုနိုင်ပါသည်။",
+      image: <FcFullTrash className="w-full h-40 object-fit rounded-t-2xl" />,
     },
     {
-      title: "Street Construction",
-      description: "Track construction and small road maintenance.",
-      image: <LuConstruction className="w-full h-40 object-fit rounded-t-2xl text-amber-400"/>,
+      title: "ဈေးပြဿနာဖြေရှင်းပေးခြင်း",
+      description: "အသုံးပြုသူနှင့် ဆိုင်သည်တို့အကြား ဖြစ်ပေါ်သော ပြဿနာများကို ဖြေရှင်းပေးသော ဝန်ဆောင်မှုဖြစ်ပါသည်။",
+      image: <FaPeopleArrows className="w-full h-40 object-fit rounded-t-2xl text-amber-400" />,
     },
+    
   ];
-
   const activities = [
     {
       title: "Water Outage Resolved",
@@ -52,14 +56,51 @@ const Home = () => {
     },
   ];
 
+  const toDashboard = (e)=>{
+    e.preventDefault();
+    if(!userAuth){
+      navigate("/login")
+    }else{
+      navigate("/user")
+    }
+  }
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
 
-      <main className="flex-grow p-6">
+      <main className="flex-grow">
+
+      <section className="relative w-full h-screen">
+        {/*In the future, change Background Image */}
+        <img 
+          src="/receiptimages/HomeBG.jpg"
+          alt="Background"
+          className="w-full h-full object-cover"
+        />
+
+        {/* Overlay with blur and button */}
+        <div className="absolute inset-0 bg-black/40 backdrop-contrast-40 flex flex-col justify-center items-center text-white text-center p-4">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 drop-shadow">
+            ဆိုင်ခန်းအခွန်ပေးသွင်းမှု စနစ်
+          </h1>
+
+          <p className="text-lg md:text-xl text-white/90 mb-6 italic">
+            “အခွန်မှန်မှန် ပေးသွင်းခြင်းဖြင့် မြို့နယ်ဖွံ့ဖြိုးမှု တိုးတက်စေပါသည်။”
+          </p>
+
+          <button
+            className="btn btn-warning text-white text-sm"
+            onClick={toDashboard}
+          >
+            {userAuth ? "အသုံးပြုသူစာမျက်နှာသို့သွားပါ" : "စတင်အသုံးပြုရန်"}
+          </button>
+        </div>
+      </section>
+
+
         {/* Services Section */}
-        <section className="mt-10">
-          <h2 className="text-2xl font-bold mb-6">Our Services</h2>
+        <section className="p-6 bg-blue-100" id="services">
+          <h2 className="text-4xl font-bold mb-6 text-center">ကျွန်တော်တို့ရဲ့၀န်ဆောင်မှုများ</h2>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {services.map((service, idx) => (
               <div
@@ -79,27 +120,42 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Activities Section */}
-        <section className="mt-16">
-          <h2 className="text-2xl font-bold mb-6">Our Activities</h2>
-          <div className="space-y-8">
-            {activities.map((activity, idx) => (
+        {/* How It Works Section */}
+        <section className="mt-10 p-6 bg-amber-200" id="usage">
+          <h2 className="text-4xl font-bold mb-10 text-center">ဘယ်လိုအသုံးပြုရမလဲ?</h2>
+
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              {
+                step: "၁",
+                title: "အကောင့်ဝင်ရန်",
+                desc: "သင့်အကောင့်ဖြင့် ဝင်ရောက်ပါ။ အသုံးပြုသူအဖြစ်ရုံးမှာမှတ်ပုံတင်ထားဖို့လိုအပ်သည်။",
+              },
+              {
+                step: "၂",
+                title: "ဆိုင်ရွေးချယ်ခြင်း",
+                desc: "မိမိပိုင်ဆိုင်သော ဆိုင်ကို ရွေးချယ်ပါ။",
+              },
+              {
+                step: "၃",
+                title: "အခွန်ပေးသွင်းခြင်း",
+                desc: "လိုအပ်သောလအတွက် အခွန်ပေးသွင်းပါ။ ငွေလွှဲနည်းလမ်းများထဲမှ တစ်ခုကိုရွေးပါ။",
+              },
+              {
+                step: "၄",
+                title: "ပြေစာရယူခြင်း",
+                desc: "အောင်မြင်စွာပေးသွင်းပြီးသည်နှင့် ငွေပေးချေမှုပြေစာကို ရယူနိုင်ပါသည်။",
+              },
+            ].map((item, idx) => (
               <div
                 key={idx}
-                className="bg-base-100 shadow-md border border-base-200 rounded-2xl overflow-hidden flex flex-col md:flex-row md:items-center"
+                className="bg-amber-100 border border-base-200 rounded-2xl p-6 shadow-md hover:shadow-xl transition"
               >
-                {/* Image */}
-                { activity.image }
-
-                {/* Text Content */}
-                <div className="p-4 md:w-2/3">
-                  <h3 className="text-xl font-semibold mb-2">{activity.title}</h3>
-                  <p className="text-sm text-gray-600">
-                    {activity.description} Lorem ipsum dolor sit amet, consectetur
-                    adipiscing elit. Sed tincidunt, turpis in posuere lacinia, nisi nisi
-                    fermentum risus, vitae tempor magna eros id lacus.
-                  </p>
+                <div className="text-4xl font-bold text-secondary mb-4 text-center">
+                  {item.step}
                 </div>
+                <h3 className="text-xl font-bold mb-2 text-center">{item.title}</h3>
+                <p className="text-sm text-gray-600 text-center">{item.desc}</p>
               </div>
             ))}
           </div>

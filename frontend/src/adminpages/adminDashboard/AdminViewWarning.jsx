@@ -36,29 +36,34 @@ const AdminViewWarnings = () => {
     fetchWarnings();
   }, []);
 
-  useEffect(()=>{
-    if(!socket) return;
-
-    socket.on("adminRejectedWarning", (warning)=>{
-      setWarnings(prev => [...prev, warning])
-    })
-
-    socket.on("adminJustWarning", (warning) => {
+  useEffect(() => {
+    if (!socket) return;
+  
+    const handleAdminRejectedWarning = (warning) => {
       setWarnings(prev => [...prev, warning]);
-    });
-
-    socket.on("userWarningMarkedAsRead", (updatedWarning) => {
+    };
+  
+    const handleAdminJustWarning = (warning) => {
+      setWarnings(prev => [...prev, warning]);
+    };
+  
+    const handleUserWarningMarkedAsRead = (updatedWarning) => {
       setWarnings(prev =>
         prev.map(w => w._id === updatedWarning._id ? updatedWarning : w)
       );
-    }); 
-
-    return ()=>{
-      socket.off("adminRejectedWarning")
-      socket.off("adminJustdWarning")
-      socket.off("userWarningMarkedAsRead")
-    }
-  },[socket])
+    };
+  
+    socket.on("adminRejectedWarning", handleAdminRejectedWarning);
+    socket.on("adminJustWarning", handleAdminJustWarning);
+    socket.on("userWarningMarkedAsRead", handleUserWarningMarkedAsRead);
+  
+    return () => {
+      socket.off("adminRejectedWarning", handleAdminRejectedWarning);
+      socket.off("adminJustWarning", handleAdminJustWarning);
+      socket.off("userWarningMarkedAsRead", handleUserWarningMarkedAsRead);
+    };
+  }, [socket]);
+  
   
   return (
     <div className="flex min-h-screen">

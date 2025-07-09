@@ -15,8 +15,6 @@ import adminProtectRoute from '../middleware/adminProtectRoute.js';
 
 const router = express.Router();
 
-//In the future, add auth
-
 router.post('/', createReceipt);
 
 router.get('/', adminProtectRoute, getAllReceipts); //used by admin

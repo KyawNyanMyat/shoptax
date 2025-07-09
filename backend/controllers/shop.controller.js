@@ -3,6 +3,7 @@ import Shop from '../models/shop.model.js';
 import { redlock } from '../utils/redlock.js';
 import mongoose from 'mongoose';
 import { getIO } from '../socket/socket.js';
+import { getOverdueUsersData } from '../utils/overdueHelpers.js';
 
 // Create a new shop
 export const createShop = async (req, res) => {
@@ -197,6 +198,11 @@ export const removeUserFromShop = async (req, res) => {
     // const updatedShop = await Shop.findById(shopId)
     io.emit("shopUserRemoved",shop) // for admin
     io.to(forSocketUserId.toString()).emit("shopRemoved", shop) // for user
+
+    //Important In the future change it to today 
+    const dummytoday = new Date(2025, 6, 11); // July 11, 2025
+    const overdue = await getOverdueUsersData(dummytoday);
+    io.to("adminRoom").emit("overdueUpdated", overdue.length)
 
     res.status(200).json({ message: "အသုံးပြုသူကို ဆိုင်မှအောင်မြင်စွာ ဖယ်ရှားပြီးပါပြီ" });
   } catch (err) {

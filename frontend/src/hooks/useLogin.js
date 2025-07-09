@@ -21,9 +21,15 @@ const useLogin = ()=>{
                 throw new Error(data.message || "တခုခုမှားယွင်းနေပါသည်");
             }
 
-            localStorage.setItem("user-dashboard", JSON.stringify(data))
+            const now = new Date();
+            const userWithExpiry = {
+                value: data,
+                expiry: now.getTime() + 1000 * 60 * 60 * 24,
+            };
+
+            localStorage.setItem("user-dashboard", JSON.stringify(userWithExpiry))
             toast.success("အကောင့်၀င်ချင်းအောင်မြင်ပါသည်", {id:'user-login',duration: 2000});
-            navigate("/user") //In the future uncomment this
+            navigate("/user")
         } catch (error) {
             console.log('Error in useLogin hook',error)
             toast.error(error.message, {id:"user-login-error",duration: 1500})

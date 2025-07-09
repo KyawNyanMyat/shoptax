@@ -28,7 +28,6 @@ app.use("/uploads", express.static(path.join(path.resolve(),"backend", "uploads"
 app.use(express.json())
 app.use(cookieParser())
 
-//In the future(make 404 when user enter invalid url)
 
 app.use('/api/shops',ShopRoutes);
 app.use('/api/users', UserRoutes);
@@ -37,6 +36,9 @@ app.use('/api/payments', PaymentRoutes);
 app.use('/api/receipts', ReceiptRoutes);
 app.use('/api/warnings', WarningRoutes);
 
+app.use((req, res)=>{
+    res.status(404).send("404- Resource not found")
+})
 const startServer = async ()=>{
     try {
         await connectToDB();
