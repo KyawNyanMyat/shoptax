@@ -15,6 +15,7 @@ const AdminManageReceipts = () => {
   const [receipts, setReceipts] = useState([]);
   const [loading, setLoading] = useState(false);
   const socket = useSocketContext()
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   useEffect(() => {
     const fetchReceipts = async () => {
@@ -43,7 +44,7 @@ const AdminManageReceipts = () => {
     if(!socket) return;
 
     const handleNewReceipt = (receipt)=>{
-      setReceipts(prev => [...prev, receipt])
+      setReceipts(prev => [ receipt, ...prev ])
     }
 
     const handleUserReceiptMarkedAsRead = (updatedReceipt) => {
@@ -62,12 +63,12 @@ const AdminManageReceipts = () => {
   }, [socket])
 
   return (
-    <div className="flex min-h-screen">
-      <AdminDashboardSidebar />
-      <div className="flex-1 flex flex-col max-h-screen w-4/5">
-        <AdminDashboardHeader />
+    <div className="flex max-h-screen">
+      <AdminDashboardSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <AdminDashboardHeader setSidebarOpen={setSidebarOpen} />
 
-        <div className="p-6 bg-gray-50 overflow-scroll">
+        <div className="p-6 bg-gray-50 h-screen overflow-scroll">
           <h2 className="text-2xl font-bold text-teal-600 mb-6">ငွေလက်ခံဖြတ်ပိုင်း စီမံခြင်း</h2>
 
           {loading ? (
@@ -75,8 +76,8 @@ const AdminManageReceipts = () => {
           ) : receipts.length === 0 ? (
             <p>လက်ခံဖြတ်ပိုင်း မတွေ့ရှိပါ။</p>
           ) : (
-            <div className=" bg-white rounded-xl shadow">
-              <table className="table w-full">
+            <div className=" bg-white rounded-xl shadow overflow-x-auto">
+              <table className="table max-w-[700px] w-full">
                 <thead className="bg-teal-100 text-teal-800 text-sm">
                   <tr>
                     <th>စဉ်</th>

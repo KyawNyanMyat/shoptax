@@ -11,6 +11,7 @@ const UserViewShops = () => {
   const [shops, setShops] = useState([]);
   const [loading, setLoading] = useState(false);
   const socket = useSocketContext()
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   if (!userAuth) {
     return <Navigate to="/" />;
@@ -50,23 +51,37 @@ const UserViewShops = () => {
     const handleShopRemoved = (shop) => {
       setShops(prevShops => prevShops.filter(s => s._id !== shop._id));
     };
-  
+
+    const handleShopTaxChangedForBoth = (updatedShop) => {
+      setShops(prev => {
+          const index = prev.findIndex(s => s._id === updatedShop._id);
+          if (index !== -1) {
+              const copy = [...prev];
+              copy[index].chargeRate = updatedShop.chargeRate;
+              return copy;
+          }
+          return prev;
+      });
+    };
+
+    socket.on("shopTaxChanged", handleShopTaxChangedForBoth);
     socket.on("shopAssigned", handleShopAssigned);
     socket.on("shopRemoved", handleShopRemoved);
   
     return () => {
       socket.off("shopAssigned", handleShopAssigned);
       socket.off("shopRemoved", handleShopRemoved);
+      socket.off("shopTaxChanged", handleShopTaxChangedForBoth);
     };
   }, [socket]);
   
 
   return (
-    <div className="flex min-h-screen">
-      <DashboardSidebar />
-      <div className="flex-1 flex flex-col">
-        <DashboardHeader />
-            <div className="p-4 sm:p-6">
+    <div className="flex max-h-screen">
+      <DashboardSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <DashboardHeader setSidebarOpen={setSidebarOpen} />
+            <div className="p-4 sm:p-6 h-screen overflow-scroll">
             <h1 className="text-xl sm:text-2xl font-bold text-center text-indigo-700 mb-4">
                 ဆိုင်အချက်အလက်များ ကြည့်ရှုရန်
             </h1>

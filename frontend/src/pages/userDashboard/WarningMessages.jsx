@@ -15,6 +15,7 @@ const WarningMessages = () => {
   }
   const userId = userAuth._id;
   const [warnings, setWarnings] = useState([])
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const { markAsRead, loadingId } = useMarkWarningAsRead() 
   const socket = useSocketContext()
 
@@ -39,11 +40,11 @@ const WarningMessages = () => {
     if (!socket) return;
   
     const handleRejectWarning = (warning) => {
-      setWarnings(prev => [...prev, warning]);
+      setWarnings(prev => [ warning, ...prev]);
     };
   
     const handleJustWarning = (warning) => {
-      setWarnings(prev => [...prev, warning]);
+      setWarnings(prev => [ warning, ...prev]);
     };
   
     const handleWarningMarkedAsRead = (updatedWarning) => {
@@ -68,12 +69,12 @@ const WarningMessages = () => {
     await markAsRead(e.target.value)
   }
     return (
-        <div className="flex min-h-screen">
-          <DashboardSidebar />
+        <div className="flex max-h-screen">
+          <DashboardSidebar  sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
           <div className="flex-1 flex flex-col">
-            <DashboardHeader />
+            <DashboardHeader setSidebarOpen={setSidebarOpen} />
             
-            <div className="p-6">
+            <div className="p-6 h-screen overflow-y-scroll">
                 <h2 className="text-2xl font-bold mb-6">သတိပေးစာဆောင်များ</h2>
 
                 <div className="space-y-6">
@@ -88,8 +89,8 @@ const WarningMessages = () => {
                         <div>
                             <h3 className="font-semibold">{warn.warningTitle}</h3>
                             <p className="text-sm mb-1">{warn.warningContent}</p>
-                            <p className="text-sm mb-1">အခကြေးငွေ{warn.overdueFee}</p>
-                            <p className="text-xs text-gray-500">ထုတ်ပေးသည့်ရက်စွဲ: {warn.issueDate}</p>
+                            <p className="text-sm mb-1 text-blue-500">အခကြေးငွေ{warn.overdueFee}</p>
+                            <p className="text-xs text-green-600">ထုတ်ပေးသည့်ရက်စွဲ: {new Date(warn.issueDate).toLocaleDateString()}</p>
                             <button
                               className="btn btn-success mt-4"
                               disabled={warn.isRead || loadingId == warn._id}

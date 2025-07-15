@@ -19,6 +19,7 @@ const ManageAdmins = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const socket = useSocketContext()
   const myposition = "ဒုဦးစီးမှူး"
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const fetchAdmins = async (search="") => {
     setLoading(true)
@@ -67,12 +68,12 @@ const ManageAdmins = () => {
   };
 
   return (
-    <div className="flex min-h-screen">
-      <AdminDashboardSidebar />
-      <div className="flex-1 flex flex-col max-h-screen w-4/5">
-        <AdminDashboardHeader />
+    <div className="flex max-h-screen">
+      <AdminDashboardSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <AdminDashboardHeader setSidebarOpen={setSidebarOpen} />
 
-        <div className="p-6 bg-gray-50 overflow-scroll">
+        <div className="p-6 bg-gray-50 h-screen overflow-scroll">
             <div className="flex items-center gap-4">
               <input
                 type="text"
@@ -88,7 +89,7 @@ const ManageAdmins = () => {
                 ရှာဖွေရန်
               </button>
             </div>
-          <div className="flex justify-between items-center mb-6">
+          <div className="flex justify-between items-center flex-wrap mt-3 mb-3">
             <h2 className="text-2xl font-bold text-teal-600">အုပ်ချုပ်သူ စီမံခန့်ခွဲမှု</h2>
             <button
               onClick={handleAuthorization}
@@ -104,8 +105,8 @@ const ManageAdmins = () => {
           ) : admins.length === 0 ? (
             <p className="text-gray-500">အုပ်ချုပ်သူ မရှိသေးပါ။</p>
           ) : (
-            <div className="">
-              <table className="table w-full bg-white shadow rounded-xl">
+            <div className="p-2 overflow-x-auto">
+              <table className="table min-w-[700px] w-full bg-white shadow rounded-xl">
                 <thead>
                   <tr className="bg-blue-100 text-blue-800 text-sm">
                     <th>စဉ်</th>

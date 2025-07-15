@@ -20,7 +20,7 @@ const Login = () => {
   return (
 
     <div className='flex flex-col items-center justify-center min-h-screen'>
-      <div className='bg-gray-200 p-6 w-11/12 md:w-1/3 rounded-t-4xl border-t-6 border-green-500 shadow shadow-green-400'>
+      <div className='bg-gray-200 p-6 w-11/12 md:w-1/3 rounded-4xl border-t-6 border-blue-500 shadow shadow-green-900'>
 
         <form onSubmit={handleSubmit}>
          {/* Header */}
@@ -56,10 +56,10 @@ const Login = () => {
             </span>
           </div>
 
-          <Link to='/' className='text-sm hover:underline hover:text-blue-700 mt-4 inline-block'> ပင်မစာမျက်နှာ သို့သွားရန်</Link>
+          <Link to='/' className='text-sm text-green-600 hover:underline hover:text-blue-700 mt-4 inline-block'> ပင်မစာမျက်နှာ သို့သွားရန်</Link>
 
           <div className='pt-3'>
-            <button className='btn btn-success w-full'>
+            <button className='btn btn-primary w-full'>
               {loading ? <span className="loading loading-spinner loading-xs"></span>
                 : "အကောင့်၀င်ရန်"
               }

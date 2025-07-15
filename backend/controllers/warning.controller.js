@@ -3,7 +3,6 @@ import Warning from '../models/warning.model.js';
 import { redlock } from '../utils/redlock.js';
 import { getIO } from '../socket/socket.js';
 
-// Create a new warning //In the future, choose one person per warning, also session Expire??
 export const createWarning = async (req, res) => {
   const session = await mongoose.startSession();
   const { warningTitle, warningContent, userId, overdueFee } = req.body;
@@ -63,7 +62,7 @@ export const createWarning = async (req, res) => {
 // Get all warnings
 export const getAllWarnings = async (req, res) => {
   try {
-    const warnings = await Warning.find().populate('userId', 'username');
+    const warnings = await Warning.find().populate('userId', 'username').sort({issueDate: -1});
     res.status(200).json(warnings);
   } catch (error) {
     console.error("Get Warnings Error:", error);
@@ -137,7 +136,7 @@ export const getWarningsByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    const allwarningByUser = await Warning.find({userId})
+    const allwarningByUser = await Warning.find({userId}).sort({issueDate: -1})
 
     res.status(200).json(allwarningByUser);
   } catch (error) {

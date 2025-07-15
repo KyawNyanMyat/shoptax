@@ -17,10 +17,12 @@ const useSubmitPayment = ()=>{
             if (!res.ok) throw new Error(data.message || "Update လုပ်တာမအောင်မြင်ပါ");
             
             toast.success("ငွေပေးချေမှု တင်သွင်းမှုအောင်မြင်ပါသည်", {duration:2500})
+            return true
 
         } catch (error) {
             console.log("Error in useSubmitPayment hook", error.message)
             toast.error(error.message, {duration: 1500})
+            return false
         }
         finally{
             setloading(false)

@@ -8,6 +8,7 @@ import { useAdminAuthContext } from "../../context/adminAuthContext";
 import useCreateShop from "../../hooks/useCreateShop";
 import { useRemoveUserFromShop } from "../../hooks/useRemoveUserFromShop";
 import { useSocketContext } from "../../context/socketContext";
+import useChangeTax from "../../hooks/useChangeTax";
 
 const AdminManageShops = () => {
     const { adminAuth } = useAdminAuthContext();
@@ -24,10 +25,26 @@ const AdminManageShops = () => {
     const { removeUserFromShop } = useRemoveUserFromShop();
     const socket = useSocketContext()
 
+    const [changeTax, setChangeTax] = useState(false)
+    const [sidebarOpen, setSidebarOpen] = useState(false)
+    const [taxValue, setTaxValue] = useState({
+        _id: "",
+        value: ""
+    })
+    const { taxLoading, changeShopTax } = useChangeTax()
+
     const handleRemoveUser = async (shopId) => {
         await removeUserFromShop(shopId);
         setSelectedShop(null);
     };
+
+    const handleShopTaxChange = async (shopId, taxValue)=>{
+        await changeShopTax(shopId, taxValue);
+        setTaxValue({
+             _id: "",
+            value: ""
+        })
+    }
 
     useEffect(() => {
         const fetchShops = async () => {
@@ -79,12 +96,26 @@ const AdminManageShops = () => {
               }
               return prev;
             });
-          }
+        }
 
+        const handleShopTaxChangedForBoth = (updatedShop) => {
+            setShops(prev => {
+                const index = prev.findIndex(s => s._id === updatedShop._id);
+                if (index !== -1) {
+                    const copy = [...prev];
+                    copy[index].chargeRate = updatedShop.chargeRate;
+                    return copy;
+                }
+                return prev;
+            });
+        };
+    
+        socket.on("shopTaxChanged", handleShopTaxChangedForBoth);
         socket.on("shopAssignedToUser", handleShopAssignedToUser)
         socket.on("shopUserRemoved", handleShopUserRemoved);
           
         return ()=>{
+            socket.off("shopTaxChanged", handleShopTaxChangedForBoth)
             socket.off("shopAssignedToUser", handleShopAssignedToUser)
             socket.off("shopUserRemoved", handleShopUserRemoved)
         }
@@ -109,18 +140,17 @@ const AdminManageShops = () => {
     };
 
     return (
-        <div className="flex min-h-screen">
-            <AdminDashboardSidebar />
-            <div className="flex-1 flex flex-col max-h-screen w-4/5">
-                <AdminDashboardHeader />
-
+        <div className="flex max-h-screen">
+            <AdminDashboardSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+            <div className="flex-1 flex flex-col overflow-hidden">
+                <AdminDashboardHeader setSidebarOpen={setSidebarOpen} />
                 {loading ? (
                     <p>ဆိုင်အချက်အလက်များကို တင်ဆက်နေသည်...</p>
                 ) : shops.length === 0 ? (
                     <p className="text-gray-500">ဆိုင်များ မတွေ့ပါ။</p>
                 ) : (
-                    <div className="p-6 space-y-4 overflow-scroll">
-                        <div className="flex justify-between items-center">
+                    <div className="p-6 space-y-4 h-screen overflow-scroll">
+                        <div className="flex justify-between items-center flex-wrap">
                             <h2 className="text-2xl font-bold text-teal-600">ဆိုင်များ စီမံခန့်ခွဲမှု</h2>
                             <Link
                                 to="/admin/manageshop/create-shop"
@@ -130,8 +160,8 @@ const AdminManageShops = () => {
                             </Link>
                         </div>
 
-                        <div className="">
-                            <table className="table table-zebra w-full text-sm text-center">
+                        <div className="p-2 overflow-x-auto">
+                            <table className="table table-zebra min-w-[700px] w-full text-sm text-center">
                                 <thead className="bg-gray-200 text-gray-700">
                                     <tr>
                                         <th>စဉ်</th>
@@ -140,6 +170,7 @@ const AdminManageShops = () => {
                                         <th>ဆိုင်နံပါတ်</th>
                                         <th>အပ်နှင်းထားသူ</th>
                                         <th>အခွန်နှုန်း</th>
+                                        <th>လုပ်ဆောင်ချက်</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -156,10 +187,10 @@ const AdminManageShops = () => {
                                                         onAssign={(shopId, userId) => handleAssign(shopId, userId)}
                                                     />
                                                 ) : (
-                                                    <div className="flex justify-between gap-2">
-                                                        <span>{s.userId.username}</span>
+                                                    <div className="flex gap-2 items-center justify-between">
+                                                        <span className="whitespace-nowrap">{s.userId.username}</span>
                                                         <button
-                                                        className="btn btn-sm btn-error"
+                                                        className="btn btn-sm btn-error whitespace-nowrap"
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             setSelectedShop(s);
@@ -172,6 +203,18 @@ const AdminManageShops = () => {
                                                 )}
                                             </td>
                                             <td>{s.chargeRate}</td>
+                                            <td>
+                                                <button 
+                                                    className="btn btn-primary whitespace-nowrap"
+                                                    onClick={(e)=>{
+                                                        e.stopPropagation()
+                                                        setChangeTax(true)
+                                                        setTaxValue({"_id":s._id, "value":s.chargeRate})
+                                                    }}
+                                                >
+                                                    အခွန်နှုန်းပြောင်းလဲရန်
+                                                </button>
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -206,6 +249,46 @@ const AdminManageShops = () => {
                             </div>
                         </dialog>
                         )}
+
+                        {
+                            changeTax && (
+                                <div className="modal modal-open" onClick={()=> setChangeTax(false)}>
+                                    <div className="modal-box" onClick={(e)=> e.stopPropagation()}>
+                                        <h3 className="font-bold text-lg text-red-600 text-center mb-4">အတည်ပြုချက်</h3>
+                                        <p className="py-2">
+                                            <span className="font-semibold px-4">အခွန်နှုန်း</span>
+                                            <input 
+                                                type="text"
+                                                value={taxValue.value} 
+                                                className="input input-bordered"
+                                                onChange={(e)=> setTaxValue({_id:taxValue._id, value:e.target.value})}
+                                            />
+                                        </p>
+                                        <div className="modal-action flex justify-center">
+                                            <button
+                                            className="btn"
+                                            onClick={() => setChangeTax(false)}
+                                            >
+                                            ပိတ်မည်
+                                            </button>
+                                            <button
+                                            className="btn btn-error"
+                                            onClick={() => {
+                                                handleShopTaxChange(taxValue._id, taxValue.value)
+                                                setChangeTax(false)
+                                            }}
+                                            >
+                                            {taxLoading ? (
+                                                <span className="loading loading-spinner loading-sm"></span>
+                                                ) : (
+                                                'အတည်ပြုမည်'
+                                            )}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        }
                     </div>    
                 )}
             </div>

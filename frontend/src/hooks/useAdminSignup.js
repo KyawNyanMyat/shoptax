@@ -21,12 +21,12 @@ const useAdminSignup = () => {
         throw new Error(data.message || "အကောင့်ဖွင့်ခြင်း မအောင်မြင်ပါ");
       }
 
-      toast.success("အက်မင်အကောင့်အောင်မြင်စွာဖွင့်ပြီးပါပြီ!");
+      toast.success("အက်မင်အကောင့်အောင်မြင်စွာဖွင့်ပြီးပါပြီ!", {id:"adminSignupError"});
       return true
-      //navigate("/admin/dashboard"); // အနာဂတ်တွင်ပြန်ဖွင့်ပါ
+
     } catch (err) {
         console.log("useAdminSignup မှာ error ဖြစ်နေတယ်", err.message)
-        toast.error(err.message, { duration: 2500 });
+        toast.error(err.message, { duration: 2500, id:"adminSignupError" });
         return false
     } finally {
       setLoading(false);

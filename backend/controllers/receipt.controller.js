@@ -26,7 +26,8 @@ export const getAllReceipts = async (req, res) => {
   try {
     const receipts = await Receipt.find()
       .populate({path:'paymentId', populate: {path: "userId", select: "_id username"}})
-      .populate('adminId', 'adminName');
+      .populate('adminId', 'adminName')
+      .sort({issueDate: -1});
 
     res.status(200).json(receipts);
   } catch (error) {
@@ -122,7 +123,6 @@ export const getAllUnreadReceiptsByUserId = async (req, res) => {
 
     const payments = await Payment.find({ userId }).select("_id");
 
-    //In the future
     // if (!payments.length) {
     //   return res.status(200).json([]); // No payments = no receipts
     // }

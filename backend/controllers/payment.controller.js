@@ -26,12 +26,12 @@ export const createPayment = async (req, res) => {
       return res.status(400).json({ message: "အချက်အလက်အားလုံးဖြည့်ရန် လိုအပ်ပါသည်။" });
     }
 
-    const amountNumber = myanmarToEnglish(amount)
+    const amountNumber = amount
     if (isNaN(amountNumber) || amountNumber <= 0) {
       return res.status(400).json({ message: "ပမာဏသည် ငွေပမာဏဖြစ်ပြီး သုညထက်ကြီးရမည်။" });
     }
 
-    const validTypes = ["NRC Register Cost", "Shop Rent Cost", "Overdue Fee"];
+    const validTypes = ["Shop Rent Cost", "Overdue Fee"];
     if (!validTypes.includes(paymentType)) {
       return res.status(400).json({ message: "ငွေပေးချေမှု အမျိုးအစား မမှန်ကန်ပါ။" });
     }
@@ -74,7 +74,8 @@ export const getAllPayments = async (req, res) => {
     }
     const payments = await Payment.find(query)
       .populate('userId', 'username')
-      .populate('shopId', 'marketHallNo shopNo');
+      .populate('shopId', 'marketHallNo shopNo')
+      .sort({paidDate: -1});
 
     if(!payments) {
       return res.status(404).json({message:[]})
@@ -179,8 +180,7 @@ export const getPendingPayments = async (req, res) => {
 // controllers/paymentController.js
 export const getOverdueUsers = async (req, res) => {
   try {
-    //Important In the future change it to today 
-    const dummytoday = new Date(2025, 6, 12); // July 11, 2025
+    const dummytoday = new Date(); 
     const data = await getOverdueUsersData(dummytoday);
     res.status(200).json(data);
   } catch (error) {
@@ -282,8 +282,7 @@ export const updatePaymentStatus = async (req, res) => {
         io.to("adminRoom").emit("finishedPayment", updated); // send to admin
         io.to(userId).emit("userNewReceipt", receipt);  //send to user
 
-        //Important In the future change it to today 
-        const dummytoday = new Date(2025, 6, 11); // July 11, 2025
+        const dummytoday = new Date(); // July 11, 2025
         const overdue = await getOverdueUsersData(dummytoday);
         io.to("adminRoom").emit("overdueUpdated", overdue.length)
       }

@@ -1,5 +1,5 @@
 import express from 'express';
-import { assignUserToShop, createShop, deleteShop, getAllShops, getShopById, getShopsByUserId, removeUserFromShop, updateShop } from '../controllers/shop.controller.js';
+import { assignUserToShop, changeShopTax, createShop, deleteShop, getAllShops, getShopById, getShopsByUserId, removeUserFromShop, updateShop } from '../controllers/shop.controller.js';
 import userProtectRoute from '../middleware/userProtectRoute.js';
 import adminProtectRoute from '../middleware/adminProtectRoute.js';
 
@@ -14,6 +14,8 @@ router.put("/:shopId/assign", adminProtectRoute, assignUserToShop); // used by a
 router.patch("/:shopId/remove-user", adminProtectRoute, removeUserFromShop); // used by admin
 
 router.get('/user/:id', userProtectRoute, getShopsByUserId); // used by user
+
+router.patch("/changeTax/:shopId",adminProtectRoute, changeShopTax) // used by admin
 
 router.get('/:id', getShopById);
 

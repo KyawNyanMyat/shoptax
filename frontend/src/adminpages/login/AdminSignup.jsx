@@ -42,7 +42,7 @@ const AdminSignup = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex flex-col py-10 items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 w-11/12 md:w-1/3 shadow-lg rounded-lg border-t-4 border-blue-600">
         <form onSubmit={handleSubmit} autoComplete="off">
           {/* Header */}

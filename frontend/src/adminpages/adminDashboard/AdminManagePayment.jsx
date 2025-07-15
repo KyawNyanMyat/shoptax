@@ -20,6 +20,7 @@ const AdminManagePayments = () => {
   const { updateStatus, loading: statusLoading } = usePaymentStatusUpdate();
   const [selectedReject, setSelectedReject] = useState(null); 
   const [rejectionReason, setRejectionReason] = useState("");
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState("Pending");
   const downloadPDF = useDownloadPaymentsPDF();
 
@@ -52,7 +53,7 @@ const AdminManagePayments = () => {
 
     const handleNewPayment = (populatedPayment)=>{
       if (searchTerm === "Pending" || searchTerm === "") {
-        setPayments((prev) => [...prev, populatedPayment]);
+        setPayments((prev) => [populatedPayment, ...prev]);
       }
     }
 
@@ -63,7 +64,7 @@ const AdminManagePayments = () => {
       }
 
       if (searchTerm === "Finished" || searchTerm === "") {
-        setPayments((prev) => [...prev, updatedPayment]);
+        setPayments((prev) => [ updatedPayment, ...prev ]);
       }
     }
 
@@ -72,7 +73,7 @@ const AdminManagePayments = () => {
         setPayments((prev) => prev.filter(p => p._id !== rejectedPayment._id));
       }
       if (searchTerm === "Rejected" || searchTerm === "") {
-        setPayments((prev) => [...prev, rejectedPayment]);
+        setPayments((prev) => [ rejectedPayment, ...prev]);
       }
     }
 
@@ -88,12 +89,12 @@ const AdminManagePayments = () => {
   },[socket, searchTerm])
 
   return (
-    <div className="flex min-h-screen">
-      <AdminDashboardSidebar />
-      <div className="flex-1 flex flex-col max-h-screen w-4/5">
-        <AdminDashboardHeader />
+    <div className="flex max-h-screen">
+      <AdminDashboardSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}  />
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <AdminDashboardHeader setSidebarOpen={setSidebarOpen}  />
 
-        <div className="p-6 bg-gray-50 overflow-scroll">
+        <div className="p-6 bg-gray-50 h-screen overflow-scroll">
           <div className="flex items-center gap-4 mb-4">
             <span>အခြေအနေ</span>
             <select
@@ -127,8 +128,8 @@ const AdminManagePayments = () => {
             <p className="text-gray-500">ငွေပေးချေမှုမရှိပါ။</p>
           ) : (
             <div className="border border-gray-200 rounded-xl bg-white shadow">
-              <div className="">
-                <table className=" divide-gray-200 text-center">
+              <div className="p-2 overflow-x-auto">
+                <table className=" divide-gray-200 text-center min-w-[700px] w-full">
                   <thead className="bg-teal-100">
                     <tr className="text-teal-800 text-sm">
                       <th className="px-6 py-3 text-left font-medium">စဉ်</th>
@@ -153,7 +154,9 @@ const AdminManagePayments = () => {
                         <td className="px-6 py-4 whitespace-nowrap">
                           {payment.shopId.marketHallNo} / {payment.shopId.shopNo}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">{payment.paymentType}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {payment.paymentType === "Shop Rent Cost" ? "ဆိုင်ဌားခ" : "ရက်ကျော်ကြေး" }
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <img
                             src={payment.paymentPhoto}
@@ -181,7 +184,10 @@ const AdminManagePayments = () => {
                                 : "bg-red-100 text-red-800"
                             }`}
                           >
-                            {payment.status}
+                            {
+                              payment.status === "Pending" ? "စောင့်ဆိုင်း" :
+                              payment.status === "Finished" ? "အောင်မြင်ပြီး" : "ငြင်းဆိုခဲ့သည်"
+                            }
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap space-x-2">

@@ -170,7 +170,7 @@ export const assignUserToShop = async (req, res) => {
 export const removeUserFromShop = async (req, res) => {
   const { shopId } = req.params;
   const session = await mongoose.startSession();
-  const lockKey = `lock:shop:${shopId}`;
+  const lockKey = `locks:shop:${shopId}`;
   let lock;
 
   try {
@@ -199,8 +199,7 @@ export const removeUserFromShop = async (req, res) => {
     io.emit("shopUserRemoved",shop) // for admin
     io.to(forSocketUserId.toString()).emit("shopRemoved", shop) // for user
 
-    //Important In the future change it to today 
-    const dummytoday = new Date(2025, 6, 11); // July 11, 2025
+    const dummytoday = new Date(); // July 11, 2025
     const overdue = await getOverdueUsersData(dummytoday);
     io.to("adminRoom").emit("overdueUpdated", overdue.length)
 
@@ -208,6 +207,15 @@ export const removeUserFromShop = async (req, res) => {
   } catch (err) {
     await session.abortTransaction();
     console.error("Remove user error:", err.message);
+
+    if (err.name === "LockError" || err.name === "ExecutionError") {
+      return res.status(423).json({ message: "အရင်းအမြစ်ကို တခြားသူအသုံးပြုနေသည်။ နောက်မှပြန်ကြိုးစားပါ။" });
+    }
+
+    if (err.code == 112) {
+      return res.status(409).json({ err: "တခြားအုပ်ချုပ်သူတစ်ဦးမှ အချက်အလက်ပြောင်းလဲမှုများ ပြုလုပ်ထားသည်။" });
+    }
+
     res.status(500).json({ message: "အသုံးပြုသူကို ဆိုင်မှဖယ်ရှားရာတွင် မအောင်မြင်ပါ" });
   } finally {
     session.endSession();
@@ -216,4 +224,54 @@ export const removeUserFromShop = async (req, res) => {
     }
   }
 };
+
+
+export const changeShopTax = async (req, res)=>{
+  const { shopId } = req.params;
+  const session = await mongoose.startSession()
+  let lock;
+  try {
+    lock = await redlock.acquire([`locks:shop:${shopId}`], 8000);
+    session.startTransaction()
+
+    const updatedTax = await Shop.findByIdAndUpdate(
+      shopId,
+      {chargeRate: req.body.chargeRate},
+      {new: true, session}
+    )
+
+    if(!updatedTax){
+      return res.status(404).json({message: "ဆိုင်ကိုမတွေ့ရှိနိုင်ပါ"})
+    }
+
+    await session.commitTransaction();
+    await lock.release()
+
+    //socket
+    const io = getIO();
+    io.emit("shopTaxChanged", updatedTax)
+
+    res.status(200).json(updatedTax)
+
+  } catch (error) {
+    await session.abortTransaction();
+    console.log("Error in shop controller changeShopTax", error)
+
+    if (error.name === "LockError" || error.name === "ExecutionError") {
+      return res.status(423).json({ message: "အရင်းအမြစ်ကို တခြားသူအသုံးပြုနေသည်။ နောက်မှပြန်ကြိုးစားပါ။" });
+    }
+
+    if (error.code == 112) {
+      return res.status(409).json({ error: "တခြားအုပ်ချုပ်သူတစ်ဦးမှ အချက်အလက်ပြောင်းလဲမှုများ ပြုလုပ်ထားသည်။" });
+    }
+
+    res.status(500).json({ message: "ဆိုင်အခွန်ပြောင်းလဲချင်း မအောင်မြင်ပါ" });
+  }
+  finally{
+    session.endSession()
+    if (lock) {
+      await lock.release().catch(() => {});
+    }
+  }
+}
 

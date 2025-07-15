@@ -71,11 +71,10 @@ const Home = () => {
       <main className="flex-grow">
 
       <section className="relative w-full h-screen">
-        {/*In the future, change Background Image */}
         <img 
-          src="/receiptimages/HomeBG.jpg"
+          src="/NewBG.jpg"
           alt="Background"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-fit"
         />
 
         {/* Overlay with blur and button */}

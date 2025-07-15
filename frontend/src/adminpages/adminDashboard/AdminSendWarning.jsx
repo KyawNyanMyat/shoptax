@@ -20,6 +20,7 @@ const AdminSendWarning = () => {
 
   const [users, setUsers] = useState([]);
   const { sendWarning, loading } = useSendWarning();
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -66,89 +67,90 @@ const AdminSendWarning = () => {
   }, []);
 
   return (
-    <div className="flex min-h-screen">
-      <AdminDashboardSidebar />
-      <div className="flex-1 max-h-screen w-4/5 overflow-scroll">
-        <AdminDashboardHeader />
-        <h2 className="text-2xl font-bold text-teal-600 mb-4 px-6 py-4">သတိပေးစာ ပေးပို့ရန်</h2>
+    <div className="flex max-h-screen">
+      <AdminDashboardSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}  />
+      <div className="flex flex-col flex-1 overflow-hidden">
+        <AdminDashboardHeader setSidebarOpen={setSidebarOpen} />
+        <div className="h-screen overflow-scroll">
+          <h2 className="text-2xl font-bold text-teal-600 px-6 py-4">သတိပေးစာ ပေးပို့ရန်</h2>
+          <form onSubmit={handleSubmit} className="space-y-4 bg-white px-6 py-4 rounded shadow">
+            <div>
+              <label className="font-medium">ခေါင်းစဉ်</label>
+              <input
+                type="text"
+                name="warningTitle"
+                value={form.warningTitle}
+                onChange={handleChange}
+                placeholder="ဥပမာ - ငွေပေးချေမှုမရှိခြင်း"
+                className="input input-bordered w-full focus:outline-offset-0"
+                required
+              />
+            </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4 bg-white px-6 py-4 rounded shadow">
-          <div>
-            <label className="font-medium">ခေါင်းစဉ်</label>
-            <input
-              type="text"
-              name="warningTitle"
-              value={form.warningTitle}
-              onChange={handleChange}
-              placeholder="ဥပမာ - ငွေပေးချေမှုမရှိခြင်း"
-              className="input input-bordered w-full focus:outline-offset-0"
-              required
-            />
-          </div>
+            <div>
+              <label className="font-medium">အကြောင်းအရာ</label>
+              <textarea
+                name="warningContent"
+                value={form.warningContent}
+                onChange={handleChange}
+                placeholder="ဥပမာ - သတ်မှတ်ထားသော နေ့ရက်အတွင်း ငွေချေရန် မပြုလုပ်သဖြင့်..."
+                className="textarea textarea-bordered w-full focus:outline-offset-0"
+                required
+              />
+            </div>
 
-          <div>
-            <label className="font-medium">အကြောင်းအရာ</label>
-            <textarea
-              name="warningContent"
-              value={form.warningContent}
-              onChange={handleChange}
-              placeholder="ဥပမာ - သတ်မှတ်ထားသော နေ့ရက်အတွင်း ငွေချေရန် မပြုလုပ်သဖြင့်..."
-              className="textarea textarea-bordered w-full focus:outline-offset-0"
-              required
-            />
-          </div>
+            <div>
+              <label className="font-medium">အသုံးပြုသူ ရွေးပါ</label>
+              <select
+                name="userId"
+                value={form.userId}
+                onChange={handleChange}
+                className="select select-bordered w-full focus:outline-offset-0"
+                required
+              >
+                <option value="">အသုံးပြုသူ ရွေးရန်</option>
+                {users.map((u) => (
+                  <option key={u._id} value={u._id}>{u.username}</option>
+                ))}
+              </select>
+            </div>
 
-          <div>
-            <label className="font-medium">အသုံးပြုသူ ရွေးပါ</label>
-            <select
-              name="userId"
-              value={form.userId}
-              onChange={handleChange}
-              className="select select-bordered w-full focus:outline-offset-0"
-              required
-            >
-              <option value="">အသုံးပြုသူ ရွေးရန်</option>
-              {users.map((u) => (
-                <option key={u._id} value={u._id}>{u.username}</option>
-              ))}
-            </select>
-          </div>
+            <div>
+              <label className="font-medium">ကျန်ငွေပမာဏ</label>
+              <input
+                type="text"
+                inputMode="numeric"
+                value={form.overdueFee}
+                onChange={
+                  (e) => {
+                    //Myanmar
+                    // const myanmarNumberRegex = /^[၀-၉]*$/;
+                    // const input = e.target.value;
+                    // if (myanmarNumberRegex.test(input)) {
+                    //   setForm(prev => ({ ...prev, overdueFee: input }));
+                    // }
 
-          <div>
-            <label className="font-medium">ကျန်ငွေပမာဏ</label>
-            <input
-              type="text"
-              inputMode="numeric"
-              value={form.overdueFee}
-              onChange={
-                (e) => {
-                  //Myanmar
-                  // const myanmarNumberRegex = /^[၀-၉]*$/;
-                  // const input = e.target.value;
-                  // if (myanmarNumberRegex.test(input)) {
-                  //   setForm(prev => ({ ...prev, overdueFee: input }));
-                  // }
-
-                  //English
-                  const value = e.target.value;
-                  const pattern = /^(0|[1-9][0-9]*)?$/; // Allows empty string or positive numbers without leading zero
-                  if (pattern.test(value)) {
-                    setForm(prev => ({ ...prev, overdueFee: value }));
+                    //English
+                    const value = e.target.value;
+                    const pattern = /^(0|[1-9][0-9]*)?$/; // Allows empty string or positive numbers without leading zero
+                    if (pattern.test(value)) {
+                      setForm(prev => ({ ...prev, overdueFee: value }));
+                    }
                   }
                 }
-              }
-              className="input input-bordered w-full focus:outline-offset-0"
-              placeholder="ဥပမာ - 100"
-              required
-            />
-          </div>
+                className="input input-bordered w-full focus:outline-offset-0"
+                placeholder="ဥပမာ - 100"
+                required
+              />
+            </div>
 
-          <button className="btn btn-primary mt-4 w-full" type="submit" disabled={loading}>
-            {loading ? (
-              <span className="loading loading-spinner loading-sm"></span>
-            ) : "သတိပေးစာ ပေးပို့ရန်"}
-          </button>
-        </form>
+            <button className="btn btn-primary mt-4 w-full" type="submit" disabled={loading}>
+              {loading ? (
+                <span className="loading loading-spinner loading-sm"></span>
+              ) : "သတိပေးစာ ပေးပို့ရန်"}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

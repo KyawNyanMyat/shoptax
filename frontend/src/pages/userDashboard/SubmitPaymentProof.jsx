@@ -21,6 +21,7 @@ const SubmitPaymentProof = () => {
   const [amount, setAmount] = useState("");
   const [shopId, setShopId] = useState("");
   const [ownedShops, setOwnedShops] = useState([]);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const { loading, submitPayment } = useSubmitPayment()
   const socket = useSocketContext()
@@ -57,18 +58,36 @@ const SubmitPaymentProof = () => {
   useEffect(()=>{
     if(!socket) return;
 
-    socket.on("shopAssigned",(updatedShop)=>{
+    const handleShopAssigned = (updatedShop)=>{
       setOwnedShops(prevShops => [...prevShops, updatedShop])
-    })
+    }
 
-    socket.on("shopRemoved", (shop)=>{
+    const handleShopRemoved = (shop)=>{
       setOwnedShops(prevShops => {
         return prevShops.filter((s)=> s._id != shop._id)
       })
-    })
+    }
+
+    const handleShopTaxChangedForBoth = (updatedShop) => {
+      setOwnedShops(prev => {
+          const index = prev.findIndex(s => s._id === updatedShop._id);
+          if (index !== -1) {
+              const copy = [...prev];
+              copy[index].chargeRate = updatedShop.chargeRate;
+              return copy;
+          }
+          return prev;
+      });
+    };
+
+    socket.on("shopTaxChanged", handleShopTaxChangedForBoth);
+    socket.on("shopAssigned", handleShopAssigned)
+    socket.on("shopRemoved", handleShopRemoved)
+
     return ()=>{
-      socket.off("shopAssigned")
-      socket.off("shopRemoved")
+      socket.off("shopAssigned", handleShopAssigned)
+      socket.off("shopRemoved", handleShopRemoved)
+      socket.off("shopTaxChanged", handleShopTaxChangedForBoth);
     }
   },[socket])
 
@@ -115,27 +134,34 @@ const SubmitPaymentProof = () => {
 
 
     // Submit to database
-    await submitPayment(formData)
+    const success = await submitPayment(formData)
+    if(success){
+      setShopId("");
+      setPaymentType("");
+      setPaymentPhoto("");
+      setAmount("");
 
-    // In the future, make formData reset
+      const fileInput = document.querySelector('input[type="file"]');
+      if (fileInput) fileInput.value = "";
+    }
   };
 
 
   return (
-    <div className="flex min-h-screen">
-      <DashboardSidebar />
+    <div className="flex max-h-screen">
+      <DashboardSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
       <div className="flex-1 flex flex-col">
-        <DashboardHeader />
+        <DashboardHeader setSidebarOpen={setSidebarOpen}/>
   
-        <div className="p-6 max-w-2xl mx-auto">
+        <div className="p-6 w-full max-w-2xl mx-auto h-screen overflow-y-scroll">
           <h2 className="text-2xl font-bold mb-2">ငွေပေးချေမှုအထောက်အထား တင်သွင်းရန်</h2>
           <p className="text-sm text-gray-600 mb-6">
             ငွေပေးချေမှု၏ Screenshot (ဥပမာ - KBZPay၊ WavePay) တင်ပါ။ သက်ဆိုင်ရာ ကျသင့်ငွေ အမျိုးအစားနှင့် ငွေပမာဏ ထည့်ရန်လိုအပ်သည်။
           </p>
   
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4 min-w-[200px] sm:w-full">
   
-            <div>
+            <div className="flex flex-col">
               <label className="label">အသုံးပြုသူအမည်</label>
               <input
                 type="text"
@@ -145,7 +171,7 @@ const SubmitPaymentProof = () => {
               />
             </div>
   
-            <div>
+            <div className="flex flex-col">
               <label className="label">ဆိုင် ရွေးချယ်ရန်</label>
               <select
                 className="select select-bordered w-full focus:outline-offset-0"
@@ -165,7 +191,7 @@ const SubmitPaymentProof = () => {
               </select>
             </div>
   
-            <div>
+            <div className="flex flex-col">
               <label className="label">ငွေပေးချေမှုအမျိုးအစား</label>
               <select
                 className="select select-bordered w-full focus:outline-offset-0"
@@ -180,8 +206,8 @@ const SubmitPaymentProof = () => {
               </select>
             </div>
   
-            <div>
-              <label className="label">
+            <div className="mb-0 flex flex-col">
+              <label className="label w-full whitespace-pre-wrap">
                 Screenshot တင်ပါ (ဥပမာ - KBZPay screenshot)
               </label>
               <input
@@ -203,20 +229,26 @@ const SubmitPaymentProof = () => {
                 required
               />
             </div>
-            <small className="text-red-500 ">(ဓာတ်ပုံသည် 2MB ထက်မကျော်ရပါ)</small>
+            <div className="text-red-500 text-sm">(ဓာတ်ပုံသည် 2MB ထက်မကျော်ရပါ)</div>
 
-            <div>
+            <div className="flex flex-col">
               <label className="label">ငွေပမာဏအတည်ပြုပါ</label>
               <input
                 type="text"
                 inputMode="numeric"
-                pattern="[၀-၉]+"
-                placeholder="ဥပမာ - ၁၀၀၀၀"
+                placeholder="ဥပမာ - 3500"
                 value={amount}
                 onChange={(e) => {
-                  const myanmarNumberRegex = /^[၀-၉]*$/;
-                  if (myanmarNumberRegex.test(e.target.value)) {
-                    setAmount(e.target.value);
+                  // const myanmarNumberRegex = /^[၀-၉]*$/;
+                  // if (myanmarNumberRegex.test(e.target.value)) {
+                  //   setAmount(e.target.value);
+                  // }
+
+                  //English
+                  const value = e.target.value;
+                  const pattern = /^(0|[1-9][0-9]*)?$/; // Allows empty string or positive numbers without leading zero
+                  if (pattern.test(value)) {
+                    setAmount(value);
                   }
                 }}
                 className="input input-bordered w-full focus:outline-offset-0"

@@ -5,7 +5,6 @@ import myanmarToEnglishInitial from '../utils/myanmarInitialMap.js';
 import { redis, redlock } from '../utils/redlock.js';
 import jwt from "jsonwebtoken"
 
-// Create a new admin, In the future, check the same username
 export const createAdmin = async (req, res) => {
   try {
     const { adminName, adminPassword, phoneNo, section, position } = req.body;
@@ -64,10 +63,13 @@ export const createAdmin = async (req, res) => {
 
     //socket io
     const io = getIO();
-    io.emit("newAdminCreated", adminObj)
+    io.emit("newAdminCreated", newAdmin)
 
     res.status(201).json(adminObj);
   } catch (error) {
+    if(error.code == 11000){
+      return res.status(423).json({ message: "နာမည်တူရှိပြီးသားဖြစ်ပါသည်"})
+    }
     console.error("Create Admin Error:", error);
     res.status(500).json({ message: "Server Error" });
   }

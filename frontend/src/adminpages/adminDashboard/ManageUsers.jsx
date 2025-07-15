@@ -1,5 +1,5 @@
 // pages/AdminManageUsers.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import AdminDashboardSidebar from "../../components/AdminDashboardSidebar";
 import AdminDashboardHeader from "../../components/AdminDashboardHeader";
@@ -17,6 +17,7 @@ const AdminManageUsers = () => {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const socket = useSocketContext()
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const fetchUsers = async (search = "") => {
     setLoading(true);
@@ -40,6 +41,7 @@ const AdminManageUsers = () => {
     fetchUsers();
   }, []);
 
+
   useEffect(() => {
 
     if(!socket) return;
@@ -56,17 +58,17 @@ const AdminManageUsers = () => {
   }, [socket]);
 
   return (
-    <div className="flex min-h-screen">
-      <AdminDashboardSidebar />
-      <div className="flex-1 flex flex-col max-h-screen w-4/5">
-        <AdminDashboardHeader />
+    <div className="flex max-h-screen">
+      <AdminDashboardSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <AdminDashboardHeader setSidebarOpen={setSidebarOpen}/>
 
         {loading ? (
           <p>အသုံးပြုသူများကို တင်ဆက်နေပါသည်...</p>
         ) : users.length === 0 ? (
           <p className="text-gray-500">အသုံးပြုသူမတွေ့ပါ။</p>
         ) : (
-          <div className="p-6 space-y-4 overflow-scroll">
+          <div className="p-6 h-screen overflow-scroll">
             <div className="flex items-center gap-4">
               <input
                 type="text"
@@ -83,7 +85,7 @@ const AdminManageUsers = () => {
               </button>
             </div>
 
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center flex-wrap mt-3 mb-3">
               <h2 className="text-2xl font-bold text-teal-600">အသုံးပြုသူများ စီမံခန့်ခွဲမှု</h2>
               <Link
                 to="/admin/user/signup"
@@ -93,8 +95,8 @@ const AdminManageUsers = () => {
               </Link>
             </div>
 
-            <div className="">
-              <table className="table table-zebra w-full text-sm">
+            <div className="p-2 overflow-x-auto">
+              <table className="table table-zebra min-w-[700px] w-full text-sm">
                 <thead className="bg-gray-200 text-gray-700">
                   <tr>
                     <th>စဉ်</th>
@@ -116,7 +118,7 @@ const AdminManageUsers = () => {
                       <td>{u.password}</td>
                       <td>{u.NRC}</td>
                       <td>{u.phoneNo}</td>
-                      <td className="capitalize">{u.gender}</td>
+                      <td className="capitalize">{u.gender =="Male" ? "ယောင်္ကျား": "မိန်းမ"}</td>
                       <td>
                         <img
                           src={u.profilePhoto}

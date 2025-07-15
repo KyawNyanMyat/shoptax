@@ -18,6 +18,7 @@ const AdminDashboardHome = () => {
   const [totalAdmins, setTotalAdmins] = useState(0);
   const [pendingPayment, setPendingPayments] = useState(0);
   const [overdueUsers, setOverdueUsers] = useState(0);
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const socket = useSocketContext()
 
@@ -38,7 +39,8 @@ const AdminDashboardHome = () => {
         if (!overdueRes.ok) {
           throw new Error(overdue.message || "အသုံးပြုသူ အချက်အလက်ရယူရာတွင် ပြဿနာတစ်ခုရှိနေသည်။");
         }
-        setOverdueUsers(overdue.length);
+        const tempOverdue = overdue.filter((p)=> p.paymentType !== "Overdue Fee")
+        setOverdueUsers(tempOverdue.length);
 
         const adminRes = await fetch("/api/admins");
         const admins = await adminRes.json();
@@ -111,20 +113,18 @@ const AdminDashboardHome = () => {
   },[socket])
 
   return (
-    <div className="flex min-h-screen">
-      <AdminDashboardSidebar />
-      <div className="flex-1 flex flex-col h-full w-4/5">
-        <AdminDashboardHeader />
+    <div className="flex max-h-screen">
+      <AdminDashboardSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <div className="flex-1 flex flex-col">
+        <AdminDashboardHeader setSidebarOpen={setSidebarOpen} />
 
-        <div className="p-6 space-y-6 bg-gray-50 min-h-full">
-          {/* ကြိုဆိုစာသား */}
+        <div className="p-6 space-y-6 bg-gray-50 h-screen overflow-y-scroll">
           <div>
             <h2 className="text-2xl font-bold text-teal-600">မင်္ဂလာပါ၊ {adminAuth?.adminName}</h2>
             <p className="text-sm text-gray-600">မြို့နယ်ဆိုင်ရာ လုပ်ဆောင်ချက်များအတွက် အနှစ်ချုပ်</p>
           </div>
 
-          {/* အနှစ်ချုပ်ကဒ်များ */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="bg-white shadow rounded-xl p-4 flex items-center gap-4">
               <FiUsers className="text-2xl text-teal-600" />
               <div>
@@ -158,15 +158,14 @@ const AdminDashboardHome = () => {
             </div>
           </div>
 
-          {/* စည်းမျဉ်းများ */}
           <div className="bg-white shadow rounded-xl p-6 mt-4">
             <h3 className="text-lg font-semibold text-gray-700 mb-4">အုပ်ချုပ်ရေးစည်းမျဉ်းများ</h3>
             <ul className="text-sm text-gray-700 space-y-2 list-disc pl-5">
-              <li>အခွန်ပေးချေမှုများကို လစဉ် ၅ရက်မတိုင်မီ မှတ်တမ်းတင်ပြီးစီးထားရမည်။</li>
-              <li>ဆိုင်များသည် လိုင်စင်ကို နှစ်စဉ် စာရွက်စာတမ်းအသစ်ဖြင့် ပြန်လည်တင်သွင်းရမည်။</li>
-              <li>သန့်ရှင်းရေးစစ်ဆေးမှုကို ၂ ပတ် တစ်ကြိမ် ပြုလုပ်မည်ဖြစ်၍ အမြဲသန့်ရှင်းကြရမည်။</li>
-              <li>ခွင့်ပြုချက်မရှိသော ဆိုင်ခုံများကို သတိပေးချက် ၅ ကြိမ်အကြောင်းကြားပြီးနောက် ဖယ်ရှားမည်။</li>
-              <li>အုပ်ချုပ်ရေးဝင်များသည် ကြာမြင့်သော ငွေပေးချေသူစာရင်းကို အပတ်စဉ် ပြုပြင်ရမည်။</li>
+              <li>အုပ်ချုပ်ရေးဝင်များသည် ငွေပေးချေမှုများကို လက်ခံခြင်း သို့မဟုတ် ပယ်ဖျက်ခြင်း ပြုလုပ်နိုင်သည်။</li>
+              {/* <li>အုပ်ချုပ်ရေးဝင်များသည် အချိန်ကျော်လွန်ထားသော ငွေပေးချေမှုများ (overdue) ကို ကြည့်ရှုနိုင်သည်။</li> */}
+              <li>အချိန်ကျော်လွန်နေသော အသုံးပြုသူများရှိပါက၊ အုပ်ချုပ်ရေးဝင်များသည် တစ်ရက်တစ်ကြိမ်သာ သတိပေးချက် ပေးပို့ရမည်။</li>
+              <li>သတိပေးချက်တစ်ခုလျှင် အပိုဆောင်းအကြေး (overdue fee) အဖြစ် ၁၀၀ ကျပ် သတ်မှတ်ထားသည်။</li>
+              <li>ဆိုင်ပိုင်ရှင်သည် ၅ ရက်အထက်အချိန်ကျော်လွန်ခဲ့ပါက၊ အုပ်ချုပ်ရေးဝင်သည် ထိုအသုံးပြုသူအား ဆိုင်မှ ဖြုတ်ပစ်ရမည်။</li>
             </ul>
           </div>
         </div>

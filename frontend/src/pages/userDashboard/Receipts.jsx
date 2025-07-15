@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { FiFileText } from "react-icons/fi";
 import DashboardHeader from "../../components/DashboardHeader";
 import DashboardSidebar from "../../components/DashboardSidebar";
 import toast from "react-hot-toast";
 import UseReceiptMarkAsRead from "../../hooks/UseReceiptMarkAsRead";
 import { useUserAuthContext } from "../../context/userAuthContext";
 import { Navigate } from "react-router-dom";
-import seal from "../../assets/react.svg"
 import { useSocketContext } from "../../context/socketContext";
 
 const Receipts = () => {
@@ -16,6 +14,7 @@ const Receipts = () => {
   }
 
   const [userReceipts, setUserReceipts] = useState([]);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const userId = userAuth._id;
 
   const { loadingId, markAsRead } = UseReceiptMarkAsRead();
@@ -42,7 +41,7 @@ const Receipts = () => {
     if(!socket) return;
 
     const handleUserNewReceipt = (receipt)=>{
-      setUserReceipts(prev => [...prev, receipt])
+      setUserReceipts(prev => [receipt, ...prev])
     }
     
     const handleReceiptMarkedAsRead = (updatedReceipt)=>{
@@ -72,16 +71,16 @@ const Receipts = () => {
   };
 
   return (
-    <div className="flex min-h-screen">
-      <DashboardSidebar />
+    <div className="flex max-h-screen">
+      <DashboardSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
       <div className="flex-1 flex flex-col">
-        <DashboardHeader />
-        <div className="p-6">
+        <DashboardHeader setSidebarOpen={setSidebarOpen}/>
+        <div className="p-6 h-screen overflow-y-scroll">
           <h2 className="text-2xl font-bold mb-6">သင့်ရဲ့ ပြေစာများ</h2>
           {userReceipts.length === 0 ? (
             <p className="text-sm text-gray-500 mt-4">ပြေစာများ မရှိသေးပါ။</p>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {userReceipts.map((r) => (
                 <div
                   key={r._id}
@@ -121,8 +120,7 @@ const Receipts = () => {
                     })}
                   </p>
                   <p className="text-sm text-gray-500 mb-1">
-                    {/* In the future change this name */}
-                    နောက်လပေးရမည့်နေ့ -{" "}
+                    လာမည့်ပေးချေရမည့်နေ့ -{" "}
                     {new Date(r.paymentId.nextPaymentDueDate).toLocaleString("my-MM", {
                       month: "long",
                       year: "numeric",

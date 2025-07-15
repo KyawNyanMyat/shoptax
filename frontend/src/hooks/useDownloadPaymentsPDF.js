@@ -1,6 +1,6 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-//In the future, I need to learn it
+
 const useDownloadPaymentsPDF = () => {
   const downloadPDF = async (payments) => {
     const doc = new jsPDF();
@@ -34,15 +34,15 @@ const useDownloadPaymentsPDF = () => {
       payment._id,
       payment.userId.username,
       `${payment.shopId.marketHallNo} / ${payment.shopId.shopNo}`,
-      payment.paymentType,
+      payment.paymentType === "Shop Rent Cost" ? "ဆိုင်ဌားခ" : "ရက်ေကျာ်ြကေး",
       payment.amount + " Ks",
       new Date(payment.paidDate).toLocaleDateString(),
-      payment.status,
+      payment.status === "Pending" ? "ေစာင့်ဆိုင်း" : payment.status === "Finished" ? "ေအာင်ြမင်ြပီး" : "ြငင်းဆိုခဲ့သည်",
     ]);
 
     // Use font explicitly for autotable (both head and body)
     autoTable(doc, {
-      head: [["စဉ်", "ID", "အမည်", "ဆိုင်", "အမျိုးအစား", "ပမာဏ", "ေငွေပးေချရက်", "အေြခအေန"]],
+      head: [["စဥ်", "ID", "အမည်", "ဆိုင်", "အမျိုးအစား", "ပမာဏ", "ေငွေပးေချရက်", "အေြခအေန"]],
       body: tableData,
       styles: {
         font: "Pyidaungsu",
@@ -50,7 +50,6 @@ const useDownloadPaymentsPDF = () => {
       },
       headStyles: {
         fontStyle: "normal",
-        font: "Pyidaungsu",
         fontSize: 10,
         fillColor: [230, 247, 255],
         textColor: 20,

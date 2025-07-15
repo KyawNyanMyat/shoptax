@@ -6,7 +6,6 @@ import { redis, redlock } from "../utils/redlock.js";
 import jwt from "jsonwebtoken"
 import { getIO } from "../socket/socket.js";
 
-// Create a new user, In the future, check the same username
 export const createUser = async (req, res) => {
   try {
     const {
@@ -71,18 +70,21 @@ export const createUser = async (req, res) => {
     delete userObj.password;
 
     const io = getIO();
-    io.emit("newUserCreated", userObj)
+    io.emit("newUserCreated", newUser)
 
     res.status(201).json(userObj);
 
   } catch (error) {
-    console.error("Create User Error:", error);
-
-    // duplicate key error
-    if (error.code == 11000) {
-      return res.status(409).json({ message: "NRC ရှိနေပြီးသားဖြစ်ပါသည်" });
+    //duplicate key error
+    if (error.code == 11000 && error.keyValue?.username) {
+      return res.status(409).json({ message: " နာမည်တူရှိနေပြီးသားဖြစ်ပါသည်" });
     }
 
+    if (error.code == 11000 && error.keyValue?.NRC) {
+      return res.status(409).json({ message: "မှတ်ပုံတင်တူရှိနေပြီးသားဖြစ်ပါသည်" });
+    }
+
+    console.error("Create User Error:", error);
     res.status(500).json({ message: "ဆာဗာ အခက်အခဲ ဖြစ်ပွားနေပါသည်။" });
   }
 };
@@ -102,6 +104,9 @@ export const getAllUsers = async (req, res) => {
     res.status(200).json(users);
   } catch (error) {
     console.error("Get Users Error:", error);
+    if(error.code == 11000) {
+      return res.status(423).json({ message: "နာမည်တူရှိပြီးသားဖြစ်ပါသည်"})
+    }
     res.status(500).json({ message: "ဆာဗာ အခက်အခဲ ဖြစ်ပွားနေပါသည်။" });
   }
 };
@@ -176,7 +181,7 @@ export const loginUser = async (req, res) => {
     //   }
 
     //   const token = generateUserTokenAndCookie(userObj._id, res)
-    //   await redis.set(locksession, token, "EX", 60 * 60 * 24 * 15); // 15 days //In the future change this time
+    //   await redis.set(locksession, token, "EX", 60 * 60 * 24 * 15); // 15 days
 
     //   res.status(200).json(userObj);
     // }finally{

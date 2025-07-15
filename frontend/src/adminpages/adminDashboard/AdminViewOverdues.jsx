@@ -13,6 +13,7 @@ const AdminViewOverdues = () => {
   }
 
   const [overdues, setOverdues] = useState([]);
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const [loading, setLoading] = useState(false);
   const socket = useSocketContext()
   
@@ -24,7 +25,8 @@ const AdminViewOverdues = () => {
       if (!res.ok) {
         throw new Error(data.message || "အကြွေးတင်ဆိုင်များကို ရယူရာတွင် ပြဿနာတစ်ခု ဖြစ်ပွားနေသည်။");
       }
-      setOverdues(data);
+      const tempOverdue = data.filter((p)=> p.paymentType !== "Overdue Fee")
+      setOverdues(tempOverdue);
     } catch (err) {
       console.error("Overdues fetch failed:", err);
       toast.error(err.message, { id: "admin-viewOverdue-error" });
@@ -53,20 +55,20 @@ const AdminViewOverdues = () => {
   
 
   return (
-    <div className="flex min-h-screen">
-      <AdminDashboardSidebar />
-      <div className="flex-1 max-h-screen overflow-scroll w-4/5">
-        <AdminDashboardHeader />
+    <div className="flex max-h-screen">
+      <AdminDashboardSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <AdminDashboardHeader setSidebarOpen={setSidebarOpen} />
 
-        <div className="p-6 bg-gray-50">
+        <div className="p-6 bg-gray-50 h-screen overflow-scroll">
           <h2 className="text-2xl font-bold text-teal-600 mb-6">အကြွေးတင်ဆိုင်များ စာရင်း</h2>
           {loading ? (
             <p>အကြွေးတင်ဆိုင်များ တင်ဆက်နေသည်...</p>
           ) : overdues.length === 0 ? (
             <p>အကြွေးတင်ဆိုင် မရှိပါ။</p>
           ) : (
-            <div className="bg-white rounded-xl shadow overflow-y-auto">
-              <table className="table w-full text-sm">
+            <div className="p-2 bg-white rounded-xl shadow overflow-x-auto">
+              <table className="table min-w-[700px] w-full text-sm">
                 <thead className="bg-teal-100 text-teal-800">
                   <tr>
                     <th>စဉ်</th>
@@ -75,7 +77,7 @@ const AdminViewOverdues = () => {
                     <th>ဆိုင်နံပါတ်</th>
                     <th>ငွေပေးချေသည့်လ</th>
                     <th>တင်သွင်းရမည့်ရက်</th>
-                    <th>ပေးချေငွေ</th>
+                    {/* <th>ပေးချေငွေ</th> */}
                     <th>အကြွေး တင်ထားသောရက်</th>
                   </tr>
                 </thead>
@@ -93,7 +95,6 @@ const AdminViewOverdues = () => {
                         })}
                       </td>
                       <td>{new Date(p.nextPaymentDueDate).toLocaleDateString()}</td>
-                      <td>{p.amount} Ks</td>
                       <td>{p.overdueDays} ရက်</td>
                     </tr>
                   ))}

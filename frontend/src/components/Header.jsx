@@ -82,12 +82,12 @@ const Header = () => {
         <>
           {/* Backdrop */}
           <div
-            className="fixed inset-0 bg-black/40 z-40 lg:hidden"
+            className="fixed inset-0 bg-black/40 z-40 lg:hidden min-h-screen"
             onClick={() => setIsOpen(false)}
           ></div>
 
           {/* Sidebar From Right */}
-          <div className="lg:hidden fixed top-0 right-0 h-full w-1/2 bg-white text-gray-800 z-50 shadow-md p-6 space-y-6 transition-all duration-300 ease-in-out">
+          <div className="lg:hidden overflow-scroll fixed top-0 right-0 h-full w-1/2 bg-white text-gray-800 z-50 shadow-md p-6 space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-bold text-indigo-900">Menu</h2>
               <IoMdClose
@@ -117,7 +117,7 @@ const Header = () => {
               <Link to="/about" onClick={() => setIsOpen(false)}>အကြောင်းအရာ</Link>
               <Link to="/contact" onClick={() => setIsOpen(false)}>ဆက်သွယ်ရန်</Link>
               <button
-                className="btn btn-sm btn-success"
+                className="btn btn-success p-4 btn-lg text-xs sm:btn-xs"
                 onClick={(e) => {
                   toDashboard(e);
                   setIsOpen(false);

@@ -41,8 +41,8 @@ const Signup = () => {
 
 
   return (
-    <div className='flex flex-col h-full items-center justify-center md:mt-10 min-h-screen'>
-      <div className='bg-gray-200 py-10 sm:mt-0 p-5 w-11/12 md:w-1/3 rounded-t-4xl border-t-4 border-green-500 shadow shadow-green-400'>
+    <div className='flex flex-col h-full items-center justify-center md:mt-10 min-h-screen py-20'>
+      <div className='bg-gray-200 sm:mt-0 p-5 w-11/12 md:w-1/3 rounded-t-4xl border-t-4 border-blue-500 shadow shadow-green-900'>
 
           {/* Header */}
           <div className="flex flex-col items-center mb-6">
@@ -111,7 +111,7 @@ const Signup = () => {
 
           <div>
             <label className='block font-semibold py-2'>ဖုန်းနံပါတ်</label>
-            <input type="text" required placeholder="၀၉-၆၇၇၈၅၅၄၉၈" 
+            <input type="text" required placeholder="09-9954667827" 
               className=' w-full input input-borded focus:outline-offset-0'
               value={formData.phoneNo}
               onChange={(e)=> setFormData({...formData, phoneNo: e.target.value})}
@@ -151,7 +151,7 @@ const Signup = () => {
           <Link to='/admin/dashboard' className='text-sm hover:underline text-green-600 hover:text-blue-700 mt-4 inline-block'> အုပ်ချုပ်ရေးဒက်ရှ်ဘုတ် သို့သွားရန်</Link>
 
           <div className='pt-3'>
-            <button className='btn btn-success w-full'>
+            <button className='btn btn-primary w-full'>
               {loading ? <span className="loading loading-spinner loading-xs"></span>
                 : "အကောင့်ဖွင့်ရန်"
               }

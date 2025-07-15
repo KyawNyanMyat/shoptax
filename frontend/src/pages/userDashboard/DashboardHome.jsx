@@ -20,13 +20,14 @@ const DashboardHome = () => {
   const [shopCount, setShopCount] = useState([])
   const [unReadWarning, setUnReadWarning] = useState([])
   const [unReadReceipt, setUnReadReceipt] = useState([])
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const socket = useSocketContext()
 
   const summary = [
     {
       label: "နောက်ဆုံး ငွေပေးချေမှု ရက်စွဲ",
       value: lastPayment
-        ? new Date(lastPayment).toLocaleDateString("en-CA")
+        ? new Date(lastPayment).toLocaleDateString()
         : "မရှိသေးပါ",
       color: "bg-green-100 text-green-800",
     },
@@ -50,7 +51,7 @@ const DashboardHome = () => {
 
   const regulations = [
     "အရောင်းဆိုင်များသည် လစဉ်ဆိုင်ခွန်ကို တစ်လတစ်ကြိမ် ပြန်လည်ပေးဆောင်ရမည်။",
-    "ရက်ကျော်ပါက ရက်ကျော်ခနှင့် လစဥ်ဆိုင်ခွန်ခ ကိုပါတခါတည်းပေးဆောင်ရမည်။",
+    "ရက်ကျော်ပါက စုစုပေါင်းရက်ကျော်ခနှင့် လစဥ်ဆိုင်ခွန်ခ ကိုပါတခါတည်းပေးဆောင်ရမည်။ ရက်ကျော်ခသည် တနေ့ ၁၀၀ ဖြစ်သည်။",
     "အမှိုက်များကို အသုံးမပြုရသောနေရာများတွင် ပစ်ချပေးခွင့်မရှိပါ။",
     "ဆိုင်အမှတ်နှင့် စျေးအမှတ်တို့ကို ဖျက်ဆီးခြင်း မပြုရ။",
     "အများသုံးလမ်းများတွင် ကုန်ပစ္စည်းများ ချထားခြင်းကို တားမြစ်ပါသည်။",
@@ -172,14 +173,13 @@ const DashboardHome = () => {
   
 
   return (
-    <div className="flex min-h-screen">
-      <DashboardSidebar />
+    <div className="flex max-h-screen">
+      <DashboardSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
       <div className="flex-1 flex flex-col">
-        <DashboardHeader />
+        <DashboardHeader setSidebarOpen={setSidebarOpen}/>
         
-        {/* In the future Clicking these four */}
         {/* Dashboard home */}
-        <div className="p-6 space-y-10">
+        <div className="p-6 space-y-10 h-screen overflow-y-scroll">
           <div>
             <h2 className="text-2xl font-bold">မင်္ဂလာပါ {userName}!</h2>
             <p className="text-sm text-gray-500">ယနေ့ ရက်စွဲ - {today}</p>

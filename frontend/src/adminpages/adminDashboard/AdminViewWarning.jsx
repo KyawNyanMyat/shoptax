@@ -14,6 +14,7 @@ const AdminViewWarnings = () => {
 
   const [warnings, setWarnings] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const socket = useSocketContext()
 
   useEffect(() => {
@@ -40,11 +41,11 @@ const AdminViewWarnings = () => {
     if (!socket) return;
   
     const handleAdminRejectedWarning = (warning) => {
-      setWarnings(prev => [...prev, warning]);
+      setWarnings(prev => [ warning, ...prev]);
     };
   
     const handleAdminJustWarning = (warning) => {
-      setWarnings(prev => [...prev, warning]);
+      setWarnings(prev => [ warning, ...prev ]);
     };
   
     const handleUserWarningMarkedAsRead = (updatedWarning) => {
@@ -66,20 +67,20 @@ const AdminViewWarnings = () => {
   
   
   return (
-    <div className="flex min-h-screen">
-      <AdminDashboardSidebar />
-      <div className="flex-1 max-h-screen overflow-scroll w-4/5">
-        <AdminDashboardHeader />
+    <div className="flex max-h-screen">
+      <AdminDashboardSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <AdminDashboardHeader setSidebarOpen={setSidebarOpen} />
 
-        <div className="p-6 bg-gray-50">
+        <div className="p-6 bg-gray-50 h-screen overflow-scroll">
           <h2 className="text-2xl font-bold text-teal-600 mb-6">သတိပေးချက် စာရင်းအားလုံး</h2>
           {loading ? (
             <p>သတိပေးချက်များကို တင်ဆက်နေသည်...</p>
           ) : warnings.length === 0 ? (
             <p>သတိပေးချက် မရှိသေးပါ။</p>
           ) : (
-            <div className="bg-white rounded-xl shadow">
-              <table className="table w-full text-sm">
+            <div className="bg-white rounded-xl shadow overflow-x-auto">
+              <table className="table min-w-[700px] w-full text-sm">
                 <thead className="bg-teal-100 text-teal-800">
                   <tr>
                     <th>စဉ်</th>
@@ -97,7 +98,7 @@ const AdminViewWarnings = () => {
                       <td>{i + 1}</td>
                       <td>{w.userId?.username}</td>
                       <td>{w.warningTitle}</td>
-                      <td>{w.warningContent}</td>
+                      <td className="min-w-[200px] max-w-[300px]">{w.warningContent}</td>
                       <td>{w.overdueFee} Ks</td>
                       <td>{new Date(w.issueDate).toLocaleDateString()}</td>
                       <td>{w.isRead ? "ဖတ်ပြီး" : "မဖတ်ရသေးပါ"}</td>
