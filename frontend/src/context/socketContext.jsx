@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import {io} from "socket.io-client"
 import { useUserAuthContext } from "./userAuthContext";
+import { useAdminAuthContext } from "./adminAuthContext";
 
 const socketContext = createContext();
 
@@ -11,16 +12,18 @@ export const useSocketContext = ()=>{
 export const SocketContextProvider = ({children})=>{
     const [socket, setSocket] = useState(null)
     const { userAuth } = useUserAuthContext()
+    const { adminAuth} = useAdminAuthContext()
 
     useEffect(()=>{
-        if(!userAuth){
+        const auth = userAuth || adminAuth;
+        if(!auth){
             if (socket) {
                 socket.disconnect();
                 setSocket(null);
             }
             return
         }
-        const socket = io("/",{
+        const newSocket = io("/",{
             path: "/socket.io",
             withCredentials: true,
             reconnection: true,
@@ -28,23 +31,23 @@ export const SocketContextProvider = ({children})=>{
             reconnectionDelay: 1000,
         })
 
-        socket.on("connect_error", (err) => {
+        newSocket.on("connect_error", (err) => {
             console.error("Socket connect error:", err.message);
         });
 
-        socket.on("reconnect_attempt", (attempt) => {
+        newSocket.on("reconnect_attempt", (attempt) => {
             console.log(`Reconnect attempt ${attempt}`);
         });
         
-        socket.on("reconnect_failed", () => {
+        newSocket.on("reconnect_failed", () => {
             console.error("Reconnection failed after max attempts");
         });
 
-        setSocket(socket)
+        setSocket(newSocket)
         
         return ()=>{
-            socket.disconnect()
+            newSocket.disconnect()
         }
-    },[userAuth])
+    },[userAuth, adminAuth])
     return <socketContext.Provider value={socket}>{children}</socketContext.Provider>
 }
