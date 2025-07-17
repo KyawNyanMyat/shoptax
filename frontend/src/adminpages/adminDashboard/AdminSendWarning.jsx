@@ -71,7 +71,7 @@ const AdminSendWarning = () => {
       <AdminDashboardSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}  />
       <div className="flex flex-col flex-1 overflow-hidden">
         <AdminDashboardHeader setSidebarOpen={setSidebarOpen} />
-        <div className="h-screen overflow-scroll">
+        <div className="h-screen overflow-y-auto">
           <h2 className="text-2xl font-bold text-teal-600 px-6 py-4">သတိပေးစာ ပေးပို့ရန်</h2>
           <form onSubmit={handleSubmit} className="space-y-4 bg-white px-6 py-4 rounded shadow">
             <div>

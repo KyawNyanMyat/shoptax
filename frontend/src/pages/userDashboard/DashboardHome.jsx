@@ -179,7 +179,7 @@ const DashboardHome = () => {
         <DashboardHeader setSidebarOpen={setSidebarOpen}/>
         
         {/* Dashboard home */}
-        <div className="p-6 space-y-10 h-screen overflow-y-scroll">
+        <div className="p-6 space-y-10 h-screen overflow-y-auto">
           <div>
             <h2 className="text-2xl font-bold">မင်္ဂလာပါ {userName}!</h2>
             <p className="text-sm text-gray-500">ယနေ့ ရက်စွဲ - {today}</p>

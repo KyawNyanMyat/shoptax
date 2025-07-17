@@ -1,7 +1,21 @@
 import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
-const center = [20.4327371, 96.1355301];
+// Fix the missing marker icon issue
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+});
+
+const center = [20.4331573,96.1346202];
 
 const MyMap = () => {
   return (
@@ -11,7 +25,7 @@ const MyMap = () => {
         attribution='&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
       <Marker position={center}>
-        <Popup>မြို့နယ် ဖွံ့ဖြိုးရေးဌာန</Popup>
+        <Popup>မြို့နယ် ဖွံ့ဖြိုးရေးဌာန ၀န်းကျင်</Popup>
       </Marker>
     </MapContainer>
   );

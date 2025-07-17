@@ -73,7 +73,7 @@ const ManageAdmins = () => {
       <div className="flex-1 flex flex-col overflow-hidden">
         <AdminDashboardHeader setSidebarOpen={setSidebarOpen} />
 
-        <div className="p-6 bg-gray-50 h-screen overflow-scroll">
+        <div className="p-6 bg-gray-50 h-screen overflow-y-auto">
             <div className="flex items-center gap-4">
               <input
                 type="text"

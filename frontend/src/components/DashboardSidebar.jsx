@@ -20,7 +20,7 @@ const DashboardSidebar = ({ sidebarOpen, setSidebarOpen }) => {
   };
   return (
     <>
-    <aside className="hidden lg:block bg-base-200 w-64 p-6 shadow-md h-screen overflow-scroll">
+    <aside className="hidden lg:block bg-base-200 w-64 p-6 shadow-md h-screen overflow-x-auto overflow-y-auto">
       {/* ခေါင်းစဉ် / တံဆိပ် */}
       <div className="mb-10">
         <h2 className="text-xl font-bold text-primary">အသုံးပြုသူရဲ့ထိန်းချုပ်မှုများ</h2>
@@ -62,7 +62,7 @@ const DashboardSidebar = ({ sidebarOpen, setSidebarOpen }) => {
 
     {sidebarOpen && (
         <div className="fixed min-h-screen inset-0 z-50 flex lg:hidden">
-          <div className="w-64 bg-base-200 p-6 shadow-md overflow-scroll">
+          <div className="w-64 bg-base-200 p-6 shadow-md overflow-x-auto overflow-y-auto">
             <button
               className="btn btn-sm mb-4"
               onClick={() => setSidebarOpen(false)}

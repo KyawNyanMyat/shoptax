@@ -60,7 +60,7 @@ const AdminViewOverdues = () => {
       <div className="flex-1 flex flex-col overflow-hidden">
         <AdminDashboardHeader setSidebarOpen={setSidebarOpen} />
 
-        <div className="p-6 bg-gray-50 h-screen overflow-scroll">
+        <div className="p-6 bg-gray-50 h-screen overflow-y-auto">
           <h2 className="text-2xl font-bold text-teal-600 mb-6">အကြွေးတင်ဆိုင်များ စာရင်း</h2>
           {loading ? (
             <p>အကြွေးတင်ဆိုင်များ တင်ဆက်နေသည်...</p>

@@ -17,7 +17,7 @@ const AdminDashboardSidebar = ({ sidebarOpen, setSidebarOpen}) => {
   const { loading, logout } = useAdminLogout();
   return (
     <>
-    <aside className="hidden lg:block bg-slate-800 text-white w-64 h-screen overflow-scroll p-6 shadow-md">
+    <aside className="hidden lg:block bg-slate-800 text-white w-64 h-screen overflow-y-auto overflow-x-auto p-6 shadow-md">
       {/* ခေါင်းစဉ် / Panel Name */}
       <div className="mb-10">
         <h2 className="text-xl font-bold text-white">အုပ်ချုပ်ရေးဘုတ်ပြား</h2>
@@ -88,7 +88,7 @@ const AdminDashboardSidebar = ({ sidebarOpen, setSidebarOpen}) => {
 
     {sidebarOpen && (
         <div className="fixed min-h-screen inset-0 z-50 flex lg:hidden">
-          <div className="w-64 p-6 shadow-md overflow-scroll bg-slate-800 text-white">
+          <div className="w-64 p-6 shadow-md  overflow-x-auto overflow-y-auto bg-slate-800 text-white">
             <button
               className="btn btn-sm mb-4"
               onClick={() => setSidebarOpen(false)}

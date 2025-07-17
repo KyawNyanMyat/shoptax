@@ -109,15 +109,21 @@ const AdminManageShops = () => {
                 return prev;
             });
         };
+
+        const handleAddedNewShop = (shop)=>{
+            setShops(prev => [...prev, shop])
+        }
     
         socket.on("shopTaxChanged", handleShopTaxChangedForBoth);
         socket.on("shopAssignedToUser", handleShopAssignedToUser)
         socket.on("shopUserRemoved", handleShopUserRemoved);
+        socket.on("addedNewShop", handleAddedNewShop)
           
         return ()=>{
             socket.off("shopTaxChanged", handleShopTaxChangedForBoth)
             socket.off("shopAssignedToUser", handleShopAssignedToUser)
             socket.off("shopUserRemoved", handleShopUserRemoved)
+            socket.off("addedNewShop", handleAddedNewShop)
         }
     },[socket])
 
@@ -144,22 +150,23 @@ const AdminManageShops = () => {
             <AdminDashboardSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
             <div className="flex-1 flex flex-col overflow-hidden">
                 <AdminDashboardHeader setSidebarOpen={setSidebarOpen} />
+                <div className="p-6 space-y-4 h-screen overflow-y-auto">
+                    <div className="flex justify-between items-center flex-wrap">
+                        <h2 className="text-2xl font-bold text-teal-600">ဆိုင်များ စီမံခန့်ခွဲမှု</h2>
+                        <Link
+                            to="/admin/manageshop/create-shop"
+                            className="btn btn-sm bg-teal-600 text-white hover:bg-teal-700"
+                            >
+                            + ဆိုင်အသစ် ထည့်ရန်
+                        </Link>
+                    </div>
+                    
                 {loading ? (
                     <p>ဆိုင်အချက်အလက်များကို တင်ဆက်နေသည်...</p>
                 ) : shops.length === 0 ? (
                     <p className="text-gray-500">ဆိုင်များ မတွေ့ပါ။</p>
                 ) : (
-                    <div className="p-6 space-y-4 h-screen overflow-scroll">
-                        <div className="flex justify-between items-center flex-wrap">
-                            <h2 className="text-2xl font-bold text-teal-600">ဆိုင်များ စီမံခန့်ခွဲမှု</h2>
-                            <Link
-                                to="/admin/manageshop/create-shop"
-                                className="btn btn-sm bg-teal-600 text-white hover:bg-teal-700"
-                                >
-                                + ဆိုင်အသစ် ထည့်ရန်
-                            </Link>
-                        </div>
-
+                    <div>
                         <div className="p-2 overflow-x-auto">
                             <table className="table table-zebra min-w-[700px] w-full text-sm text-center">
                                 <thead className="bg-gray-200 text-gray-700">
@@ -291,6 +298,7 @@ const AdminManageShops = () => {
                         }
                     </div>    
                 )}
+                </div>
             </div>
         </div>
     );

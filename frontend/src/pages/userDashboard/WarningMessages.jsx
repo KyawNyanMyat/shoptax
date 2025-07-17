@@ -74,7 +74,7 @@ const WarningMessages = () => {
           <div className="flex-1 flex flex-col">
             <DashboardHeader setSidebarOpen={setSidebarOpen} />
             
-            <div className="p-6 h-screen overflow-y-scroll">
+            <div className="p-6 h-screen overflow-y-auto">
                 <h2 className="text-2xl font-bold mb-6">သတိပေးစာဆောင်များ</h2>
 
                 <div className="space-y-6">

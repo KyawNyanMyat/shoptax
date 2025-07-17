@@ -87,7 +87,7 @@ const Header = () => {
           ></div>
 
           {/* Sidebar From Right */}
-          <div className="lg:hidden overflow-scroll fixed top-0 right-0 h-full w-1/2 bg-white text-gray-800 z-50 shadow-md p-6 space-y-6">
+          <div className="lg:hidden overflow-x-auto overflow-y-auto fixed top-0 right-0 h-full w-1/2 bg-white text-gray-800 z-50 shadow-md p-6 space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-bold text-indigo-900">Menu</h2>
               <IoMdClose

@@ -75,7 +75,7 @@ const Receipts = () => {
       <DashboardSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
       <div className="flex-1 flex flex-col">
         <DashboardHeader setSidebarOpen={setSidebarOpen}/>
-        <div className="p-6 h-screen overflow-y-scroll">
+        <div className="p-6 h-screen overflow-y-auto">
           <h2 className="text-2xl font-bold mb-6">သင့်ရဲ့ ပြေစာများ</h2>
           {userReceipts.length === 0 ? (
             <p className="text-sm text-gray-500 mt-4">ပြေစာများ မရှိသေးပါ။</p>

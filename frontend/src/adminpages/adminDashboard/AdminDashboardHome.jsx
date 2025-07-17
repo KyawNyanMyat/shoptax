@@ -118,7 +118,7 @@ const AdminDashboardHome = () => {
       <div className="flex-1 flex flex-col">
         <AdminDashboardHeader setSidebarOpen={setSidebarOpen} />
 
-        <div className="p-6 space-y-6 bg-gray-50 h-screen overflow-y-scroll">
+        <div className="p-6 space-y-6 bg-gray-50 h-screen overflow-y-auto">
           <div>
             <h2 className="text-2xl font-bold text-teal-600">မင်္ဂလာပါ၊ {adminAuth?.adminName}</h2>
             <p className="text-sm text-gray-600">မြို့နယ်ဆိုင်ရာ လုပ်ဆောင်ချက်များအတွက် အနှစ်ချုပ်</p>

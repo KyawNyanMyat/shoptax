@@ -13,11 +13,26 @@ export const SocketContextProvider = ({children})=>{
     useEffect(()=>{
         const socket = io("/",{
             path: "/socket.io",
-            withCredentials: true
+            withCredentials: true,
+            reconnection: true,
+            reconnectionAttempts: 5,
+            reconnectionDelay: 1000,
         })
 
-        setSocket(socket)
+        socket.on("connect_error", (err) => {
+            console.error("Socket connect error:", err.message);
+        });
 
+        socket.on("reconnect_attempt", (attempt) => {
+            console.log(`Reconnect attempt ${attempt}`);
+        });
+        
+        socket.on("reconnect_failed", () => {
+            console.error("Reconnection failed after max attempts");
+        });
+
+        setSocket(socket)
+        
         return ()=>{
             socket.disconnect()
         }

@@ -81,7 +81,7 @@ const UserViewShops = () => {
       <DashboardSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
       <div className="flex-1 flex flex-col overflow-hidden">
         <DashboardHeader setSidebarOpen={setSidebarOpen} />
-            <div className="p-4 sm:p-6 h-screen overflow-scroll">
+            <div className="p-4 sm:p-6 h-screen overflow-y-auto">
             <h1 className="text-xl sm:text-2xl font-bold text-center text-indigo-700 mb-4">
                 ဆိုင်အချက်အလက်များ ကြည့်ရှုရန်
             </h1>

@@ -25,6 +25,8 @@ import { AdminAuthContextProvider } from "./context/adminAuthContext"
 import AdminCreateShop from "./adminpages/adminDashboard/AdminCreateShop"
 import AdminViewOverdues from "./adminpages/adminDashboard/AdminViewOverdues"
 import UserViewShops from "./pages/userDashboard/UserViewShops"
+import 'leaflet/dist/leaflet.css';
+
 // import SocketTest from "./Test"
 function App() {
   const NotFound = ()=>{
