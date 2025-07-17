@@ -17,12 +17,9 @@ export const SocketContextProvider = ({children})=>{
     useEffect(()=>{
         const auth = userAuth || adminAuth;
         if(!auth){
-            if (socket) {
-                socket.disconnect();
-                setSocket(null);
-            }
             return
         }
+        //change it to / in hosting
         const newSocket = io("/",{
             path: "/socket.io",
             withCredentials: true,
