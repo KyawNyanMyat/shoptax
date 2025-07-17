@@ -18,9 +18,10 @@ dotenv.config()
 
 const port = process.env.PORT || 5000
 const app = express()
-
-
+//
 app.use("/uploads", express.static(path.join(path.resolve(),"backend", "uploads")));
+app.use(express.static(path.join(path.resolve(),"frontend", "dist")))
+
 // app.use(cors({
 //     origin: "http://localhost:3000",
 //     credentials: true
@@ -36,9 +37,17 @@ app.use('/api/payments', PaymentRoutes);
 app.use('/api/receipts', ReceiptRoutes);
 app.use('/api/warnings', WarningRoutes);
 
-app.use((req, res)=>{
-    res.status(404).send("404- Resource not found")
-})
+// app.get(/^\/(?!api|uploads).*/, (req, res) => {
+//     res.sendFile(path.join(path.resolve(), "frontend", "dist", "index.html")); // for js,css, png...
+// });
+app.use((req, res) => {
+    if (req.path.startsWith('/api/') || req.path.startsWith('/uploads/')) {
+      return res.status(404).send('Not found');
+    }
+    res.sendFile(path.join(path.resolve(), "frontend", "dist", "index.html"));
+});
+//ဒုဦးစီးမှူး
+  
 const startServer = async ()=>{
     try {
         await connectToDB();

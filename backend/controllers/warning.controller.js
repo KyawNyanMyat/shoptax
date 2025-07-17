@@ -49,7 +49,7 @@ export const createWarning = async (req, res) => {
     }
 
     if (error.code == 112) {
-      return res.status(409).json({ error: "အခြားအက်မင်မှလည်း ပေးပို့နေပါသည်။" });
+      return res.status(409).json({ message: "အခြားအက်မင်မှလည်း ပေးပို့နေပါသည်။" });
     }
 
     console.error("သတိပေးချက်ဖန်တီးရာတွင် ပြဿနာဖြစ်ပွားသည်:", error);

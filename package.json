@@ -4,7 +4,9 @@
   "main": "index.js",
   "scripts": {
     "server": "nodemon ./backend/server.js",
-    "test": "nodemon ./backend/test.js"
+    "test": "nodemon ./backend/test.js",
+    "start": "node backend/server.js",
+    "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
   },
   "type": "module",
   "author": "",

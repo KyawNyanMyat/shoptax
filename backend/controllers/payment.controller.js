@@ -303,7 +303,7 @@ export const updatePaymentStatus = async (req, res) => {
 
     console.error("ငွေပေးချေမှုအခြေအနေ ပြင်ဆင်ရာတွင် ပြဿနာရှိသည်:", err);
 
-    if (err.name == "ExecutionError" || error.name === "LockError") {
+    if (err.name == "ExecutionError" || err.name === "LockError") {
       return res.status(423).json({ message: "ဤငွေပေးချေမှုကို တခြားအက်မင်မှ ပြင်ဆင်နေပါသည်။ ခဏစောင့်ပြီး ပြန်ကြိုးစားပါ။" });
     }
 

@@ -3,7 +3,4 @@
 ၀၉-၁၂၃၄၅၆၇၈၉၀
 
 
-ဒေါ်မော်မော်လှိုင်
-
-
-http://localhost:3000/admin/manageuser
+https://cloud.mongodb.com/v2/66b597c9e01cb9272e14a39c#/overview

@@ -68,7 +68,7 @@ export const createAdmin = async (req, res) => {
     res.status(201).json(adminObj);
   } catch (error) {
     if(error.code == 11000){
-      return res.status(423).json({ message: "နာမည်တူရှိပြီးသားဖြစ်ပါသည်"})
+      return res.status(409).json({ message: "နာမည်တူရှိပြီးသားဖြစ်ပါသည်"})
     }
     console.error("Create Admin Error:", error);
     res.status(500).json({ message: "Server Error" });

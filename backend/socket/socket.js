@@ -10,13 +10,27 @@ export const initSocket = (server)=>{
         cors:{
             origin: "http://localhost:3000",
             methods:['GET', 'POST'],
-            credentials: true
+            credentials: true,
+            connectionStateRecovery: {
+                maxDisconnectionDuration: 2 * 60 * 1000, // 2 min
+                //skipMiddlewares: true
+            },
+            pingInterval: 20000, // send ping to all connected socket
+            pingTimeout: 10000 // wait pong from socket
         }
     })
 
     io.on("connection", (socket)=>{
         console.log("A client connected", socket.id);
 
+        socket.on("disconnect", (reason)=>{
+            console.log("Client disconnected", socket.id, reason)
+        })
+
+        socket.on("error", (err) => {
+            console.error(`Socket error from ${socket.id}:`, err);
+        });
+        
         try {
             const cookies = socket.handshake.headers.cookie;
             if(!cookies) return;
@@ -38,10 +52,13 @@ export const initSocket = (server)=>{
             }
         } catch (error) {
             console.log(error)
+            socket.disconnect(true)
+            return
         }
-        socket.on("disconnect", ()=>{
-            console.log("Client disconnected", socket.id)
-        })
+
+        // socket.on('disconnecting', () => {
+        //     console.log('Client disconnecting:', socket.id, socket.rooms);
+        // });
     })
 
     return io

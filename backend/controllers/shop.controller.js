@@ -22,6 +22,8 @@ export const createShop = async (req, res) => {
     const newShop = new Shop({ marketHallNo, shopNo, chargeRate });
     await newShop.save();
 
+    const io = getIO();
+    io.to("adminRoom").emit("addedNewShop", newShop)
     res.status(201).json(newShop);
   } catch (error) {
     console.error("ဆိုင်ဖန်တီးရာတွင် ပြဿနာ:", error);
@@ -156,7 +158,7 @@ export const assignUserToShop = async (req, res) => {
     }
 
     if (error.code == 112) {
-      return res.status(409).json({ error: "တခြားအုပ်ချုပ်သူတစ်ဦးမှ အချက်အလက်ပြောင်းလဲမှုများ ပြုလုပ်ထားသည်။" });
+      return res.status(409).json({ message: "တခြားအုပ်ချုပ်သူတစ်ဦးမှ အချက်အလက်ပြောင်းလဲမှုများ ပြုလုပ်ထားသည်။" });
     }
 
     console.error("အသုံးပြုသူအား ဆိုင်အပ်နှင်းရာတွင် ပြဿနာ:", error);
@@ -175,7 +177,10 @@ export const removeUserFromShop = async (req, res) => {
 
   try {
     lock = await redlock.acquire([lockKey], 8000);
-    session.startTransaction();
+    session.startTransaction({
+      readConcern: { level: "snapshot" },
+      writeConcern: { w: "majority" },
+    });
 
     const shop = await Shop.findById(shopId).session(session);
     if (!shop) {
@@ -213,7 +218,7 @@ export const removeUserFromShop = async (req, res) => {
     }
 
     if (err.code == 112) {
-      return res.status(409).json({ err: "တခြားအုပ်ချုပ်သူတစ်ဦးမှ အချက်အလက်ပြောင်းလဲမှုများ ပြုလုပ်ထားသည်။" });
+      return res.status(409).json({ message: "တခြားအုပ်ချုပ်သူတစ်ဦးမှ အချက်အလက်ပြောင်းလဲမှုများ ပြုလုပ်ထားသည်။" });
     }
 
     res.status(500).json({ message: "အသုံးပြုသူကို ဆိုင်မှဖယ်ရှားရာတွင် မအောင်မြင်ပါ" });
@@ -232,7 +237,10 @@ export const changeShopTax = async (req, res)=>{
   let lock;
   try {
     lock = await redlock.acquire([`locks:shop:${shopId}`], 8000);
-    session.startTransaction()
+    session.startTransaction({
+      readConcern: { level: "snapshot" },
+      writeConcern: { w: "majority" },
+    })
 
     const updatedTax = await Shop.findByIdAndUpdate(
       shopId,
@@ -262,7 +270,7 @@ export const changeShopTax = async (req, res)=>{
     }
 
     if (error.code == 112) {
-      return res.status(409).json({ error: "တခြားအုပ်ချုပ်သူတစ်ဦးမှ အချက်အလက်ပြောင်းလဲမှုများ ပြုလုပ်ထားသည်။" });
+      return res.status(409).json({ message: "တခြားအုပ်ချုပ်သူတစ်ဦးမှ အချက်အလက်ပြောင်းလဲမှုများ ပြုလုပ်ထားသည်။" });
     }
 
     res.status(500).json({ message: "ဆိုင်အခွန်ပြောင်းလဲချင်း မအောင်မြင်ပါ" });
