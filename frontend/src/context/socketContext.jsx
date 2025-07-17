@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import {io} from "socket.io-client"
+import { useUserAuthContext } from "./userAuthContext";
 
 const socketContext = createContext();
 
@@ -9,8 +10,16 @@ export const useSocketContext = ()=>{
 
 export const SocketContextProvider = ({children})=>{
     const [socket, setSocket] = useState(null)
+    const { userAuth } = useUserAuthContext()
 
     useEffect(()=>{
+        if(!userAuth){
+            if (socket) {
+                socket.disconnect();
+                setSocket(null);
+            }
+            return
+        }
         const socket = io("/",{
             path: "/socket.io",
             withCredentials: true,
@@ -36,6 +45,6 @@ export const SocketContextProvider = ({children})=>{
         return ()=>{
             socket.disconnect()
         }
-    },[])
+    },[userAuth])
     return <socketContext.Provider value={socket}>{children}</socketContext.Provider>
 }
