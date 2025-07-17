@@ -8,15 +8,16 @@ let io;
 export const initSocket = (server)=>{
     io = new Server(server, {
         cors:{
-            origin: "http://localhost:3000",
+            origin: [process.env.CLIENT_URL,"http://localhost:3000"],
             methods:['GET', 'POST'],
             credentials: true,
             connectionStateRecovery: {
-                maxDisconnectionDuration: 2 * 60 * 1000, // 2 min
+                maxDisconnectionDuration: 2 * 60 * 1000,
                 //skipMiddlewares: true
             },
             pingInterval: 20000, // send ping to all connected socket
-            pingTimeout: 10000 // wait pong from socket
+            pingTimeout: 10000, // wait pong from socket
+            transports: ["websocket"]
         }
     })
 

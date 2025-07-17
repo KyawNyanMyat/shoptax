@@ -46,7 +46,6 @@ app.use((req, res) => {
     }
     res.sendFile(path.join(path.resolve(), "frontend", "dist", "index.html"));
 });
-//ဒုဦးစီးမှူး
   
 const startServer = async ()=>{
     try {
