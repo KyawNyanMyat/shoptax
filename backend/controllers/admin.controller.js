@@ -201,8 +201,8 @@ export const logoutAdmin = async (req, res) => {
 
     res.clearCookie("admintoken", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // use HTTPS in production
-      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
     });
 
     //await redis.del(`locks:admin:active:${decoded.AdminId}`);

@@ -6,7 +6,7 @@ const generateAdminTokenAndCookie = (AdminId, res)=>{
     //store token in cookie
     res.cookie('admintoken',token, {
         httpOnly: true,
-        sameSite: "strict",
+        sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
         secure: process.env.NODE_ENV === "production",
         maxAge: 1000 * 60 * 60 * 24
     })

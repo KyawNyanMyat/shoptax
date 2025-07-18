@@ -88,7 +88,7 @@ const AdminDashboardSidebar = ({ sidebarOpen, setSidebarOpen}) => {
 
     {sidebarOpen && (
         <div className="fixed min-h-screen inset-0 z-50 flex lg:hidden">
-          <div className="w-64 p-6 shadow-md  overflow-x-auto overflow-y-auto bg-slate-800 text-white">
+          <div className="w-64 p-6 shadow-md  overflow-x-auto overflow-y-auto bg-slate-800 text-white gap-4">
             <button
               className="btn btn-sm mb-4"
               onClick={() => setSidebarOpen(false)}

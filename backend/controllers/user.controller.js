@@ -208,8 +208,8 @@ export const logoutUser = async (req, res) => {
 
     res.clearCookie("usertoken", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // use HTTPS in production
-      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
     });
 
     //await redis.del(`locks:user:active:${decoded.UserId}`);

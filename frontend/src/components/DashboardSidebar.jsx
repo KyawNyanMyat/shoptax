@@ -69,7 +69,7 @@ const DashboardSidebar = ({ sidebarOpen, setSidebarOpen }) => {
             >
               ✕ ပိတ်ရန်
             </button>
-            <div className="flex flex-col-reverse items-center py-4">
+            <div className="flex flex-col-reverse items-center py-4 gap-4">
               <button
                 onClick={handleHomeClick}
                 className="btn btn-sm btn-outline border-white text-black hover:text-primary"

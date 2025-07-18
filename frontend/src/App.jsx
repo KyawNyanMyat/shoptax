@@ -26,6 +26,7 @@ import AdminCreateShop from "./adminpages/adminDashboard/AdminCreateShop"
 import AdminViewOverdues from "./adminpages/adminDashboard/AdminViewOverdues"
 import UserViewShops from "./pages/userDashboard/UserViewShops"
 import 'leaflet/dist/leaflet.css';
+import { SocketContextProvider } from "./context/socketContext"
 
 // import SocketTest from "./Test"
 function App() {
@@ -37,14 +38,18 @@ function App() {
 
   const UserProtectedLayout = () => (
     <UserAuthContextProvider>
-      <Outlet />
+      <SocketContextProvider>
+        <Outlet />
+      </SocketContextProvider>
     </UserAuthContextProvider>
   );
 
 
   const AdminProtectedLayout = ()=> (
     <AdminAuthContextProvider>
-      <Outlet />
+      <SocketContextProvider>
+        <Outlet />
+      </SocketContextProvider>
     </AdminAuthContextProvider>
   )
   
@@ -58,7 +63,7 @@ function App() {
             {/* User */}
             <Route path="/login" element={<Login/>} />
 
-            {/* <Route element={<UserProtectedLayout/>}> */}
+            <Route element={<UserProtectedLayout/>}>
               <Route path="/" element={<Home />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/about" element={<About/>} />
@@ -69,12 +74,12 @@ function App() {
               <Route path="/user/paymentproof" element={<SubmitPaymentProof />} />
               <Route path="/user/viewshops" element={<UserViewShops />} />
               <Route path="*" element={<NotFound/>} />
-            {/* </Route> */}
+            </Route>
 
             {/* Admin */}
             <Route path="/admin" element={<AdminLogin />} />
 
-            {/* <Route element={<AdminProtectedLayout />} > */}
+            <Route element={<AdminProtectedLayout />} >
               <Route path="/admin/signup" element={<AdminSignup />} />
               <Route path="/admin/dashboard" element={<AdminDashboardHome />} />
               <Route path="/admin/manageuser" element={<AdminManageUsers />} />
@@ -88,7 +93,7 @@ function App() {
               <Route path="/admin/viewoverdue" element={<AdminViewOverdues />} />
               <Route path="/admin/user/signup" element={<Signup/>} />
               <Route path="*" element={<NotFound/>} />
-            {/* </Route> */}
+            </Route>
           </Routes>
           <Toaster/>
         </main>

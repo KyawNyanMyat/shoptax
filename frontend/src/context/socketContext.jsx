@@ -1,7 +1,5 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import {io} from "socket.io-client"
-import { useUserAuthContext } from "./userAuthContext";
-import { useAdminAuthContext } from "./adminAuthContext";
 
 const socketContext = createContext();
 
@@ -11,16 +9,13 @@ export const useSocketContext = ()=>{
 
 export const SocketContextProvider = ({children})=>{
     const [socket, setSocket] = useState(null)
-    const { userAuth } = useUserAuthContext()
-    const { adminAuth} = useAdminAuthContext()
+
+    const backendURL = import.meta.env.VITE_BACKEND_URL || (window.location.hostname === "localhost" ? "http://localhost:5000" : import.meta.env.VITE_BACKEND_URL);
+
 
     useEffect(()=>{
-        const auth = userAuth || adminAuth;
-        if(!auth){
-            return
-        }
-        //change it to / in hosting
-        const newSocket = io("/",{
+
+        const newSocket = io(backendURL,{
             path: "/socket.io",
             withCredentials: true,
             reconnection: true,
@@ -45,6 +40,6 @@ export const SocketContextProvider = ({children})=>{
         return ()=>{
             newSocket.disconnect()
         }
-    },[userAuth, adminAuth])
+    },[])
     return <socketContext.Provider value={socket}>{children}</socketContext.Provider>
 }

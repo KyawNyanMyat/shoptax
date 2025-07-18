@@ -6,7 +6,7 @@ const generateUserTokenAndCookie = (UserId, res)=>{
     //store token in cookie
     res.cookie('usertoken',token, {
         httpOnly: true,
-        sameSite: "strict",
+        sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
         secure: process.env.NODE_ENV === "production",
         maxAge: 1000 * 60 * 60 * 24
     })
