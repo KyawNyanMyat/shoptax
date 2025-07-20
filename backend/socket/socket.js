@@ -8,7 +8,7 @@ let io;
 export const initSocket = (server)=>{
     io = new Server(server, {
         cors:{
-            origin: [process.env.CLIENT_URL,"http://localhost:3000"],
+            origin: [process.env.CLIENT_URL],
             methods:['GET', 'POST'],
             credentials: true,
             connectionStateRecovery: {
@@ -31,6 +31,11 @@ export const initSocket = (server)=>{
         socket.on("error", (err) => {
             console.error(`Socket error from ${socket.id}:`, err);
         });
+
+        socket.on("leaveroom", (roomName)=>{
+            socket.leave(roomName);
+            console.log(`Socket ${socket.id} left room ${roomName}`);
+        })
         
         try {
             const cookies = socket.handshake.headers.cookie;
@@ -42,14 +47,14 @@ export const initSocket = (server)=>{
                 const decoded = jwt.verify(parsed.usertoken, process.env.JWT_SECRET_USER);
                 const userId = decoded.UserId;
                 socket.join(userId); // Join user room
-                console.log(`User socket joined room ${userId}`);
+                console.log(`User socket-${socket.id} joined room ${userId}`);
             }
               
             if (parsed.admintoken) {
                 const decoded = jwt.verify(parsed.admintoken, process.env.JWT_SECRET_ADMIN);
                 const adminId = decoded.AdminId;
                 socket.join(`adminRoom`); // Join admin room
-                console.log(`Admin socket joined room admin-${adminId}`);
+                console.log(`Admin socket-${socket.id} joined room admin-${adminId}`);
             }
         } catch (error) {
             console.log(error)
@@ -58,7 +63,7 @@ export const initSocket = (server)=>{
         }
 
         // socket.on('disconnecting', () => {
-        //     console.log('Client disconnecting:', socket.id, socket.rooms);
+        //     console.log('Client disconnecting:', socket.rooms);
         // });
     })
 

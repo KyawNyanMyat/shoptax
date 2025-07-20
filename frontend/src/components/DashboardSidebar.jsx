@@ -5,9 +5,11 @@ import { IoReceiptOutline } from "react-icons/io5";
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import useLogout from "../hooks/useLogout";
 import { useUserAuthContext } from "../context/userAuthContext";
+import { useSocketContext } from "../context/socketContext";
 
 const DashboardSidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const { userAuth, setUserAuth } = useUserAuthContext()
+  const socket = useSocketContext()
   if(!userAuth){
     return <Navigate to={"/"} />
   }
@@ -18,6 +20,13 @@ const DashboardSidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const handleHomeClick = () => {
     navigate("/");
   };
+
+  const handleLogout = async ()=>{
+    if(!socket) return;
+
+    socket.emit("leaveroom",userAuth._id)
+    await logout()
+  }
   return (
     <>
     <aside className="hidden lg:block bg-base-200 w-64 p-6 shadow-md h-screen overflow-x-auto overflow-y-auto">
@@ -50,8 +59,8 @@ const DashboardSidebar = ({ sidebarOpen, setSidebarOpen }) => {
           ကိုယ်ပိုင်သောဆိုင်များ
         </Link>
         <Link
-          to="#"
-          onClick={logout}
+          // to="#"
+          onClick={handleLogout}
           className="flex items-center gap-3 hover:text-primary"
         >
           <CiLogout className="text-lg" />
@@ -61,7 +70,7 @@ const DashboardSidebar = ({ sidebarOpen, setSidebarOpen }) => {
     </aside>
 
     {sidebarOpen && (
-        <div className="fixed min-h-screen inset-0 z-50 flex lg:hidden">
+        <div className="fixed max-h-screen inset-0 z-50 flex lg:hidden">
           <div className="w-64 bg-base-200 p-6 shadow-md overflow-x-auto overflow-y-auto">
             <button
               className="btn btn-sm mb-4"
@@ -107,8 +116,8 @@ const DashboardSidebar = ({ sidebarOpen, setSidebarOpen }) => {
                 ကိုယ်ပိုင်သောဆိုင်များ
               </Link>
               <Link
-                to="#"
-                onClick={logout}
+                // to="#"
+                onClick={handleLogout}
                 className="flex items-center gap-3 hover:text-primary"
               >
                 <CiLogout className="text-lg" />

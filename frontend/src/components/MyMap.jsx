@@ -19,7 +19,7 @@ const center = [20.4331573,96.1346202];
 
 const MyMap = () => {
   return (
-    <MapContainer center={center} zoom={13} style={{ height: '400px', width: '100%' }}>
+    <MapContainer center={center} zoom={13} style={{ height: '400px', width: '100%', zIndex:0, position: "relative" }}>
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> contributors'

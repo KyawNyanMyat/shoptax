@@ -8,13 +8,22 @@ import { TbShoppingCartDollar } from "react-icons/tb";
 import { Link, Navigate } from 'react-router-dom';
 import useAdminLogout from "../hooks/useAdminLogout";
 import { useAdminAuthContext } from "../context/adminAuthContext";
+import { useSocketContext } from "../context/socketContext";
 
 const AdminDashboardSidebar = ({ sidebarOpen, setSidebarOpen}) => {
   const { adminAuth } = useAdminAuthContext();
+  const socket = useSocketContext()
   if (!adminAuth) {
     return <Navigate to={"/"} />;
   }
   const { loading, logout } = useAdminLogout();
+
+  const handleLogout = async ()=>{
+    if(!socket) return;
+
+    socket.emit("leaveroom","adminRoom")
+    await logout()
+  }
   return (
     <>
     <aside className="hidden lg:block bg-slate-800 text-white w-64 h-screen overflow-y-auto overflow-x-auto p-6 shadow-md">
@@ -72,8 +81,8 @@ const AdminDashboardSidebar = ({ sidebarOpen, setSidebarOpen}) => {
         </Link>
 
         <Link
-          to="/admin"
-          onClick={logout}
+          //to="/admin"
+          onClick={handleLogout}
           className="flex items-center gap-3 hover:text-slate-300"
         >
           <CiLogout className="text-lg" />
@@ -151,8 +160,8 @@ const AdminDashboardSidebar = ({ sidebarOpen, setSidebarOpen}) => {
               </Link>
 
               <Link
-                to="/admin"
-                onClick={logout}
+                //to="/admin"
+                onClick={handleLogout}
                 className="flex items-center gap-3 hover:text-slate-300"
               >
                 <CiLogout className="text-lg" />
