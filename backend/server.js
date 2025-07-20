@@ -18,14 +18,13 @@ dotenv.config()
 
 const port = process.env.PORT || 5000
 const app = express()
-//
-app.use("/uploads", express.static(path.join(path.resolve(),"backend", "uploads")));
+
+//development
+//app.use("/uploads", express.static(path.join(path.resolve(),"backend", "uploads")));
+
+//production
 app.use(express.static(path.join(path.resolve(),"frontend", "dist")))
 
-// app.use(cors({
-//     origin: "http://localhost:3000",
-//     credentials: true
-// }))
 app.use(express.json())
 app.use(cookieParser())
 

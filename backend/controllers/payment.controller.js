@@ -8,6 +8,7 @@ import { myanmarToEnglish } from '../utils/numberConverter.js';
 import { redlock } from '../utils/redlock.js';
 import { getIO } from '../socket/socket.js';
 import { getOverdueUsersData } from '../utils/overdueHelpers.js';
+import { uploadImageToImageKit } from '../middleware/imagekit.js';
 
 // Create a new payment
 export const createPayment = async (req, res) => {
@@ -20,7 +21,11 @@ export const createPayment = async (req, res) => {
       nextPaymentDueDate,
     } = req.body;
 
-    const paymentPhoto = req.file ? `/uploads/${req.file.filename}` : null;
+    //dev
+    //const paymentPhoto = req.file ? `/uploads/${req.file.filename}` : null;
+
+    //production
+    const paymentPhoto = req.file ? await uploadImageToImageKit(req.file) : null;
 
     if (!userId || !shopId || !paymentType || !amount || !nextPaymentDueDate || !paymentPhoto) {
       return res.status(400).json({ message: "အချက်အလက်အားလုံးဖြည့်ရန် လိုအပ်ပါသည်။" });
