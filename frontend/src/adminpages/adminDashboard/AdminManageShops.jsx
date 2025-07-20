@@ -273,7 +273,8 @@ const AdminManageShops = () => {
                                             <span className="font-semibold px-4">အခွန်နှုန်း</span>
                                             <input 
                                                 type="text"
-                                                value={taxValue.value} 
+                                                value={taxValue.value}
+                                                placeholder="ဥပမာ - 5500"
                                                 className="input input-bordered"
                                                 onChange={(e)=> setTaxValue({_id:taxValue._id, value:e.target.value})}
                                             />
