@@ -43,7 +43,7 @@ export const UserAuthContextProvider = ({children})=>{
           if (now > item.expiry) {
             localStorage.removeItem("user-dashboard");
             setUserAuth(null);
-            toast.error("အကောင့်သက်တမ်းကုန်သွားပါပြီ");
+            toast.error("အကောင့်သက်တမ်းကုန်သွားပါပြီ", {id:"userexpire"});
             navigate("/");
           }
         };

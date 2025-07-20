@@ -34,7 +34,7 @@ const AdminSendWarning = () => {
     const myanmarRegex = /[\u1000-\u109F\uAA60-\uAA7F]/;
 
     if (!myanmarRegex.test(warningTitle) || !myanmarRegex.test(warningContent)) {
-      return toast.error("ခေါင်းစဉ်နှင့် အကြောင်းအရာတွင် မြန်မာစာ ပါဝင်ရမည်!");
+      return toast.error("ခေါင်းစဉ်နှင့် အကြောင်းအရာတွင် မြန်မာစာ ပါဝင်ရမည်!", {id:"titlecontent"});
     }
 
     await sendWarning(form);

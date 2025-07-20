@@ -61,7 +61,7 @@ const ManageAdmins = () => {
 
   const handleAuthorization = (e) => {
     if (myposition !== "ဒုဦးစီးမှူး") {
-      toast.error("ခွင့်ပြုချက် မရှိပါ", { duration: 1500 });
+      toast.error("ခွင့်ပြုချက် မရှိပါ", { id:"noauth",duration: 1500 });
     } else {
       navigate("/admin/signup");
     }

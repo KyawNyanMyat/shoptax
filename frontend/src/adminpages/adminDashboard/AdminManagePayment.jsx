@@ -100,13 +100,7 @@ const AdminManagePayments = () => {
             <h2 className="text-2xl font-bold text-teal-600">ငွေပေးချေမှုများ စီမံခန့်ခွဲမှု</h2>
           </div>
 
-          {loading ? (
-            <p>ငွေပေးချေမှုများကို တင်ဆက်နေသည်...</p>
-          ) : payments.length === 0 ? (
-            <p className="text-gray-500">ငွေပေးချေမှုမရှိပါ။</p>
-          ) : (
-            <>
-              <div className="flex items-center gap-4 mb-4">
+          <div className="flex items-center gap-4 mb-4">
                 <span>အခြေအနေ</span>
                 <select
                   className="select select-bordered select-sm focus:outline-offset-0"
@@ -128,6 +122,13 @@ const AdminManagePayments = () => {
                   PDF ထုတ်ယူမည်
                 </button>
               </div>
+
+          {loading ? (
+            <p>ငွေပေးချေမှုများကို တင်ဆက်နေသည်...</p>
+          ) : payments.length === 0 ? (
+            <p className="text-gray-500">ငွေပေးချေမှုမရှိပါ။</p>
+          ) : (
+            <>
               <div className="border border-gray-200 rounded-xl bg-white shadow">
                 <div className="p-2 overflow-x-auto">
                   <table className=" divide-gray-200 text-center min-w-[700px] w-full">

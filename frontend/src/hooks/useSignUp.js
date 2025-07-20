@@ -27,7 +27,7 @@ const useSignUp = () => {
 
         } catch (error) {
             console.log('Error in useLogin hook',error)
-            toast.error(error.message, {duration: 1500})
+            toast.error(error.message, {id:"user_signup",duration: 3500})
             return false
         }
         finally{

@@ -23,7 +23,7 @@ const useCreateShop = () => {
       toast.success("ဆိုင်အသစ် ဖန်တီးပြီးပါပြီ။", { duration: 2000 });
       return true;
     } catch (err) {
-      toast.error(err.message || "မအောင်မြင်ပါ။", { duration: 2000 });
+      toast.error(err.message || "မအောင်မြင်ပါ။", { id:"shopcreate",duration: 2000 });
       return false;
     } finally {
       setShopLoading(false);

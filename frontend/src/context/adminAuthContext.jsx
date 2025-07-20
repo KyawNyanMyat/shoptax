@@ -41,7 +41,7 @@ export const AdminAuthContextProvider = ({children})=>{
           if (now > item.expiry) {
             localStorage.removeItem("admin-dashboard");
             setAdminAuth(null);
-            toast.error("အကောင့်သက်တမ်းကုန်သွားပါပြီ");
+            toast.error("အကောင့်သက်တမ်းကုန်သွားပါပြီ",{id:"expire"});
             navigate("/admin");
           }
         };

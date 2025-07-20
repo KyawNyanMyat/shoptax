@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 const AssignUserToShop = ({ shopId, onAssign }) => {
   const [users, setUsers] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -26,7 +27,7 @@ const AssignUserToShop = ({ shopId, onAssign }) => {
         value={selectedUserId}
         onChange={(e) => setSelectedUserId(e.target.value)}
       >
-        <option value="">Select user</option>
+        <option value="">အသုံးပြုသူရွေးပါ</option>
         {users.map((u) => (
           <option key={u._id} value={u._id}>
             {u.username}
@@ -34,11 +35,19 @@ const AssignUserToShop = ({ shopId, onAssign }) => {
         ))}
       </select>
       <button
-        onClick={() => selectedUserId && onAssign(shopId, selectedUserId)}
+        onClick={ async () => {
+            if (!selectedUserId) return;
+            setLoading(true);
+            await onAssign(shopId, selectedUserId);
+            setLoading(false);
+          }
+        }
         className="btn btn-sm btn-primary"
         disabled={!selectedUserId}
       >
-        Assign
+        {loading ? (
+          <span className="loading loading-spinner loading-sm"></span>
+        ) : "ဆိုင်ကိုအပ်နှင်းရန်"}
       </button>
     </div>
   );

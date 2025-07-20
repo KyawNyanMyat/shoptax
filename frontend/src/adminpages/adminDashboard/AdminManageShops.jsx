@@ -22,7 +22,7 @@ const AdminManageShops = () => {
 
     const [selectedShop, setSelectedShop] = useState(null);
     const [showConfirmModal, setShowConfirmModal] = useState(false);
-    const { removeUserFromShop } = useRemoveUserFromShop();
+    const { removeUserFromShop, loading:removeShopLoading } = useRemoveUserFromShop();
     const socket = useSocketContext()
 
     const [changeTax, setChangeTax] = useState(false)
@@ -36,6 +36,7 @@ const AdminManageShops = () => {
     const handleRemoveUser = async (shopId) => {
         await removeUserFromShop(shopId);
         setSelectedShop(null);
+        setShowConfirmModal(false);
     };
 
     const handleShopTaxChange = async (shopId, taxValue)=>{
@@ -44,6 +45,7 @@ const AdminManageShops = () => {
              _id: "",
             value: ""
         })
+        setChangeTax(false)
     }
 
     useEffect(() => {
@@ -141,7 +143,7 @@ const AdminManageShops = () => {
             toast.success("အသုံးပြုသူအား ဆိုင်အပ်နှင်းမှု အောင်မြင်ပါသည်။", { duration: 1500 });
         } catch (err) {
             console.log('AdminManageShops.jsx မှာ ပြဿနာရှိတယ်', err)
-            toast.error(err.message || "ဆိုင်အပ်နှင်းမှု မအောင်မြင်ပါ", { duration: 1500 });
+            toast.error(err.message || "ဆိုင်အပ်နှင်းမှု မအောင်မြင်ပါ", { id:"assign_shop",duration: 1500 });
         }
     };
 
@@ -236,6 +238,11 @@ const AdminManageShops = () => {
                                 အသုံးပြုသူ <span className="font-semibold">{selectedShop.userId?.username}</span> ကို 
                                 ဖယ်ရှားရန် သေချာပါသလား?
                             </p>
+                            {removeShopLoading ? (
+                                <div className="flex justify-center items-center w-full">
+                                    <span className="loading loading-spinner loading-sm" />
+                                </div>
+                            ) : (
                             <div className="modal-action">
                                 <button
                                 className="btn"
@@ -247,12 +254,12 @@ const AdminManageShops = () => {
                                 className="btn btn-error"
                                 onClick={() => {
                                     handleRemoveUser(selectedShop._id);
-                                    setShowConfirmModal(false);
                                 }}
                                 >
                                 အတည်ပြုမည်
                                 </button>
                             </div>
+                            )}
                             </div>
                         </dialog>
                         )}
@@ -271,6 +278,12 @@ const AdminManageShops = () => {
                                                 onChange={(e)=> setTaxValue({_id:taxValue._id, value:e.target.value})}
                                             />
                                         </p>
+                                        {
+                                        taxLoading ? (
+                                            <div className="flex justify-center items-center w-full">
+                                                <span className="loading loading-spinner loading-sm" />
+                                            </div>
+                                        ) : (
                                         <div className="modal-action flex justify-center">
                                             <button
                                             className="btn"
@@ -282,16 +295,12 @@ const AdminManageShops = () => {
                                             className="btn btn-error"
                                             onClick={() => {
                                                 handleShopTaxChange(taxValue._id, taxValue.value)
-                                                setChangeTax(false)
                                             }}
                                             >
-                                            {taxLoading ? (
-                                                <span className="loading loading-spinner loading-sm"></span>
-                                                ) : (
-                                                'အတည်ပြုမည်'
-                                            )}
+                                            အတည်ပြုမည်
                                             </button>
                                         </div>
+                                        )}
                                     </div>
                                 </div>
                             )

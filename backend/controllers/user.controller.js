@@ -39,7 +39,7 @@ export const createUser = async (req, res) => {
     // }
 
     if (!/^09\-([0-9]{7}|[0-9]{9})$/.test(phoneNo)){
-        return res.status(400).json({ message: "ဖုန်းနံပါတ်သည် 09- နဲ့စပြီး 9 သို့မဟုတ် 11 လုံးပါရပါမည်။" })
+        return res.status(400).json({ message: "ဖုန်းနံပါတ်သည် 09- နဲ့စပြီး 9လုံး သို့မဟုတ် 11လုံး ပါရမည်။" })
     }
 
 
