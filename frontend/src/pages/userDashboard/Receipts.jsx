@@ -18,10 +18,12 @@ const Receipts = () => {
   const userId = userAuth._id;
 
   const { loadingId, markAsRead } = UseReceiptMarkAsRead();
+  const [ loading, setLoading ] = useState(false)
   const socket = useSocketContext()
 
   useEffect(() => {
     const getReceipt = async () => {
+      setLoading(true)
       try {
         const res = await fetch(`/api/receipts/user/${userId}`);
         const data = await res.json();
@@ -31,6 +33,9 @@ const Receipts = () => {
       } catch (error) {
         console.log("Error in Receipt.jsx", error.message);
         toast.error(error.message, { id: "receipt-error", duration: 1500 });
+      }
+      finally{
+        setLoading(false)
       }
     };
 
@@ -77,7 +82,10 @@ const Receipts = () => {
         <DashboardHeader setSidebarOpen={setSidebarOpen}/>
         <div className="p-6 h-screen overflow-y-auto">
           <h2 className="text-2xl font-bold mb-6">သင့်ရဲ့ ပြေစာများ</h2>
-          {userReceipts.length === 0 ? (
+          {loading ? (
+            <p>ပြေစာများကို တင်ဆက်နေသည်...</p>
+          ) :
+          userReceipts.length === 0 ? (
             <p className="text-sm text-gray-500 mt-4">ပြေစာများ မရှိသေးပါ။</p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

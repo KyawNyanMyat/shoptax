@@ -247,8 +247,8 @@ export const updatePaymentStatus = async (req, res) => {
 
       await Warning.create([{
         warningTitle: "ငွေပေးချေမှု ပယ်ဖျက်ခြင်း",
-        warningContent: `သင်၏ ရုံ ${shop.marketHallNo}/ဆိုင် ${shop.shopNo} တွင် ပြုလုပ်သော ${payment.paymentType} သည်
-        ${rejectionReason} ကြောင့်ပယ်ဖျက်ခဲ့ပါသည်။ ကျေးဇူးပြု၍ မှန်ကန်သော ငွေပေးချေမှုဖောင်ကို ပြန်လည်တင်ပြပါ။`,
+        warningContent: `သင်၏ ရုံ ${shop.marketHallNo}/ဆိုင် ${shop.shopNo} အတွက်ပြုလုပ်သော ${payment.paymentType} သည် ကြောင့်ပယ်ဖျက်ခဲ့ပါသည်။ ကျေးဇူးပြု၍ မှန်ကန်သော ငွေပေးချေမှုဖောင်ကို ပြန်လည်တင်ပြပါ။
+        အကြောင်းပြချက် - ${rejectionReason}`,
         userId: userId,
         issueDate: new Date()
       }], { session });
