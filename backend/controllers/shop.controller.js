@@ -239,6 +239,7 @@ export const changeShopTax = async (req, res)=>{
   const { shopId } = req.params;
   const session = await mongoose.startSession()
   let lock;
+  let transactionStarted = false;
   try {
     lock = await redlock.acquire([`locks:shop:${shopId}`], 60000, {
       retryCount: 0,
@@ -249,6 +250,7 @@ export const changeShopTax = async (req, res)=>{
       readConcern: { level: "snapshot" },
       writeConcern: { w: "majority" },
     })
+    transactionStarted = true
 
     const updatedTax = await Shop.findByIdAndUpdate(
       shopId,
@@ -271,7 +273,9 @@ export const changeShopTax = async (req, res)=>{
     res.status(200).json(updatedTax)
 
   } catch (error) {
-    await session.abortTransaction();
+    if (transactionStarted) {
+      await session.abortTransaction();
+    }
     console.log("Error in shop controller changeShopTax", error)
 
     if (error.name === "LockError" || error.name === "ExecutionError") {
