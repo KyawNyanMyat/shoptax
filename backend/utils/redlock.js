@@ -3,7 +3,7 @@ import Redlock from "redlock";
 
 const redis = new Redis(process.env.REDIS_URL,{
     lazyConnect: true, // only connect when you call redis.connect()
-    tls: { rejectUnauthorized: false },
+    tls: { },
     enableOfflineQueue: false, //Throws key:value immediately if disconnected
     connectTimeout: 10000,
 });
