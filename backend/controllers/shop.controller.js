@@ -261,7 +261,8 @@ export const changeShopTax = async (req, res)=>{
     }
 
     await session.commitTransaction();
-    await lock.release()
+    //Important
+    //await lock.release()
 
     //socket
     const io = getIO();
@@ -285,9 +286,10 @@ export const changeShopTax = async (req, res)=>{
   }
   finally{
     session.endSession()
-    if (lock) {
-      await lock.release().catch(() => {});
-    }
+    //Important
+    // if (lock) {
+    //   await lock.release().catch(() => {});
+    // }
   }
 }
 
