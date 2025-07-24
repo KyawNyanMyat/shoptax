@@ -115,7 +115,7 @@ export const assignUserToShop = async (req, res) => {
   const lockKey = `locks:shop:${shopId}`;
 
   try {
-    const lock = await redlock.acquire([lockKey], 10000, {
+    const lock = await redlock.acquire([lockKey], 60000, {
       retryCount: 0,
       retryDelay: 0,
       retryJitter: 0,
@@ -176,7 +176,7 @@ export const removeUserFromShop = async (req, res) => {
   let lock;
 
   try {
-    lock = await redlock.acquire([lockKey], 10000, {
+    lock = await redlock.acquire([lockKey], 60000, {
       retryCount: 0,
       retryDelay: 0,
       retryJitter: 0
@@ -240,7 +240,7 @@ export const changeShopTax = async (req, res)=>{
   const session = await mongoose.startSession()
   let lock;
   try {
-    lock = await redlock.acquire([`locks:shop:${shopId}`], 10000, {
+    lock = await redlock.acquire([`locks:shop:${shopId}`], 60000, {
       retryCount: 0,
       retryDelay: 0,
       retryJitter: 0
@@ -261,8 +261,8 @@ export const changeShopTax = async (req, res)=>{
     }
 
     await session.commitTransaction();
-    //Important
-    //await lock.release()
+    await new Promise(res => setTimeout(res, 5000));
+    await lock.release()
 
     //socket
     const io = getIO();
@@ -286,10 +286,9 @@ export const changeShopTax = async (req, res)=>{
   }
   finally{
     session.endSession()
-    //Important
-    // if (lock) {
-    //   await lock.release().catch(() => {});
-    // }
+    if (lock) {
+      await lock.release().catch(() => {});
+    }
   }
 }
 

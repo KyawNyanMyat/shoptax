@@ -14,7 +14,7 @@ export const createWarning = async (req, res) => {
   const lockKey = `locks:warning:user:${userId}`;
 
   try {
-    const lock = await redlock.acquire([lockKey], 10000, {
+    const lock = await redlock.acquire([lockKey], 60000, {
       retryCount: 0,
       retryDelay: 0,
       retryJitter: 0,

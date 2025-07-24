@@ -214,7 +214,7 @@ export const updatePaymentStatus = async (req, res) => {
   const session = await mongoose.startSession();
 
   try {
-    lock = await redlock.acquire([`locks:payment:${id}`], 10000, {
+    lock = await redlock.acquire([`locks:payment:${id}`], 60000, {
       retryCount: 0,
       retryDelay: 0,
       retryJitter: 0
