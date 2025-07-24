@@ -19,6 +19,7 @@ const connectToRedis = async () => {
         }
         await redis.connect();
         console.log("Connected to Redis");
+        await redis.set("test-key", "Hello Redis!");
         return true;
     } catch (err) {
         console.error("Redis connection failed:", err);
