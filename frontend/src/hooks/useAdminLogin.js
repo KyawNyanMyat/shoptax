@@ -18,7 +18,7 @@ const useAdminLogin = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || "အုပ်ချုပ်ရေးဝင် ဝင်ရောက်မှု မအောင်မြင်ပါ");
+        throw new Error(data.message || "ဈေးတာ၀န်ခံ ဝင်ရောက်မှု မအောင်မြင်ပါ");
       }
 
       const now = new Date();

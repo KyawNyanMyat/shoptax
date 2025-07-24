@@ -30,18 +30,18 @@ const AdminLogin = () => {
           {/* Header */}
           <div className="flex items-center justify-center gap-3 mb-6">
             <FaShieldAlt className="text-blue-600 text-2xl" />
-            <span className="text-3xl font-semibold text-gray-800">အုပ်ချုပ်ရေးဝင် ဝင်ရောက်ခြင်း</span>
+            <span className="text-3xl font-semibold text-gray-800">ဈေးတာ၀န်ခံ ဝင်ရောက်ခြင်း</span>
           </div>
 
           {/* Username */}
           <div className="mb-4">
-            <label className="block font-semibold py-2 text-gray-700">အုပ်ချုပ်ရေးဝင်နာမည်</label>
+            <label className="block font-semibold py-2 text-gray-700">နာမည်</label>
             <input
               type="text"
               name="adminName"
               value={formData.adminName}
               onChange={handleChange}
-              placeholder="အုပ်ချုပ်ရေးအမည် ထည့်ပါ"
+              placeholder="အမည် ထည့်ပါ"
               className="w-full input input-bordered focus:outline-blue-500 focus:outline-offset-0"
               autoComplete="off"
               maxLength={50}

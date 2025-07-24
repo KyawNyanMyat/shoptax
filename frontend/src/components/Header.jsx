@@ -39,9 +39,9 @@ const Header = () => {
           <h1 className="text-xl font-bold w-60 not-sm:w-40 sm:text-2xl">
             ဈေးနှင့်သားသတ်ဌာနစိတ်
           </h1>
-          <p className="text-sm text-gray-200 hidden sm:block">
+          {/* <p className="text-sm text-gray-200 hidden sm:block">
             ပြည်သူ့အတွက် သတ္တိဖြင့်ဝန်ဆောင်မှုပေးနေသည်
-          </p>
+          </p> */}
         </div>
       </div>
 

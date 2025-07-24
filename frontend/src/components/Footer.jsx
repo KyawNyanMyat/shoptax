@@ -1,4 +1,6 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
+import { HashLink } from "react-router-hash-link"
 
 const Footer = () => {
   return (
@@ -9,11 +11,11 @@ const Footer = () => {
         <div className="flex-1 text-center md:text-left">
           <h3 className="text-lg font-bold mb-3">လင့်ခ်အတိုများ</h3>
           <ul className="space-y-2 text-sm">
-            <li><a href="/" className="hover:underline">ပင်မစာမျက်နှာ</a></li>
-            <li><a href="/about" className="hover:underline">အကြောင်းအရာ</a></li>
-            <li><a href="/contact" className="hover:underline">ဆက်သွယ်ရန်</a></li>
-            <li><a href="/#services" className="hover:underline">၀န်ဆောင်မှုများ</a></li>
-            <li><a href="/#usage" className="hover:underline">အသုံပြုနည်း</a></li>
+            <li><Link to="/" className="hover:underline">ပင်မစာမျက်နှာ</Link></li>
+            <li><Link to="/about" className="hover:underline">အကြောင်းအရာ</Link></li>
+            <li><Link to="/contact" className="hover:underline">ဆက်သွယ်ရန်</Link></li>
+            <li><HashLink to="/#services" className="hover:underline">၀န်ဆောင်မှုများ</HashLink></li>
+            <li><HashLink to="/#usage" className="hover:underline">အသုံပြုနည်း</HashLink></li>
           </ul>
         </div>
 

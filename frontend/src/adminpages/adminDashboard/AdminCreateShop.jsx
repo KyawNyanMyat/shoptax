@@ -87,7 +87,7 @@ const AdminCreateShop = () => {
             />
           </div>
 
-          <Link to='/admin/dashboard' className='text-sm hover:underline text-green-600 hover:text-blue-700 inline-block'> အုပ်ချုပ်ရေးဒက်ရှ်ဘုတ် သို့သွားရန်</Link>
+          <Link to='/admin/dashboard' className='text-sm hover:underline text-green-600 hover:text-blue-700 inline-block'>ဈေးတာ၀န်ခံဒက်ရှ်ဘုတ် သို့သွားရန်</Link>
           <button
             type="submit"
             className="btn w-full bg-teal-600 hover:bg-teal-700 text-white"

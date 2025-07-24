@@ -17,7 +17,7 @@ const AdminDashboardHeader = ({ setSidebarOpen }) => {
         ☰
       </button>
       <div>
-        <h1 className="text-xl font-bold">အုပ်ချုပ်ရေး ဒက်ရှ်ဘုတ်</h1>
+        <h1 className="text-xl font-bold">ဈေးတာ၀န်ခံ ဒက်ရှ်ဘုတ်</h1>
         <p className="text-sm text-amber-100">အသုံးပြုသူများနှင့် ဈေးကွက်စီမံခန့်ခွဲမှုများကို ကြီးကြပ်ခြင်း</p>
       </div>
 
@@ -26,7 +26,7 @@ const AdminDashboardHeader = ({ setSidebarOpen }) => {
           {userPhoto && (
             <img
               src={userPhoto}
-              alt="အုပ်ချုပ်ရေးဝင်"
+              alt="ဈေးတာ၀န်ခံ"
               className="w-full h-full object-cover"
             />
           )}

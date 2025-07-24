@@ -29,8 +29,8 @@ const AdminDashboardSidebar = ({ sidebarOpen, setSidebarOpen}) => {
     <aside className="hidden lg:block bg-slate-800 text-white w-64 h-screen overflow-y-auto overflow-x-auto p-6 shadow-md">
       {/* ခေါင်းစဉ် / Panel Name */}
       <div className="mb-10">
-        <h2 className="text-xl font-bold text-white">အုပ်ချုပ်ရေးဘုတ်ပြား</h2>
-        <p className="text-sm text-slate-400">အုပ်ချုပ်သူများအတွက် ထိန်းချုပ်မှုများ</p>
+        <h2 className="text-xl font-bold text-white">ဈေးတာ၀န်ခံဘုတ်ပြား</h2>
+        <p className="text-sm text-slate-400">ဈေးတာ၀န်ခံသူများအတွက် ထိန်းချုပ်မှုများ</p>
       </div>
 
       {/* Navigation Links */}
@@ -47,7 +47,7 @@ const AdminDashboardSidebar = ({ sidebarOpen, setSidebarOpen}) => {
 
         <Link to="/admin/manageadmin" className="flex items-center gap-3 hover:text-slate-300">
           <MdAdminPanelSettings className="text-lg" />
-          အုပ်ချုပ်သူများကို စီမံရန်
+          ဈေးတာ၀န်ခံသူများကို စီမံရန်
         </Link>
 
         <Link to="/admin/manageshop" className="flex items-center gap-3 hover:text-slate-300">
@@ -126,7 +126,7 @@ const AdminDashboardSidebar = ({ sidebarOpen, setSidebarOpen}) => {
 
               <Link to="/admin/manageadmin" className="flex items-center gap-3 hover:text-slate-300">
                 <MdAdminPanelSettings className="text-lg" />
-                အုပ်ချုပ်သူများကို စီမံရန်
+                ဈေးတာ၀န်ခံသူများကို စီမံရန်
               </Link>
 
               <Link to="/admin/manageshop" className="flex items-center gap-3 hover:text-slate-300">

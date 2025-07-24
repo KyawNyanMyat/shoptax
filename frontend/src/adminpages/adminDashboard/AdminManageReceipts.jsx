@@ -88,7 +88,8 @@ const AdminManageReceipts = () => {
                     <th>ပမာဏ</th>
                     <th>ထုတ်ပေးသည့်ရက်</th>
                     <th>ဖတ်ပြီး/မဖတ်ရသေး</th>
-                    <th>လက်မှတ်</th>
+                    <th>ဈေးတာ၀န်ခံလက်မှတ်</th>
+                    <th>အမှုဆောင်အရာရှိလက်မှတ်</th>
                   </tr>
                 </thead>
                 <tbody className="text-sm">
@@ -104,7 +105,14 @@ const AdminManageReceipts = () => {
                       <td>{r.isRead ? "ဖတ်ပြီး" : "မဖတ်ရသေးပါ"}</td>
                       <td>
                         <img
-                          src={"#"}
+                          src={"/receiptimages/mSup.png"}
+                          alt="လက်မှတ်"
+                          className="w-10 h-10 object-cover"
+                        />
+                      </td>
+                      <td>
+                        <img
+                          src={"/receiptimages/DDSig.png"}
                           alt="လက်မှတ်"
                           className="w-10 h-10 object-cover"
                         />

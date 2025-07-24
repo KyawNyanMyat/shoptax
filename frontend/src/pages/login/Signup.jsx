@@ -148,7 +148,7 @@ const Signup = () => {
             />
           </div>
 
-          <Link to='/admin/dashboard' className='text-sm hover:underline text-green-600 hover:text-blue-700 mt-4 inline-block'> အုပ်ချုပ်ရေးဒက်ရှ်ဘုတ် သို့သွားရန်</Link>
+          <Link to='/admin/dashboard' className='text-sm hover:underline text-green-600 hover:text-blue-700 mt-4 inline-block'> ဈေးတာ၀န်ခံဒက်ရှ်ဘုတ် သို့သွားရန်</Link>
 
           <div className='pt-3'>
             <button className='btn btn-primary w-full'>

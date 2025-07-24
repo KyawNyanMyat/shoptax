@@ -28,12 +28,12 @@ const ManageAdmins = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || "အုပ်ချုပ်သူ အချက်အလက်များ ရယူရာတွင် ပြဿနာ တစ်ခု ဖြစ်ပွားနေပါသည်။");
+        throw new Error(data.message || "ဈေးတာ၀န်ခံ အချက်အလက်များ ရယူရာတွင် ပြဿနာ တစ်ခု ဖြစ်ပွားနေပါသည်။");
       }
 
       setAdmins(data);
     } catch (err) {
-      console.error("အုပ်ချုပ်သူများကို မရယူနိုင်ပါ:", err);
+      console.error("ဈေးတာ၀န်ခံသူများကို မရယူနိုင်ပါ:", err);
       toast.error(err.message, { id: "admin-admin-error" });
     } finally {
       setLoading(false);
@@ -90,27 +90,27 @@ const ManageAdmins = () => {
               </button>
             </div>
           <div className="flex justify-between items-center flex-wrap mt-3 mb-3">
-            <h2 className="text-2xl font-bold text-teal-600">အုပ်ချုပ်သူ စီမံခန့်ခွဲမှု</h2>
+            <h2 className="text-2xl font-bold text-teal-600">ဈေးတာ၀န်ခံ စီမံခန့်ခွဲမှု</h2>
             <button
               onClick={handleAuthorization}
               className="btn bg-blue-600 text-white hover:bg-blue-700"
             >
               <LiaUserPlusSolid className="text-2xl" />
-              အုပ်ချုပ်သူ အသစ်ဖန်တီးရန်
+              ဈေးတာ၀န်ခံ အသစ်ဖန်တီးရန်
             </button>
           </div>
 
           {loading ? (
-            <p>အုပ်ချုပ်သူများကို တင်ဆက်နေပါသည်...</p>
+            <p>ဈေးတာ၀န်ခံ သူများကို တင်ဆက်နေပါသည်...</p>
           ) : admins.length === 0 ? (
-            <p className="text-gray-500">အုပ်ချုပ်သူ မရှိသေးပါ။</p>
+            <p className="text-gray-500">ဈေးတာ၀န်ခံ သူမရှိသေးပါ။</p>
           ) : (
             <div className="p-2 overflow-x-auto">
               <table className="table min-w-[700px] w-full bg-white shadow rounded-xl">
                 <thead>
                   <tr className="bg-blue-100 text-blue-800 text-sm">
                     <th>စဉ်</th>
-                    <th>အုပ်ချုပ်သူ ID</th>
+                    <th>ဈေးတာ၀န်ခံ ID</th>
                     <th>အမည်</th>
                     <th>စကားဝှက်</th>
                     <th>ဖုန်း</th>

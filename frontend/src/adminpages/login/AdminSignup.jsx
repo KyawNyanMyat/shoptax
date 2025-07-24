@@ -50,7 +50,7 @@ const AdminSignup = () => {
             <div className="bg-blue-100 p-3 rounded-full mb-3">
               <FaUserShield className="text-blue-600 text-2xl" />
             </div>
-              <h1 className="text-2xl font-bold text-gray-800">အုပ်ချုပ်ရေးအကောင့်ဖွင့်ခြင်း</h1>
+              <h1 className="text-2xl font-bold text-gray-800">ဈေးတာ၀န်ခံအကောင့်ဖွင့်ခြင်း</h1>
               <p className="text-sm text-gray-600 mt-2">ခွင့်ပြုထားသူများအတွက်သာ အသုံးပြုနိုင်ပါသည်</p>
             </div>
 
@@ -177,7 +177,7 @@ const AdminSignup = () => {
               to="/admin/dashboard"
               className="block text-center text-sm hover:underline hover:text-blue-600 text-green-600"
             >
-              အုပ်ချုပ်သူ ဘုတ်ပြားဆီသွားရန်
+              ဈေးတာ၀န်ခံ ဘုတ်ပြားဆီသွားရန်
             </Link>
           </div>
         </form>

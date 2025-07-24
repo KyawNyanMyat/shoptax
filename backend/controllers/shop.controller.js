@@ -158,7 +158,7 @@ export const assignUserToShop = async (req, res) => {
     }
 
     if (error.code == 112) {
-      return res.status(409).json({ message: "တခြားအုပ်ချုပ်သူတစ်ဦးမှ အချက်အလက်ပြောင်းလဲမှုများ ပြုလုပ်ထားသည်။" });
+      return res.status(409).json({ message: "တခြားဈေးတာ၀န်ခံသူတစ်ဦးမှ အချက်အလက်ပြောင်းလဲမှုများ ပြုလုပ်ထားသည်။" });
     }
 
     console.error("အသုံးပြုသူအား ဆိုင်အပ်နှင်းရာတွင် ပြဿနာ:", error);
@@ -176,7 +176,11 @@ export const removeUserFromShop = async (req, res) => {
   let lock;
 
   try {
-    lock = await redlock.acquire([lockKey], 8000);
+    lock = await redlock.acquire([lockKey], 10000, {
+      retryCount: 0,
+      retryDelay: 0,
+      retryJitter: 0
+    });
     session.startTransaction({
       readConcern: { level: "snapshot" },
       writeConcern: { w: "majority" },
@@ -218,7 +222,7 @@ export const removeUserFromShop = async (req, res) => {
     }
 
     if (err.code == 112) {
-      return res.status(409).json({ message: "တခြားအုပ်ချုပ်သူတစ်ဦးမှ အချက်အလက်ပြောင်းလဲမှုများ ပြုလုပ်ထားသည်။" });
+      return res.status(409).json({ message: "တခြားဈေးတာ၀န်ခံ သူတစ်ဦးမှ အချက်အလက်ပြောင်းလဲမှုများ ပြုလုပ်ထားသည်။" });
     }
 
     res.status(500).json({ message: "အသုံးပြုသူကို ဆိုင်မှဖယ်ရှားရာတွင် မအောင်မြင်ပါ" });
@@ -236,7 +240,11 @@ export const changeShopTax = async (req, res)=>{
   const session = await mongoose.startSession()
   let lock;
   try {
-    lock = await redlock.acquire([`locks:shop:${shopId}`], 8000);
+    lock = await redlock.acquire([`locks:shop:${shopId}`], 10000, {
+      retryCount: 0,
+      retryDelay: 0,
+      retryJitter: 0
+    });
     session.startTransaction({
       readConcern: { level: "snapshot" },
       writeConcern: { w: "majority" },
@@ -270,7 +278,7 @@ export const changeShopTax = async (req, res)=>{
     }
 
     if (error.code == 112) {
-      return res.status(409).json({ message: "တခြားအုပ်ချုပ်သူတစ်ဦးမှ အချက်အလက်ပြောင်းလဲမှုများ ပြုလုပ်ထားသည်။" });
+      return res.status(409).json({ message: "တခြားဈေးတာ၀န်ခံ သူတစ်ဦးမှ အချက်အလက်ပြောင်းလဲမှုများ ပြုလုပ်ထားသည်။" });
     }
 
     res.status(500).json({ message: "ဆိုင်အခွန်ပြောင်းလဲချင်း မအောင်မြင်ပါ" });
