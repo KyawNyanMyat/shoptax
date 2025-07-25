@@ -228,7 +228,7 @@ export const updatePaymentStatus = async (req, res) => {
     const payment = await Payment.findById(id).session(session);
     if (!payment) {
       await session.abortTransaction();
-      await lock.release();
+      //await lock.release();
       return res.status(404).json({ message: "ငွေပေးချေမှုအချက်အလက် မတွေ့ပါ" });
     }
 
@@ -256,7 +256,7 @@ export const updatePaymentStatus = async (req, res) => {
 
     if (payment.status !== 'Pending') {
       await session.abortTransaction();
-      await lock.release();
+      //await lock.release();
       return res.status(409).json({ message: `ငွေပေးချေမှုသည် ထပ်မံပြင်ဆင်လို့မရတော့ပါ။ (Status: ${payment.status})` });
     }
 
@@ -264,6 +264,8 @@ export const updatePaymentStatus = async (req, res) => {
     await payment.save({ session });
 
     await session.commitTransaction();
+        //Important delete timeout
+        await new Promise(res => setTimeout(res, 5000));
     await lock.release();
 
     //socket
@@ -308,16 +310,19 @@ export const updatePaymentStatus = async (req, res) => {
 
     console.error("ငွေပေးချေမှုအခြေအနေ ပြင်ဆင်ရာတွင် ပြဿနာရှိသည်:", err);
 
-    if (err.name == "ExecutionError" || err.name === "LockError") {
-      return res.status(423).json({ message: "ဤငွေပေးချေမှုကို တခြားအက်မင်မှ ပြင်ဆင်နေပါသည်။ ခဏစောင့်ပြီး ပြန်ကြိုးစားပါ။" });
+    if (err.code == 112) {
+      return res.status(409).json({ message: "တခြားသူတစ်ဦးမှ အချက်အလက်ပြောင်းလဲနေသည်။" });
     }
 
-    if (err.code == 112) {
-      return res.status(409).json({ message: "တခြားအက်မင်တစ်ဦးမှ ပြောင်းလဲမှုများ ပြုလုပ်ပြီးဖြစ်သည်။" });
+    if (err.name == "ExecutionError" || err.name === "LockError") {
+      return res.status(423).json({ message: "တခြားသူအသုံးပြုနေသည်။ နောက်မှပြန်ကြိုးစားပါ။" });
     }
 
     res.status(500).json({ message: "ဆာဗာအတွင်းမှ အမှားတစ်ခု ဖြစ်ပွားခဲ့သည်" });
   } finally {
     session.endSession();
+    if (lock) {
+      await lock.release().catch(() => {});
+    }
   }
 };

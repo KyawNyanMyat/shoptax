@@ -12,9 +12,10 @@ export const createWarning = async (req, res) => {
   }
 
   const lockKey = `locks:warning:user:${userId}`;
+  let lock;
 
   try {
-    const lock = await redlock.acquire([lockKey], 60000, {
+      lock = await redlock.acquire([lockKey], 60000, {
       retryCount: 0,
       retryDelay: 0,
       retryJitter: 0,
@@ -29,6 +30,8 @@ export const createWarning = async (req, res) => {
     await newWarning.save({ session });
 
     await session.commitTransaction();
+        //Important delete timeout
+        await new Promise(res => setTimeout(res, 5000));
     await lock.release();
 
     //socket
@@ -43,19 +46,21 @@ export const createWarning = async (req, res) => {
     if (session.inTransaction()) {
       await session.abortTransaction();
     }
-
-    if (error.name === "LockError" || error.name == "ExecutionError") {
-      return res.status(423).json({ message: "အခြားအက်မင်တစ်ဦးက သတိပေးချက်တစ်ခုဖန်တီးနေသည်။ ခဏစောင့်ပြီးမှ ထပ်မံကြိုးစားပါ။" });
-    }
-
+    console.error("သတိပေးချက်ဖန်တီးရာတွင် ပြဿနာဖြစ်ပွားသည်:", error);
     if (error.code == 112) {
       return res.status(409).json({ message: "အခြားအက်မင်မှလည်း ပေးပို့နေပါသည်။" });
     }
 
-    console.error("သတိပေးချက်ဖန်တီးရာတွင် ပြဿနာဖြစ်ပွားသည်:", error);
+    if (error.name === "LockError" || error.name == "ExecutionError") {
+      return res.status(423).json({ message: "တခြားသူပေးပို့နေသည်။ နောက်မှပြန်ကြိုးစားပါ။" });
+    }
+
     res.status(500).json({ message: "Server မှာ အမှားအယွင်း ဖြစ်ပွားနေသည်။" });
   } finally {
     session.endSession();
+    if (lock) {
+      await lock.release().catch(() => {});
+    }
   }
 };
 

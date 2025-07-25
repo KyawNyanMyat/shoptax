@@ -113,9 +113,10 @@ export const assignUserToShop = async (req, res) => {
   }
 
   const lockKey = `locks:shop:${shopId}`;
+  let lock;
 
   try {
-    const lock = await redlock.acquire([lockKey], 60000, {
+      lock = await redlock.acquire([lockKey], 60000, {
       retryCount: 0,
       retryDelay: 0,
       retryJitter: 0,
@@ -137,6 +138,8 @@ export const assignUserToShop = async (req, res) => {
     await shop.save({ session });
 
     await session.commitTransaction();
+        //Important delete timeout
+        await new Promise(res => setTimeout(res, 5000));
     await lock.release();
 
     //for socket to get updated data
@@ -151,20 +154,25 @@ export const assignUserToShop = async (req, res) => {
 
     res.status(200).json({ message: "အသုံးပြုသူအား ဆိုင်အပ်နှင်းခြင်း အောင်မြင်ပါသည်။" });
   } catch (error) {
-    await session.abortTransaction();
+    if(session.inTransaction()){
+      await session.abortTransaction();
+    }
+    console.error("အသုံးပြုသူအား ဆိုင်အပ်နှင်းရာတွင် ပြဿနာ:", error);
+    
+    if (error.code == 112) {
+      return res.status(409).json({ message: "တခြားသူတစ်ဦးမှ အချက်အလက်ပြောင်းလဲနေသည်။" });
+    }
 
     if (error.name === "LockError" || error.name === "ExecutionError") {
-      return res.status(423).json({ message: "အရင်းအမြစ်ကို တခြားသူအသုံးပြုနေသည်။ နောက်မှပြန်ကြိုးစားပါ။" });
+      return res.status(423).json({ message: "တခြားသူအသုံးပြုနေသည်။ နောက်မှပြန်ကြိုးစားပါ။" });
     }
 
-    if (error.code == 112) {
-      return res.status(409).json({ message: "တခြားဈေးတာ၀န်ခံသူတစ်ဦးမှ အချက်အလက်ပြောင်းလဲမှုများ ပြုလုပ်ထားသည်။" });
-    }
-
-    console.error("အသုံးပြုသူအား ဆိုင်အပ်နှင်းရာတွင် ပြဿနာ:", error);
     res.status(500).json({ message: "ဆာဗာအတွင်းအမှား ဖြစ်ပွားခဲ့သည်။" });
   } finally {
     session.endSession();
+    if (lock) {
+      await lock.release().catch(() => {});
+    }
   }
 };
 
@@ -176,7 +184,7 @@ export const removeUserFromShop = async (req, res) => {
   let lock;
 
   try {
-    lock = await redlock.acquire([lockKey], 60000, {
+      lock = await redlock.acquire([lockKey], 60000, {
       retryCount: 0,
       retryDelay: 0,
       retryJitter: 0
@@ -201,6 +209,9 @@ export const removeUserFromShop = async (req, res) => {
     await shop.save({ session });
 
     await session.commitTransaction();
+        //Important delete timeout
+        await new Promise(res => setTimeout(res, 5000));
+    await lock.release()
 
     //socket
     const io = getIO();
@@ -214,15 +225,17 @@ export const removeUserFromShop = async (req, res) => {
 
     res.status(200).json({ message: "အသုံးပြုသူကို ဆိုင်မှအောင်မြင်စွာ ဖယ်ရှားပြီးပါပြီ" });
   } catch (err) {
-    await session.abortTransaction();
+    if(session.inTransaction()){
+      await session.abortTransaction();
+    }
     console.error("Remove user error:", err.message);
 
-    if (err.name === "LockError" || err.name === "ExecutionError") {
-      return res.status(423).json({ message: "အရင်းအမြစ်ကို တခြားသူအသုံးပြုနေသည်။ နောက်မှပြန်ကြိုးစားပါ။" });
+    if (err.code == 112) {
+      return res.status(409).json({ message: "တခြားသူတစ်ဦးမှ အချက်အလက်ပြောင်းလဲနေသည်။" });
     }
 
-    if (err.code == 112) {
-      return res.status(409).json({ message: "တခြားဈေးတာ၀န်ခံ သူတစ်ဦးမှ အချက်အလက်ပြောင်းလဲမှုများ ပြုလုပ်ထားသည်။" });
+    if (err.name === "LockError" || err.name === "ExecutionError") {
+      return res.status(423).json({ message: "တခြားသူအသုံးပြုနေသည်။ နောက်မှပြန်ကြိုးစားပါ။" });
     }
 
     res.status(500).json({ message: "အသုံးပြုသူကို ဆိုင်မှဖယ်ရှားရာတွင် မအောင်မြင်ပါ" });
@@ -239,9 +252,9 @@ export const changeShopTax = async (req, res)=>{
   const { shopId } = req.params;
   const session = await mongoose.startSession()
   let lock;
-  let transactionStarted = false;
+
   try {
-    lock = await redlock.acquire([`locks:shop:${shopId}`], 60000, {
+      lock = await redlock.acquire([`locks:shop:${shopId}`], 60000, {
       retryCount: 0,
       retryDelay: 0,
       retryJitter: 0
@@ -250,7 +263,6 @@ export const changeShopTax = async (req, res)=>{
       readConcern: { level: "snapshot" },
       writeConcern: { w: "majority" },
     })
-    transactionStarted = true
 
     const updatedTax = await Shop.findByIdAndUpdate(
       shopId,
@@ -263,6 +275,7 @@ export const changeShopTax = async (req, res)=>{
     }
 
     await session.commitTransaction();
+    //Important delete timeout
     await new Promise(res => setTimeout(res, 5000));
     await lock.release()
 
@@ -273,17 +286,17 @@ export const changeShopTax = async (req, res)=>{
     res.status(200).json(updatedTax)
 
   } catch (error) {
-    if (transactionStarted) {
+    if (session.inTransaction()) {
       await session.abortTransaction();
     }
     console.log("Error in shop controller changeShopTax", error)
 
-    if (error.name === "LockError" || error.name === "ExecutionError") {
-      return res.status(423).json({ message: "အရင်းအမြစ်ကို တခြားသူအသုံးပြုနေသည်။ နောက်မှပြန်ကြိုးစားပါ။" });
+    if (error.code == 112) {
+      return res.status(409).json({ message: "တခြားသူတစ်ဦးမှ အချက်အလက်ပြောင်းလဲနေသည်။" });
     }
 
-    if (error.code == 112) {
-      return res.status(409).json({ message: "တခြားဈေးတာ၀န်ခံ သူတစ်ဦးမှ အချက်အလက်ပြောင်းလဲမှုများ ပြုလုပ်ထားသည်။" });
+    if (error.name === "LockError" || error.name === "ExecutionError") {
+      return res.status(423).json({ message: "တခြားသူအသုံးပြုနေသည်။ နောက်မှပြန်ကြိုးစားပါ။" });
     }
 
     res.status(500).json({ message: "ဆိုင်အခွန်ပြောင်းလဲချင်း မအောင်မြင်ပါ" });
