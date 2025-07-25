@@ -43,7 +43,7 @@ const AdminCreateShop = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
           <div>
-            <label className="block mb-1 font-medium text-gray-700">ဈေးရုံနံပါတ်</label>
+            <label className="block mb-1 font-medium text-gray-700">ဈေးရုံအမှတ်</label>
             <input
               type="text"
               name="marketHallNo"

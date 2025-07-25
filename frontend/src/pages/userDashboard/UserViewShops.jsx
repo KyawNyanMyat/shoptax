@@ -96,7 +96,7 @@ const UserViewShops = () => {
                     <thead className="bg-gray-100 text-gray-700">
                     <tr>
                         <th>စဉ်</th>
-                        <th>ဈေးရုံနံပါတ်</th>
+                        <th>ဈေးရုံအမှတ်</th>
                         <th>ဆိုင်နံပါတ်</th>
                         <th>ဆိုင်ပိုင်ရှင်</th>
                         <th>အခွန်နှုန်း</th>

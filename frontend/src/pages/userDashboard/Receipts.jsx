@@ -111,7 +111,7 @@ const Receipts = () => {
                     ပြေစာအမှတ် - {r._id}
                   </p>
                   <p className="text-sm text-gray-500 mb-1">
-                    ဈေးရုံနံပါတ် - {r.paymentId.shopId.marketHallNo}
+                    ဈေးရုံအမှတ် - {r.paymentId.shopId.marketHallNo}
                   </p>
                   <p className="text-sm text-gray-500 mb-1">
                     ဆိုင်နံပါတ် - {r.paymentId.shopId.shopNo}

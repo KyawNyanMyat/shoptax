@@ -23,7 +23,7 @@ const AssignUserToShop = ({ shopId, onAssign }) => {
   return (
     <div className="flex gap-2">
       <select
-        className="select select-sm select-bordered focus:outline-offset-0"
+        className="select w-40 select-bordered focus:outline-offset-0"
         value={selectedUserId}
         onChange={(e) => setSelectedUserId(e.target.value)}
       >

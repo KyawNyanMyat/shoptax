@@ -31,7 +31,7 @@ export const createWarning = async (req, res) => {
 
     await session.commitTransaction();
         //Important delete timeout
-        await new Promise(res => setTimeout(res, 5000));
+        //await new Promise(res => setTimeout(res, 5000));
     await lock.release();
 
     //socket
@@ -48,7 +48,7 @@ export const createWarning = async (req, res) => {
     }
     console.error("သတိပေးချက်ဖန်တီးရာတွင် ပြဿနာဖြစ်ပွားသည်:", error);
     if (error.code == 112) {
-      return res.status(409).json({ message: "အခြားအက်မင်မှလည်း ပေးပို့နေပါသည်။" });
+      return res.status(409).json({ message: "အခြားဈေးတာ၀န်ခံမှလည်း ပေးပို့နေပါသည်။" });
     }
 
     if (error.name === "LockError" || error.name == "ExecutionError") {

@@ -21,7 +21,7 @@ const useAdminSignup = () => {
         throw new Error(data.message || "အကောင့်ဖွင့်ခြင်း မအောင်မြင်ပါ");
       }
 
-      toast.success("အက်မင်အကောင့်အောင်မြင်စွာဖွင့်ပြီးပါပြီ!", {id:"adminSignupError"});
+      toast.success("ဈေးတာ၀န်ခံအကောင့်အောင်မြင်စွာဖွင့်ပြီးပါပြီ!", {id:"adminSignupError"});
       return true
 
     } catch (err) {

@@ -19,7 +19,13 @@ const usePaymentStatusUpdate = () => {
 
       if (!res.ok) throw new Error(data.message || "Update လုပ်တာမအောင်မြင်ပါ");
 
-      toast.success(`Payment ${newStatus} successfully`);
+      if(newStatus === "Finished"){
+        toast.success(`ငွေပေးချေမှုကို အောင်မြင်စွာ လက်ခံပြီးပါပြီ။`);
+      }
+
+      if(newStatus === "Rejected"){
+        toast.success(`ငွေပေးချေမှုကို ငြင်းဆန်လိုက်ပါပြီ။`);
+      }
       
     } catch (err) {
       toast.error(err.message || "တခုခုမှားနေပါသည်", {id:"payment-status-error"});

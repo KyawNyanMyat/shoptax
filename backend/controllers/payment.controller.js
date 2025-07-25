@@ -200,7 +200,7 @@ export const getOverdueUsers = async (req, res) => {
 export const updatePaymentStatus = async (req, res) => {
   const adminId = req.admin?._id; // from Protect Route
   if (!adminId) {
-    return res.status(401).json({ message: "အက်မင်အထောက်အထား မရှိပါ။ ဝင်ရောက်ခွင့်မပြုပါ။" });
+    return res.status(401).json({ message: "ဈေးတာ၀န်ခံအထောက်အထား မရှိပါ။ ဝင်ရောက်ခွင့်မပြုပါ။" });
   }
 
   const { id } = req.params;
@@ -265,7 +265,7 @@ export const updatePaymentStatus = async (req, res) => {
 
     await session.commitTransaction();
         //Important delete timeout
-        await new Promise(res => setTimeout(res, 5000));
+        //await new Promise(res => setTimeout(res, 5000));
     await lock.release();
 
     //socket
@@ -326,3 +326,39 @@ export const updatePaymentStatus = async (req, res) => {
     }
   }
 };
+
+
+export const getMonthlyPaymentReport = async (req, res) => {
+  try {
+    const result = await Payment.aggregate([
+      {
+        $match: {
+          status: "Finished",
+          paidDate: {
+            $gte: new Date('2024-01-01'),
+            $lte: new Date(), // today
+          },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: "$paidDate" },
+            month: { $month: "$paidDate" },
+            paymentType: "$paymentType"
+          },
+          totalAmount: { $sum: "$amount" },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { "_id.year": 1, "_id.month": 1 }
+      }
+    ]);
+
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ message: "ပြသရန်အချက်အလက်များ မရရှိပါ။", error });
+  }
+};
+

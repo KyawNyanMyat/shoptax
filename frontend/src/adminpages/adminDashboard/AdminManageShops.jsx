@@ -175,7 +175,7 @@ const AdminManageShops = () => {
                                     <tr>
                                         <th>စဉ်</th>
                                         <th>ဆိုင် ID</th>
-                                        <th>ဈေးရုံနံမှတ်</th>
+                                        <th>ဈေးရုံအမှတ်</th>
                                         <th>ဆိုင်နံပါတ်</th>
                                         <th>အပ်နှင်းထားသူ</th>
                                         <th>အခွန်နှုန်း</th>
@@ -197,7 +197,7 @@ const AdminManageShops = () => {
                                                     />
                                                 ) : (
                                                     <div className="flex gap-2 items-center justify-between">
-                                                        <span className="whitespace-nowrap">{s.userId.username}</span>
+                                                        <span className="whitespace-nowrap w-40">{s.userId.username}</span>
                                                         <button
                                                         className="btn btn-sm btn-error whitespace-nowrap"
                                                         onClick={(e) => {

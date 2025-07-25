@@ -2,7 +2,7 @@ import { FiHome, FiUser } from "react-icons/fi";
 import { RiSecurePaymentLine } from "react-icons/ri";
 import { CiLogout, CiShop } from "react-icons/ci";
 import { MdAdminPanelSettings } from "react-icons/md";
-import { IoReceiptOutline, IoWarningOutline } from "react-icons/io5";
+import { IoPieChart, IoReceiptOutline, IoWarningOutline } from "react-icons/io5";
 import { PiShieldWarning } from "react-icons/pi";
 import { TbShoppingCartDollar } from "react-icons/tb";
 import { Link, Navigate } from 'react-router-dom';
@@ -58,6 +58,11 @@ const AdminDashboardSidebar = ({ sidebarOpen, setSidebarOpen}) => {
         <Link to="/admin/managepayment" className="flex items-center gap-3 hover:text-slate-300">
           <RiSecurePaymentLine className="text-lg" />
           ငွေပေးချေမှုများကို စီမံရန်
+        </Link>
+
+        <Link to="/admin/viewmonthly" className="flex items-center gap-3 hover:text-slate-300">
+          <IoPieChart className="text-lg" />
+          အချိုးအစားဇယား ကြည့်ရန်
         </Link>
 
         <Link to="/admin/sendwarning" className="flex items-center gap-3 hover:text-slate-300">
@@ -137,6 +142,11 @@ const AdminDashboardSidebar = ({ sidebarOpen, setSidebarOpen}) => {
               <Link to="/admin/managepayment" className="flex items-center gap-3 hover:text-slate-300">
                 <RiSecurePaymentLine className="text-lg" />
                 ငွေပေးချေမှုများကို စီမံရန်
+              </Link>
+
+              <Link to="/admin/viewmonthly" className="flex items-center gap-3 hover:text-slate-300">
+                <IoPieChart className="text-lg" />
+                အချိုးအစားဇယား ကြည့်ရန်
               </Link>
 
               <Link to="/admin/sendwarning" className="flex items-center gap-3 hover:text-slate-300">

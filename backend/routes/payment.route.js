@@ -2,7 +2,7 @@
 import express from 'express';
 import { 
     createPayment, deletePayment, 
-    getAllPayments, getOverdueUsers, getPaymentById, 
+    getAllPayments, getMonthlyPaymentReport, getOverdueUsers, getPaymentById, 
     getPaymentByUserId, getPendingPayments, 
     updatePayment, 
     updatePaymentStatus
@@ -20,11 +20,13 @@ router.get("/pending", adminProtectRoute, getPendingPayments); // used by admin
 
 router.get('/', adminProtectRoute, getAllPayments); // used by admin
 
-router.get('/:id', getPaymentById);
+router.get("/monthly", getMonthlyPaymentReport)
 
 router.get('/user/overdue', adminProtectRoute, getOverdueUsers); // used by admin
 
 router.get('/user/:id', userProtectRoute , getPaymentByUserId); //used by user
+
+router.get('/:id', getPaymentById);
 
 router.put('/:id', updatePayment);
 
