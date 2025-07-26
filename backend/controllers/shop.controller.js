@@ -139,7 +139,7 @@ export const assignUserToShop = async (req, res) => {
 
     await session.commitTransaction();
         //Important delete timeout
-        //await new Promise(res => setTimeout(res, 5000));
+        await new Promise(res => setTimeout(res, 3000));
     await lock.release();
 
     //for socket to get updated data
@@ -210,7 +210,7 @@ export const removeUserFromShop = async (req, res) => {
 
     await session.commitTransaction();
         //Important delete timeout
-        //await new Promise(res => setTimeout(res, 5000));
+        await new Promise(res => setTimeout(res, 3000));
     await lock.release()
 
     //socket
@@ -275,8 +275,8 @@ export const changeShopTax = async (req, res)=>{
     }
 
     await session.commitTransaction();
-    //Important delete timeout
-    //await new Promise(res => setTimeout(res, 5000));
+    //Important delete timeout for enterprise
+    await new Promise(res => setTimeout(res, 3000));
     await lock.release()
 
     //socket

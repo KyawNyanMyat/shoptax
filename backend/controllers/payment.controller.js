@@ -265,7 +265,7 @@ export const updatePaymentStatus = async (req, res) => {
 
     await session.commitTransaction();
         //Important delete timeout
-        //await new Promise(res => setTimeout(res, 5000));
+        await new Promise(res => setTimeout(res, 3000));
     await lock.release();
 
     //socket

@@ -20,10 +20,10 @@ const port = process.env.PORT || 5000
 const app = express()
 
 //development
-//app.use("/uploads", express.static(path.join(path.resolve(),"backend", "uploads")));
+app.use("/uploads", express.static(path.join(path.resolve(),"backend", "uploads")));
 
 //production
-app.use(express.static(path.join(path.resolve(),"frontend", "dist")))
+//app.use(express.static(path.join(path.resolve(),"frontend", "dist")))
 
 app.use(express.json())
 app.use(cookieParser())
@@ -41,12 +41,12 @@ app.use('/api/warnings', WarningRoutes);
 // });
 
 //production
-app.use((req, res) => {
-    if (req.path.startsWith('/api/') || req.path.startsWith('/uploads/')) {
-      return res.status(404).send('Not found');
-    }
-    res.sendFile(path.join(path.resolve(), "frontend", "dist", "index.html"));
-});
+// app.use((req, res) => {
+//     if (req.path.startsWith('/api/') || req.path.startsWith('/uploads/')) {
+//       return res.status(404).send('Not found');
+//     }
+//     res.sendFile(path.join(path.resolve(), "frontend", "dist", "index.html"));
+// });
   
 const startServer = async ()=>{
     try {

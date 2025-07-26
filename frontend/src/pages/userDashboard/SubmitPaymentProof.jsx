@@ -185,7 +185,7 @@ const SubmitPaymentProof = () => {
                 </option>
                 {ownedShops.map((shop) => (
                 <option key={shop._id} value={shop._id}>
-                  ({shop.marketHallNo}-{shop.shopNo}): {shop.chargeRate || "မသတ်မှတ်ရသေးပါ"} MMK
+                  {shop.marketHallNo}-{shop.shopNo}
                 </option>
                 ))}
               </select>
@@ -202,7 +202,7 @@ const SubmitPaymentProof = () => {
                 <option value="" disabled>ငွေ ပေးချေမှု အမျိုးအစား ရွေးပါ</option>
                 {/* <option value="NRC Register Cost">မှတ်ပုံတင် အခကြေးငွေ</option> */}
                 <option value="Shop Rent Cost">ဆိုင်ဌားခ အခကြေးငွေ</option>
-                <option value="Overdue Fee">အကြွေးကျန် ငွေ</option>
+                <option value="Overdue Fee">ရက်ကျော်ကြေး</option>
               </select>
             </div>
   

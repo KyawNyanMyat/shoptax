@@ -96,7 +96,7 @@ const Receipts = () => {
                 >
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="text-lg font-semibold">
-                      {r.paymentId.paymentType}
+                      {r.paymentId.paymentType === "Shop Rent Cost" ? "ဆိုင်ဌားခ" : "ရက်ကျော်ကြေး"}
                     </h3>
                     <img
                       src={"/receiptimages/Seal.jpg"}

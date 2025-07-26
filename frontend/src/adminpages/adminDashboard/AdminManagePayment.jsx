@@ -138,7 +138,7 @@ const AdminManagePayments = () => {
                         <th className="px-6 py-3 text-left font-medium">Payment ID</th>
                         <th className="px-6 py-3 text-left font-medium whitespace-nowrap">အသုံးပြုသူအမည်</th>
                         <th className="px-6 py-3 text-left font-medium">ဆိုင်</th>
-                        <th className="px-6 py-3 text-left font-medium">ငွေပေးချေမှုအမျိုးအစား</th>
+                        <th className="px-6 py-3 text-left font-medium whitespace-nowrap">ငွေပေးချေမှုအမျိုးအစား</th>
                         <th className="px-6 py-0 text-left font-medium whitespace-nowrap">ငွေပေးချေမှုဓာတ်ပုံ</th>
                         <th className="px-6 py-3 text-left font-medium">ပမာဏ</th>
                         <th className="px-6 py-3 text-left font-medium">ပေးချေသည့်ရက်</th>
