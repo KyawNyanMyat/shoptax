@@ -31,7 +31,7 @@ export const createWarning = async (req, res) => {
 
     await session.commitTransaction();
         //Important delete timeout
-        await new Promise(res => setTimeout(res, 3000));
+        await new Promise(res => setTimeout(res, 1500));
     await lock.release();
 
     //socket
