@@ -40,7 +40,7 @@ app.use('/api/warnings', WarningRoutes);
 //     res.sendFile(path.join(path.resolve(), "frontend", "dist", "index.html")); // for js,css, png...
 // });
 
-production
+//production
 app.use((req, res) => {
     if (req.path.startsWith('/api/') || req.path.startsWith('/uploads/')) {
       return res.status(404).send('Not found');
