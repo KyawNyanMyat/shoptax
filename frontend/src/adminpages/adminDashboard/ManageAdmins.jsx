@@ -18,7 +18,7 @@ const ManageAdmins = () => {
   const navigate = useNavigate()
   const [searchTerm, setSearchTerm] = useState("");
   const socket = useSocketContext()
-  const myposition = "ဒုဦးစီးမှူး"
+  const myposition = adminAuth.position;
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const fetchAdmins = async (search="") => {
