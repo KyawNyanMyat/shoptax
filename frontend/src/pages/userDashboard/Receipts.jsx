@@ -129,11 +129,12 @@ const Receipts = () => {
                   </p>
                   <p className="text-sm text-gray-500 mb-1">
                     လာမည့်ပေးချေရမည့်နေ့ -{" "}
-                    {new Date(r.paymentId.nextPaymentDueDate).toLocaleString("my-MM", {
+                    {r.paymentId.paymentType === "Overdue Fee" ? "မရှိပါ" : new Date(r.paymentId.nextPaymentDueDate).toLocaleString("my-MM", {
                       month: "long",
                       year: "numeric",
                       day: "numeric"
-                    })}
+                      }) 
+                    }
                   </p>
                   <p className="text-sm font-medium mt-2">
                     ပေးချေငွေ -{" "}

@@ -11,9 +11,9 @@ const Footer = () => {
         <div className="flex-1 text-center md:text-left">
           <h3 className="text-lg font-bold mb-3">လင့်ခ်အတိုများ</h3>
           <ul className="space-y-2 text-sm">
-            <li><Link to="/" className="hover:underline">ပင်မစာမျက်နှာ</Link></li>
-            <li><Link to="/about" className="hover:underline">အကြောင်းအရာ</Link></li>
-            <li><Link to="/contact" className="hover:underline">ဆက်သွယ်ရန်</Link></li>
+            <li><a href="/" className="hover:underline">ပင်မစာမျက်နှာ</a></li>
+            <li><a href="/about" className="hover:underline">အကြောင်းအရာ</a></li>
+            <li><a href="/contact" className="hover:underline">ဆက်သွယ်ရန်</a></li>
             <li><HashLink to="/#services" className="hover:underline">၀န်ဆောင်မှုများ</HashLink></li>
             <li><HashLink to="/#usage" className="hover:underline">အသုံပြုနည်း</HashLink></li>
           </ul>
@@ -23,7 +23,7 @@ const Footer = () => {
         <div className="flex-1 text-center">
           <h2 className="text-xl font-bold mb-3">ဈေးနှင့်သားသတ်ဌာနစိတ်</h2>
           <p className="text-sm text-white max-w-sm mx-auto">
-          ဆိုင်ခန်းအခွန်ကို စနစ်တကျကောက်ခံခြင်းအားဖြင့် မြို့နယ်ဖွံ့ဖြိုးမှုကို တိုးတက်အောင်မြင်စေသည်။
+          ဆိုင်ခန်းအခွန်ကို စနစ်တကျကောက်ခံခြင်းအားဖြင့် မြို့နယ်ဖွံ့ဖြိုး တိုးတက်စေပါသည်။
           </p>
         </div>
 

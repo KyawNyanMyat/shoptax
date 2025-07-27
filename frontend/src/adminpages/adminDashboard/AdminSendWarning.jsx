@@ -116,7 +116,7 @@ const AdminSendWarning = () => {
             </div>
 
             <div>
-              <label className="font-medium">ကျန်ငွေပမာဏ</label>
+              <label className="font-medium">ငွေပမာဏ</label>
               <input
                 type="text"
                 inputMode="numeric"

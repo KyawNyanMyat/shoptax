@@ -172,7 +172,8 @@ const AdminManagePayments = () => {
                             {new Date(payment.paidDate).toLocaleDateString()}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {payment.nextPaymentDueDate
+                            {payment.paymentType === "Overdue Fee" ? "-" :
+                              payment.nextPaymentDueDate
                               ? new Date(payment.nextPaymentDueDate).toLocaleDateString()
                               : "N/A"}
                           </td>

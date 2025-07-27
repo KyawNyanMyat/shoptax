@@ -5,6 +5,7 @@ import { useAdminAuthContext } from "../../context/adminAuthContext";
 import { Navigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useSocketContext } from "../../context/socketContext";
+import useDownloadOverduesPDF from "../../hooks/useDownloadOverduesPDF";
 
 const AdminViewOverdues = () => {
   const { adminAuth } = useAdminAuthContext();
@@ -16,6 +17,7 @@ const AdminViewOverdues = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [loading, setLoading] = useState(false);
   const socket = useSocketContext()
+  const downloadOverduesPDF = useDownloadOverduesPDF()
   
   const fetchOverdues = async () => {
     setLoading(true);
@@ -67,6 +69,17 @@ const AdminViewOverdues = () => {
           ) : overdues.length === 0 ? (
             <p>အကြွေးတင်ဆိုင် မရှိပါ။</p>
           ) : (
+          <>
+            <div className="mb-4">
+              <button
+                onClick={() => downloadOverduesPDF(overdues)}
+                className="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700 transition"
+                disabled={overdues.length === 0}
+              >
+                PDF ရယူမည်
+              </button>
+            </div>
+
             <div className="p-2 bg-white rounded-xl shadow overflow-x-auto">
               <table className="table min-w-[700px] w-full text-sm">
                 <thead className="bg-teal-100 text-teal-800">
@@ -75,8 +88,8 @@ const AdminViewOverdues = () => {
                     <th>အမည်</th>
                     <th>ဈေးရုံအမှတ်</th>
                     <th>ဆိုင်နံပါတ်</th>
-                    <th>ငွေပေးချေသည့်လ</th>
-                    <th>တင်သွင်းရမည့်ရက်</th>
+                    <th>ငွေပေးချေခဲ့သည့်လ</th>
+                    <th>ငွေသွင်းရမည့်ရက်</th>
                     {/* <th>ပေးချေငွေ</th> */}
                     <th>အကြွေး တင်ထားသောရက်</th>
                   </tr>
@@ -101,6 +114,7 @@ const AdminViewOverdues = () => {
                 </tbody>
               </table>
             </div>
+          </>
           )}
         </div>
       </div>
