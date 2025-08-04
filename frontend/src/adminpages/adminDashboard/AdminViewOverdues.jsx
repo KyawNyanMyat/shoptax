@@ -27,7 +27,7 @@ const AdminViewOverdues = () => {
       if (!res.ok) {
         throw new Error(data.message || "အကြွေးတင်ဆိုင်များကို ရယူရာတွင် ပြဿနာတစ်ခု ဖြစ်ပွားနေသည်။");
       }
-      const tempOverdue = data.filter((p)=> p.paymentType !== "Overdue Fee")
+      const tempOverdue = data.filter((p)=> p.paymentType !== "Overdue Fee" && p.overdueDays > 0)
       setOverdues(tempOverdue);
     } catch (err) {
       console.error("Overdues fetch failed:", err);

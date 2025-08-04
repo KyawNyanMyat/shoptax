@@ -28,6 +28,7 @@ import UserViewShops from "./pages/userDashboard/UserViewShops"
 import 'leaflet/dist/leaflet.css';
 import { SocketContextProvider } from "./context/socketContext"
 import AdminViewPieChart from "./adminpages/adminDashboard/AdminViewPieChart"
+import UserChangePassword from "./pages/userDashboard/UserChangePassword"
 
 // import SocketTest from "./Test"
 function App() {
@@ -73,6 +74,7 @@ function App() {
               <Route path="/user/warningmessage" element={<WarningMessages />} />
               <Route path="/user/receipt" element={<Receipts />} />
               <Route path="/user/paymentproof" element={<SubmitPaymentProof />} />
+              <Route path="/user/changepassword" element={<UserChangePassword />} />
               <Route path="/user/viewshops" element={<UserViewShops />} />
               <Route path="*" element={<NotFound/>} />
             </Route>

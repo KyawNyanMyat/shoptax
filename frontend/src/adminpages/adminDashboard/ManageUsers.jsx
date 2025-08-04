@@ -50,10 +50,18 @@ const AdminManageUsers = () => {
       setUsers((prev) => [...prev, userObj])
     }
 
+    const handleNewPassword = (newpassword) =>{
+      setUsers((prev)=>
+        prev.map((u)=> u._id === newpassword._id ? newpassword : u)
+      )
+    }
+
     socket.on("newUserCreated", handleNewUserCreated)
+    socket.on("changedPassword", handleNewPassword)
 
     return ()=> {
       socket.off("newUserCreated", handleNewUserCreated)
+      socket.off("changedPassword", handleNewPassword)
     }
   }, [socket]);
 

@@ -221,3 +221,30 @@ export const logoutUser = async (req, res) => {
   }
 };
 
+
+export const userChangePassword = async (req,res)=>{
+  const { userId } = req.params;
+  const { nowPassword, newPassword } = req.body;
+  try {
+    const user = await User.findOne({ _id:userId });
+    if(!user){
+      return res.status(404).json({message: "အသုံပြုသူကိုမတွေ့ရှိပါ"})
+    }
+
+    if(user.password !== nowPassword){
+      return res.status(404).json({message: "ယခုလျို့၀ှက်နံပါတ်မှားနေပါသည်"})
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    const io = getIO();
+    io.to("adminRoom").emit("changedPassword", user)
+
+    res.status(200).json({message: "လျို့၀ှက်နံပါတ်ပြောင်းပြီးပါပြီ"})
+  } catch (error) {
+    console.error("Logout Error:", error.message);
+    res.status(500).json({ message: "ဆာဗာ အမှားအယွင်း ဖြစ်ပွားနေပါသည်။" });
+  }
+}
+

@@ -125,19 +125,20 @@ const AdminDashboardHome = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white shadow rounded-xl p-4 flex items-center gap-4">
-              <FiUsers className="text-2xl text-teal-600" />
-              <div>
-                <p className="text-lg font-bold">{totalUsers}</p>
-                <p className="text-sm text-gray-500">စုစုပေါင်း အသုံးပြုသူ</p>
-              </div>
-            </div>
 
             <div className="bg-white shadow rounded-xl p-4 flex items-center gap-4">
               <FaUserShield className="text-2xl text-teal-600" />
               <div>
                 <p className="text-lg font-bold">{totalAdmins}</p>
                 <p className="text-sm text-gray-500">စုစုပေါင်း ဈေးတာ၀န်ခံ</p>
+              </div>
+            </div>
+
+            <div className="bg-white shadow rounded-xl p-4 flex items-center gap-4">
+              <FiUsers className="text-2xl text-teal-600" />
+              <div>
+                <p className="text-lg font-bold">{totalUsers}</p>
+                <p className="text-sm text-gray-500">စုစုပေါင်း အသုံးပြုသူ</p>
               </div>
             </div>
 

@@ -1,6 +1,6 @@
 import { FiHome, FiUser, FiSettings } from "react-icons/fi";
-import { RiFileList2Line } from "react-icons/ri";
-import { CiLogout, CiShop } from "react-icons/ci";
+import { RiFileList2Line, RiLockPasswordFill } from "react-icons/ri";
+import { CiLock, CiLogout, CiShop } from "react-icons/ci";
 import { IoReceiptOutline } from "react-icons/io5";
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import useLogout from "../hooks/useLogout";
@@ -58,6 +58,10 @@ const DashboardSidebar = ({ sidebarOpen, setSidebarOpen }) => {
           <CiShop className="text-lg" />
           ကိုယ်ပိုင်သောဆိုင်များ
         </Link>
+        <Link to="/user/changepassword" className="flex items-center gap-3 hover:text-primary">
+          <CiLock className="text-lg" />
+          လျို့၀ှက်နံပါတ်ပြောင်းရန်
+        </Link>
         <Link
           // to="#"
           onClick={handleLogout}
@@ -114,6 +118,10 @@ const DashboardSidebar = ({ sidebarOpen, setSidebarOpen }) => {
               <Link to="/user/viewshops" className="flex items-center gap-3 hover:text-primary">
                 <CiShop className="text-lg" />
                 ကိုယ်ပိုင်သောဆိုင်များ
+              </Link>
+              <Link to="/user/changepassword" className="flex items-center gap-3 hover:text-primary">
+                <CiLock className="text-lg" />
+                လျို့၀ှက်နံပါတ်ပြောင်းရန်
               </Link>
               <Link
                 // to="#"

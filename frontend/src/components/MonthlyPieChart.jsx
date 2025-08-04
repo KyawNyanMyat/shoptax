@@ -30,7 +30,7 @@ const renderLegend = ({ payload }) => (
     </ul>
     <div>
       <span
-        className="w-3 h-3 inline-block rounded mr-2 bg-green-500"
+        className="w-3 h-3 inline-block rounded mr-2"
       ></span>
       <span className="whitespace-nowrap">
         {"တလစုစုပေါင်းငွေ / " + payload.reduce((accumulate, current)=> current.totalAmount + accumulate,0) + " ကျပ်"}
