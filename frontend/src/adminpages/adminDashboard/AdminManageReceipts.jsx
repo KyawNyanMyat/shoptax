@@ -85,7 +85,11 @@ const AdminManageReceipts = () => {
                     <th>ဈေးတာ၀န်ခံအမည်</th>
                     <th>ငွေပေးချေမှုအမျိုးအစား</th>
                     <th>အသုံးပြုသူအမည်</th>
-                    <th>ပမာဏ</th>
+                    <th>ရုံ/ဆိုင်နံပါတ်</th>
+                    <th>ဆိုင်ဌားခ</th>
+                    <th>ရက်ကျော်ခ</th>
+                    <th>စုစုပေါင်းငွေပမာဏ</th>
+                    <th>စုစုပေါင်း ကျော်သည့်ရက်</th>
                     <th>ထုတ်ပေးသည့်ရက်</th>
                     <th>ဖတ်ပြီး/မဖတ်ရသေး</th>
                     <th>ဈေးတာ၀န်ခံလက်မှတ်</th>
@@ -98,9 +102,13 @@ const AdminManageReceipts = () => {
                       <td>{index + 1}</td>
                       <td>{r._id}</td>
                       <td>{r.adminId?.adminName}</td>
-                      <td>{r.paymentId?.paymentType}</td>
+                      <td>{r.paymentId?.paymentType === "Shop Rent Cost" ? "ဆိုင်ဌားခ" : "-"}</td>
                       <td>{r.paymentId?.userId?.username}</td>
-                      <td>{r.amount} Ks</td>
+                      <td>{r.paymentId?.shopId?.marketHallNo} / {r.paymentId?.shopId?.shopNo}</td>
+                      <td>{r.paymentId?.shopFee} ကျပ်</td>
+                      <td>{r.paymentId?.overDueFee} ကျပ်</td>
+                      <td>{r.amount} ကျပ်</td>
+                      <td>{r.paymentId?.overDueDays} ရက် </td>
                       <td>{new Date(r.issueDate).toLocaleDateString()}</td>
                       <td>{r.isRead ? "ဖတ်ပြီး" : "မဖတ်ရသေးပါ"}</td>
                       <td>

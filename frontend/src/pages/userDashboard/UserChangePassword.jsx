@@ -4,12 +4,13 @@ import DashboardSidebar from "../../components/DashboardSidebar";
 import DashboardHeader from "../../components/DashboardHeader";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import useLogout from "../../hooks/useLogout";
 
 
 const UserChangePassword = ()=>{
     const { userAuth } = useUserAuthContext();
     if (!userAuth) {
-        return <Navigate to={"/"} />;
+        return <Navigate to={"/login"} />;
     }
 
     const userId = userAuth._id;
@@ -17,7 +18,7 @@ const UserChangePassword = ()=>{
     const [loading, setloading] = useState(false);
     const [nowPassword, setNowPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
-    // const 
+    const { logout } = useLogout(true)
 
     const handleSubmit = async (e)=>{
         e.preventDefault()
@@ -37,6 +38,7 @@ const UserChangePassword = ()=>{
             toast.success(data.message)
             setNowPassword("");
             setNewPassword("");
+            await logout()
         } catch (error) {
             console.log("Error in UserChangePassword", error.message)
             toast.error(error.message, { id: 'changepassword-error', duration: 2500 })
@@ -52,9 +54,10 @@ const UserChangePassword = ()=>{
             <div className="flex-1 flex flex-col">
                 <DashboardHeader setSidebarOpen={setSidebarOpen}/>
                 <div className="p-6 h-screen overflow-y-auto">
-                    <form onSubmit={handleSubmit} className="space-y-4 min-w-[200px] sm:w-full flex flex-col justify-center items-center h-screen">
+                    <h1 className="xl:text-3xl lg:2xl text-xl text-center text-red-500 mb-6 italic">သတိထားရန်**အကောင့်လျို့၀ှက်နံပါတ် ပြောင်းချင်းဖြင့် အကောင့်ပြန်၀င်ရပါမည်**</h1>
+                    <form onSubmit={handleSubmit} className="space-y-4 min-w-[200px] sm:w-full flex flex-col items-center h-screen">
                         <div className="border border-blue-500 p-7 flex flex-col gap-6 rounded-3xl border-t-4 border-t-blue-600">
-                            <h2 className="text-3xl font-bold mb-6 text-center">လျို့၀ှက်နံပါတ် ပြောင်းရန်</h2>
+                            <h2 className="xl:text-3xl lg:2xl text-xl font-bold mb-6 text-center">လျို့၀ှက်နံပါတ် ပြောင်းရန်</h2>
                             <div className="flex flex-col">
                                 <label className="label">ယခုလျို့၀ှက်နံပါတ်</label>
                                 <input

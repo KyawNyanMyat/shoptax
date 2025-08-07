@@ -6,7 +6,11 @@ const renderTooltip = ({ active, payload }) => {
   const item = payload[0];
   return (
     <div className="bg-white p-2 rounded shadow">
-      <p>{item.name === "Shop Rent Cost" ? "စုစုပေါင်းဆိုင်ဌားခ" : "စုစုပေါင်းရက်ကျော်ကြေး"} / {item.value + "ကျပ်"}</p>
+      <p>
+        {item.name === "Shop Rent Cost"
+          ? "စုစုပေါင်းဆိုင်ဌားခ"
+          : "စုစုပေါင်းရက်ကျော်ကြေး"} / {item.value + "ကျပ်"}
+      </p>
     </div>
   );
 };

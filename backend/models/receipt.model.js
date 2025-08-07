@@ -15,7 +15,7 @@ const receiptSchema = new mongoose.Schema({
     amount: {
         type: Number,
         required: true
-    },      
+    },
     issueDate: { 
         type: Date, 
         default: Date.now 

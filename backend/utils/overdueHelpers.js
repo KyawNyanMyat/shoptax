@@ -37,7 +37,7 @@ export const getOverdueUsersData = async (today = new Date()) => {
     const paidTypes = shopPaymentsMap[shopIdStr] || new Set();
 
     // If both fees are already paid for this shop this month, skip it
-    const hasPaidBothFees = paidTypes.has("Shop Rent Cost") && paidTypes.has("Overdue Fee");
+    const hasPaidBothFees = paidTypes.has("Shop Rent Cost")
 
     return shopAssigned && !hasPaidBothFees;
   });

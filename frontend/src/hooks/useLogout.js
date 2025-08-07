@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-const useLogout = () => {
+const useLogout = (changepassword=false) => {
   const { setUserAuth } = useUserAuthContext();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ const useLogout = () => {
       // Clear frontend data
       localStorage.removeItem("user-dashboard");
       setUserAuth(null);
-      toast.success(data.message, {id: "logout-error", duration: 2500})
+      changepassword === false ? toast.success(data.message, {id: "logout-error", duration: 2500}) : null
       navigate("/");
 
     } catch (error) {

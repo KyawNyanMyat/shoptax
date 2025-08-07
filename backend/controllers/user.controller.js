@@ -226,6 +226,9 @@ export const userChangePassword = async (req,res)=>{
   const { userId } = req.params;
   const { nowPassword, newPassword } = req.body;
   try {
+    if(nowPassword.trim() === newPassword.trim()){
+      return res.status(400).json({message: "လျို့၀ှက်နံပါတ်တူနေပါသည်"})
+    }
     const user = await User.findOne({ _id:userId });
     if(!user){
       return res.status(404).json({message: "အသုံပြုသူကိုမတွေ့ရှိပါ"})

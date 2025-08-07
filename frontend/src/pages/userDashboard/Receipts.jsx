@@ -96,7 +96,7 @@ const Receipts = () => {
                 >
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="text-lg font-semibold">
-                      {r.paymentId.paymentType === "Shop Rent Cost" ? "ဆိုင်ဌားခ" : "ရက်ကျော်ကြေး"}
+                      ဆိုင်ဌားခ
                     </h3>
                     <img
                       src={"/receiptimages/Seal.jpg"}
@@ -136,8 +136,17 @@ const Receipts = () => {
                       }) 
                     }
                   </p>
+                  <p className="text-sm text-gray-500 mb-1">
+                    ကျော်သည့်ရက် - {r.paymentId.overDueDays} ရက်
+                  </p>
+                  <p className="text-sm text-gray-500 mb-1">
+                    ဆိုင်ဌားခ - {r.paymentId.shopFee} ကျပ်
+                  </p>
+                  <p className="text-sm text-gray-500 mb-1">
+                    ရက်ကျော်ခ - {r.paymentId.overDueFee} ကျပ်
+                  </p>
                   <p className="text-sm font-medium mt-2">
-                    ပေးချေငွေ -{" "}
+                    စုစုပေါင်းပေးချေငွေ -{" "}
                     <span className="text-primary">{r.amount} ကျပ်</span>
                   </p>
 

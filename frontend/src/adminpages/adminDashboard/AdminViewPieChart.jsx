@@ -31,11 +31,17 @@ const AdminViewPieChart= ()=> {
             item._id.year === selectedYear
         );
 
-        const formatted = filtered.map((item) => ({
-          paymentType: item._id.paymentType,
-          totalAmount: item.totalAmount,
-        }));
-
+        const formatted = filtered.flatMap((item) => [
+          {
+            paymentType: "Shop Rent Cost", // ဆိုင်ဌားခ
+            totalAmount: item.totalShopFee || 0,
+          },
+          {
+            paymentType: "Overdue Fee", // ရက်ကျော်ကြေး
+            totalAmount: item.totalOverDueFee || 0,
+          },
+        ]);
+        
         setChartData(formatted);
       } catch (err) {
         console.error("Error fetching report:", err);

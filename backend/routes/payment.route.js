@@ -22,6 +22,8 @@ router.get('/', adminProtectRoute, getAllPayments); // used by admin
 
 router.get("/monthly", getMonthlyPaymentReport)
 
+router.get("/user/getmyoverude", userProtectRoute, getOverdueUsers)
+
 router.get('/user/overdue', adminProtectRoute, getOverdueUsers); // used by admin
 
 router.get('/user/:id', userProtectRoute , getPaymentByUserId); //used by user
@@ -32,7 +34,7 @@ router.put('/:id', updatePayment);
 
 router.delete('/:id', deletePayment);
 
-router.patch('/changestatus/:id/', adminProtectRoute, updatePaymentStatus); // used by admin
+router.patch('/changestatus/:id', adminProtectRoute, updatePaymentStatus); // used by admin
 
 
 

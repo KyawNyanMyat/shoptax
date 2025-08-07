@@ -14,7 +14,7 @@ const paymentSchema = new mongoose.Schema({
     },
     paymentType: { 
         type: String,
-        enum: ["Shop Rent Cost", "Overdue Fee"],
+        enum: ["Shop Rent Cost"],
         required: true 
     },
     paymentPhoto: { 
@@ -32,6 +32,15 @@ const paymentSchema = new mongoose.Schema({
     },
     nextPaymentDueDate: { 
         type: Date 
+    },
+    shopFee: {
+        type: Number,
+    },
+    overDueFee: {
+        type: Number,
+    },
+    overDueDays: {
+        type: Number
     },
     status: { 
         type: String, 

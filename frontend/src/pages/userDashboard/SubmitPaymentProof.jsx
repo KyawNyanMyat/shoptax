@@ -16,12 +16,15 @@ const SubmitPaymentProof = () => {
   const [userName, setUserName] = useState("");
   const [marketHallNo, setMarketHallNo] = useState("");
   const [shopNo, setShopNo] = useState("");
-  const [paymentType, setPaymentType] = useState("");
+  const [paymentType, setPaymentType] = useState("Shop Rent Cost");
   const [paymentPhoto, setPaymentPhoto] = useState("");
-  const [amount, setAmount] = useState("");
+  const [totalAmount, setTotalAmount] = useState(0);
   const [shopId, setShopId] = useState("");
   const [ownedShops, setOwnedShops] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [ overDueFee, setOverDueFee ] = useState(0);
+  const [shopFee, setShopFee] = useState(0);
+  const [totalOverDueDays, setTotalOverDueDays] = useState(0)
 
   const { loading, submitPayment } = useSubmitPayment()
   const socket = useSocketContext()
@@ -69,15 +72,20 @@ const SubmitPaymentProof = () => {
     }
 
     const handleShopTaxChangedForBoth = (updatedShop) => {
-      setOwnedShops(prev => {
-          const index = prev.findIndex(s => s._id === updatedShop._id);
-          if (index !== -1) {
-              const copy = [...prev];
-              copy[index].chargeRate = updatedShop.chargeRate;
-              return copy;
-          }
-          return prev;
-      });
+      // setOwnedShops(prev => {
+      //     const index = prev.findIndex(s => s._id === updatedShop._id);
+      //     if (index !== -1) {
+      //         const copy = [...prev];
+      //         copy[index].chargeRate = updatedShop.chargeRate;
+      //         //setShopFee(updatedShop.chargeRate)
+      //         return copy;
+      //     }
+      //     return prev;
+      // });
+      if(shopId !== "" && updatedShop._id === shopId) {
+        setShopFee(updatedShop.chargeRate);
+        setTotalAmount(String(parseInt(overDueFee) + parseInt(updatedShop.chargeRate)))
+      }
     };
 
     socket.on("shopTaxChanged", handleShopTaxChangedForBoth);
@@ -89,16 +97,41 @@ const SubmitPaymentProof = () => {
       socket.off("shopRemoved", handleShopRemoved)
       socket.off("shopTaxChanged", handleShopTaxChangedForBoth);
     }
-  },[socket])
+  },[socket, shopId])
 
   // For select option only
-  const handleShopChange = (e) => {
-    const selectedShopId = e.target.value;
-    setShopId(selectedShopId);
-  
+  const handleShopChange = async (e) => {
+    try{
+      const selectedShopId = e.target.value;
+
+      const res = await fetch("/api/payments/user/overdue")
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || "အကြွေးတင်ဆိုင်များကို ရယူရာတွင် ပြဿနာတစ်ခု ဖြစ်ပွားနေသည်။");
+      }
+      setShopId(selectedShopId);
+
+      const selectedShop = ownedShops.find((shop) => shop._id === selectedShopId);
+      const overDueForSelectedShop = data.find((d)=> d.shopId._id == selectedShopId)
+      const totalOverDueFee = isNaN(overDueForSelectedShop?.overdueDays) ? 0 : overDueForSelectedShop?.overdueDays * 100
+
+      if (selectedShop && selectedShop.chargeRate) {
+        setShopFee(String(selectedShop.chargeRate))
+        setOverDueFee(String(totalOverDueFee))
+        setTotalOverDueDays(String(isNaN(overDueForSelectedShop?.overdueDays) ? 0 : overDueForSelectedShop?.overdueDays))
+        setTotalAmount(String(selectedShop.chargeRate + totalOverDueFee));
+      } else {
+        setShopFee("");
+        setOverDueFee(0);
+        setTotalOverDueDays(0)
+        setTotalAmount(0);
+      }
+    }catch(error){
+      console.log("error in SubmitPaymentProof", error.message)
+      toast.error(error.message, {id:"submitPayment"})
+    }
   };
   
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -128,18 +161,23 @@ const SubmitPaymentProof = () => {
     formData.append("userId", userId);
     formData.append("shopId", shopId);
     formData.append("paymentType", paymentType);
-    formData.append("amount", amount);
+    formData.append("amount", totalAmount);
     formData.append("paymentPhoto", paymentPhoto);
     formData.append("nextPaymentDueDate", nextPaymentDueDateISO)
+    formData.append("shopFee", shopFee);
+    formData.append("overDueDays", totalOverDueDays);
+    formData.append("overDueFee", overDueFee);
 
 
     // Submit to database
     const success = await submitPayment(formData)
     if(success){
       setShopId("");
-      setPaymentType("");
+      //setPaymentType("");
       setPaymentPhoto("");
-      setAmount("");
+      setShopFee(0);
+      setOverDueFee(0);
+      setTotalAmount(0);
 
       const fileInput = document.querySelector('input[type="file"]');
       if (fileInput) fileInput.value = "";
@@ -156,7 +194,7 @@ const SubmitPaymentProof = () => {
         <div className="p-6 w-full max-w-2xl mx-auto h-screen overflow-y-scroll">
           <h2 className="text-2xl font-bold mb-2">ငွေပေးချေမှုအထောက်အထား တင်သွင်းရန်</h2>
           <p className="text-sm text-gray-600 mb-6">
-            ငွေပေးချေမှု၏ Screenshot (ဥပမာ - KBZPay၊ WavePay) တင်ပါ။ သက်ဆိုင်ရာ ကျသင့်ငွေ အမျိုးအစားနှင့် ငွေပမာဏ ထည့်ရန်လိုအပ်သည်။
+            ငွေပေးချေမှု၏ Screenshot (ဥပမာ - KBZPay) တင်ပါ။ သက်ဆိုင်ရာ ကျသင့်ငွေ အမျိုးအစားနှင့် ငွေပမာဏ ထည့်ရန်လိုအပ်သည်။
           </p>
   
           <form onSubmit={handleSubmit} className="space-y-4 min-w-[200px] sm:w-full">
@@ -190,8 +228,9 @@ const SubmitPaymentProof = () => {
                 ))}
               </select>
             </div>
-  
-            <div className="flex flex-col">
+
+            {/* Before Ones Start */}
+            {/* <div className="flex flex-col">
               <label className="label">ငွေပေးချေမှုအမျိုးအစား</label>
               <select
                 className="select select-bordered w-full focus:outline-offset-0"
@@ -200,11 +239,11 @@ const SubmitPaymentProof = () => {
                 required
               >
                 <option value="" disabled>ငွေ ပေးချေမှု အမျိုးအစား ရွေးပါ</option>
-                {/* <option value="NRC Register Cost">မှတ်ပုံတင် အခကြေးငွေ</option> */}
-                <option value="Shop Rent Cost">ဆိုင်ဌားခ အခကြေးငွေ</option>
-                <option value="Overdue Fee">ရက်ကျော်ကြေး</option>
-              </select>
-            </div>
+                  {/* <option value="Shop Rent Cost">ဆိုင်ဌားခ အခကြေးငွေ</option>
+                  <option value="Overdue Fee">ရက်ကျော်ကြေး</option> */}
+              {/* </select> */}
+            {/* </div>  */}
+            {/* Before Ones End */}
   
             <div className="mb-0 flex flex-col">
               <label className="label w-full whitespace-pre-wrap">
@@ -231,27 +270,61 @@ const SubmitPaymentProof = () => {
             </div>
             <div className="text-red-500 text-sm">(ဓာတ်ပုံသည် 2MB ထက်မကျော်ရပါ)</div>
 
+             {/* After Ones Start */}
             <div className="flex flex-col">
-              <label className="label">ငွေပမာဏအတည်ပြုပါ</label>
+              <label className="label">ဆိုင်ဌားခ</label>
+              <input
+                type="text"
+                value={shopFee}
+                disabled
+                className="input input-bordered w-full bg-gray-100 focus:outline-offset-0"
+              />
+            </div>
+
+            <div className="flex flex-wrap">
+              <div className="flex flex-col w-[300px]">
+                <label className="label">ရက်ကျော်ကြေး</label>
+                <input
+                  type="text"
+                  value={overDueFee}
+                  disabled
+                  className="input input-bordered w-full bg-gray-100 focus:outline-offset-0"
+                />
+              </div>
+
+              <div className="flex flex-col w-[300px]">
+                <label className="label">စုစုပေါင်း ကျော်သည့်ရက်</label>
+                <input
+                  type="text"
+                  value={totalOverDueDays}
+                  disabled
+                  className="input input-bordered w-full bg-gray-100 focus:outline-offset-0"
+                />
+              </div>
+            </div>
+            {/* After Ones End */}
+
+            <div className="flex flex-col">
+              <label className="label">စုစုပေါင်းငွေပမာဏ</label>
               <input
                 type="text"
                 inputMode="numeric"
-                placeholder="ဥပမာ - 3500"
-                value={amount}
-                onChange={(e) => {
-                  // const myanmarNumberRegex = /^[၀-၉]*$/;
-                  // if (myanmarNumberRegex.test(e.target.value)) {
-                  //   setAmount(e.target.value);
-                  // }
+                disabled
+                value={totalAmount}
+                // onChange={(e) => {
+                //   // const myanmarNumberRegex = /^[၀-၉]*$/;
+                //   // if (myanmarNumberRegex.test(e.target.value)) {
+                //   //   setTotalAmount(e.target.value);
+                //   // }
 
-                  //English
-                  const value = e.target.value;
-                  const pattern = /^(0|[1-9][0-9]*)?$/; // Allows empty string or positive numbers without leading zero
-                  if (pattern.test(value)) {
-                    setAmount(value);
-                  }
-                }}
-                className="input input-bordered w-full focus:outline-offset-0"
+                //   //English
+                //   const value = e.target.value;
+                //   const pattern = /^(0|[1-9][0-9]*)?$/; // Allows empty string or positive numbers without leading zero
+                //   if (pattern.test(value)) {
+                //     setTotalAmount(value);
+                //   }
+                // }}
+                className="input input-bordered w-full focus:outline-offset-0 bg-gray-100"
                 required
               />
             </div>

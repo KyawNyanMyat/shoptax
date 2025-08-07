@@ -25,7 +25,15 @@ export const createReceipt = async (req, res) => {
 export const getAllReceipts = async (req, res) => {
   try {
     const receipts = await Receipt.find()
-      .populate({path:'paymentId', populate: {path: "userId", select: "_id username"}})
+      .populate(
+        {
+          path:'paymentId', 
+          populate: [
+            {path: "userId", select: "_id username"},
+            {path: "shopId"}
+          ]
+        }
+      )
       .populate('adminId', 'adminName')
       .sort({issueDate: -1});
 

@@ -18,6 +18,9 @@ export const createPayment = async (req, res) => {
       shopId,
       paymentType,
       amount,
+      shopFee,
+      overDueDays,
+      overDueFee,
       nextPaymentDueDate,
     } = req.body;
 
@@ -27,16 +30,26 @@ export const createPayment = async (req, res) => {
     //production
     const paymentPhoto = req.file ? await uploadImageToImageKit(req.file) : null;
 
-    if (!userId || !shopId || !paymentType || !amount || !nextPaymentDueDate || !paymentPhoto) {
+    if (!userId || !shopId || !paymentType || !amount || !nextPaymentDueDate || !paymentPhoto
+      || !shopFee || !overDueDays || !overDueFee
+    ) {
       return res.status(400).json({ message: "အချက်အလက်အားလုံးဖြည့်ရန် လိုအပ်ပါသည်။" });
     }
 
     const amountNumber = amount
     if (isNaN(amountNumber) || amountNumber <= 0) {
-      return res.status(400).json({ message: "ပမာဏသည် ငွေပမာဏဖြစ်ပြီး သုညထက်ကြီးရမည်။" });
+      return res.status(400).json({ message: "ငွေပမာဏသည် ဂဏာန်းဖြစ်ပြီး သုညထက်ကြီးရမည်။" });
     }
 
-    const validTypes = ["Shop Rent Cost", "Overdue Fee"];
+    if (isNaN(shopFee) || shopFee <= 0) {
+      return res.status(400).json({ message: "ဆိုင်ခန်းခသည် ဂဏာန်းဖြစ်ပြီး သုညထက်ကြီးရမည်။" });
+    }
+
+    // if (isNaN(overDueFee) || overDueFee <= 0) {
+    //   return res.status(400).json({ message: "ရက်ကျော်ခသည် ဂဏာန်းဖြစ်ပြီး သုညထက်ကြီးရမည်။" });
+    // }
+
+    const validTypes = ["Shop Rent Cost"];
     if (!validTypes.includes(paymentType)) {
       return res.status(400).json({ message: "ငွေပေးချေမှု အမျိုးအစား မမှန်ကန်ပါ။" });
     }
@@ -48,6 +61,9 @@ export const createPayment = async (req, res) => {
       paymentPhoto,
       amount: amountNumber,
       nextPaymentDueDate,
+      shopFee,
+      overDueFee,
+      overDueDays
     });
 
     await newPayment.save();
@@ -234,7 +250,7 @@ export const updatePaymentStatus = async (req, res) => {
 
     if (status === "Finished") {
       await Receipt.create([{
-        paymentId: payment._id,
+        paymentId: id,
         adminId: adminId,
         amount: payment.amount,
         issueDate: new Date()
@@ -247,7 +263,7 @@ export const updatePaymentStatus = async (req, res) => {
 
       await Warning.create([{
         warningTitle: "ငွေပေးချေမှု ပယ်ဖျက်ခြင်း",
-        warningContent: `သင်၏ ရုံ ${shop.marketHallNo}/ဆိုင် ${shop.shopNo} အတွက်ပြုလုပ်သော ${payment.paymentType} သည် ကြောင့်ပယ်ဖျက်ခဲ့ပါသည်။ ကျေးဇူးပြု၍ မှန်ကန်သော ငွေပေးချေမှုဖောင်ကို ပြန်လည်တင်ပြပါ။
+        warningContent: `သင်၏ ရုံ ${shop.marketHallNo}/ဆိုင် ${shop.shopNo} အတွက်ပြုလုပ်သောငွေပေးချေ မှုကိုပယ်ဖျက်ခဲ့ပါသည်။ ကျေးဇူးပြု၍ မှန်ကန်သော ငွေပေးချေမှုဖောင်ကို ပြန်လည်တင်ပြပါ။
         အကြောင်းပြချက် - ${rejectionReason}`,
         userId: userId,
         issueDate: new Date()
@@ -345,12 +361,13 @@ export const getMonthlyPaymentReport = async (req, res) => {
           _id: {
             year: { $year: "$paidDate" },
             month: { $month: "$paidDate" },
-            paymentType: "$paymentType"
           },
+          totalShopFee: { $sum: "$shopFee" },
+          totalOverDueFee: { $sum: "$overDueFee" },
           totalAmount: { $sum: "$amount" },
           count: { $sum: 1 },
-        },
-      },
+        }
+      },      
       {
         $sort: { "_id.year": 1, "_id.month": 1 }
       }

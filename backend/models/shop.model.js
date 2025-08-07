@@ -26,4 +26,6 @@ const shopSchema = new mongoose.Schema({
     // }
 });
 
+shopSchema.index({marketHallNo: 1, shopNo: 1}, {unique: true})
+
 export default mongoose.model('Shop', shopSchema);

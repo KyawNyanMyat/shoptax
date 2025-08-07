@@ -49,12 +49,28 @@ const AdminManagePayments = () => {
     fetchPayments();
   }, []);
 
+  const addOrReplacePayment = (newPayment) => {
+    setPayments(prev => {
+      const index = prev.findIndex(p => p._id === newPayment._id);
+      if (index !== -1) {
+        const updated = [...prev];
+        updated[index] = newPayment;
+        return updated;
+      } else {
+        return [newPayment, ...prev];
+      }
+    });
+  };
+
   useEffect(()=>{
     if(!socket) return;
 
     const handleNewPayment = (populatedPayment)=>{
-      if (searchTerm === "Pending" || searchTerm === "") {
+      if (searchTerm === "Pending") {
         setPayments((prev) => [populatedPayment, ...prev]);
+      }
+      if (searchTerm === "") {
+        addOrReplacePayment(populatedPayment);
       }
     }
 
@@ -64,8 +80,8 @@ const AdminManagePayments = () => {
         setPayments((prev) => prev.filter(p => p._id !== updatedPayment._id));
       }
 
-      if (searchTerm === "Finished" || searchTerm === "") {
-        setPayments((prev) => [ updatedPayment, ...prev ]);
+      if (searchTerm === "") {
+        addOrReplacePayment(updatedPayment);
       }
     }
 
@@ -73,8 +89,8 @@ const AdminManagePayments = () => {
       if (searchTerm === "Pending") {
         setPayments((prev) => prev.filter(p => p._id !== rejectedPayment._id));
       }
-      if (searchTerm === "Rejected" || searchTerm === "") {
-        setPayments((prev) => [ rejectedPayment, ...prev]);
+      if (searchTerm === "Rejected") {
+        addOrReplacePayment(rejectedPayment);
       }
     }
 
@@ -140,9 +156,12 @@ const AdminManagePayments = () => {
                         <th className="px-6 py-3 text-left font-medium">ဆိုင်</th>
                         <th className="px-6 py-3 text-left font-medium whitespace-nowrap">ငွေပေးချေမှုအမျိုးအစား</th>
                         <th className="px-6 py-0 text-left font-medium whitespace-nowrap">ငွေပေးချေမှုဓာတ်ပုံ</th>
-                        <th className="px-6 py-3 text-left font-medium">ပမာဏ</th>
+                        <th className="px-6 py-3 text-left font-medium">ဆိုင်ဌားခ</th>
+                        <th className="px-6 py-3 text-left font-medium">ရက်ကျော်ခ</th>
+                        <th className="px-6 py-3 text-left font-medium">စုစုပေါင်းငွေပမာဏ</th>
+                        <th className="px-6 py-3 text-left font-medium whitespace-nowrap">စုစုပေါင်း ကျော်သည့်ရက်</th>
                         <th className="px-6 py-3 text-left font-medium">ပေးချေသည့်ရက်</th>
-                        <th className="px-6 py-3 text-left font-medium">နောက်ထပ်ငွေပေးချေမည့်ရက်</th>
+                        <th className="px-6 py-3 text-left font-medium whitespace-nowrap">နောက်ထပ်ငွေပေးချေမည့်ရက်</th>
                         <th className="px-6 py-3 text-left font-medium">အခြေအနေ</th>
                         <th className="px-6 py-3 text-left font-medium">လုပ်ဆောင်မှု</th>
                       </tr>
@@ -167,7 +186,11 @@ const AdminManagePayments = () => {
                               onClick={() => setSelectedPhoto(payment.paymentPhoto)} // ဖွင့်ရန်
                             />
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">{payment.amount} Ks</td>
+                          <td className="px-6 py-4 whitespace-nowrap">{payment.shopFee} ကျပ်</td>
+                          <td className="px-6 py-4 whitespace-nowrap">{payment.overDueFee} ကျပ်</td>
+                          <td className="px-6 py-4 whitespace-nowrap">{payment.amount} ကျပ်</td>
+                          <td className="px-6 py-4 whitespace-nowrap">{payment.overDueDays} ရက်</td>
+                          
                           <td className="px-6 py-4 whitespace-nowrap">
                             {new Date(payment.paidDate).toLocaleDateString()}
                           </td>

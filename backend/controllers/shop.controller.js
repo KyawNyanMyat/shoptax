@@ -27,6 +27,10 @@ export const createShop = async (req, res) => {
     res.status(201).json(newShop);
   } catch (error) {
     console.error("ဆိုင်ဖန်တီးရာတွင် ပြဿနာ:", error);
+
+    if(error.code === 11000){
+      return res.status.json(409).json({message: "ဤရုံတွင် ဆိုင်နံပါတ်ရှိပြီးသား ဖြစ်ပါသည်"})
+    }
     res.status(500).json({ message: "ဆာဗာအမှား ဖြစ်ပွားခဲ့သည်။" });
   }
 };
