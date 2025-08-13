@@ -13,6 +13,7 @@ const AdminCreateShop = () => {
     marketHallNo: "",
     shopNo: "",
     chargeRate: "",
+    // waterFee: ""
   });
 
   const { loading, createShop } = useCreateShop()
@@ -30,6 +31,7 @@ const AdminCreateShop = () => {
             marketHallNo: "",
             shopNo: "",
             chargeRate: "",
+            // waterFee: ""
         });
       }
   };
@@ -86,6 +88,25 @@ const AdminCreateShop = () => {
                 required
             />
           </div>
+
+          {/* <div>
+            <label className="block mb-1 font-medium text-gray-700">ရေ အခွန်နှုန်း</label>
+            <input
+                type="text"
+                name="waterFee"
+                value={formData.waterFee}
+                onChange={(e) => {
+                    const value = e.target.value;
+                    const pattern = /^(0|[1-9][0-9]*)?$/; // Allows empty string or positive numbers without leading zero
+                    if (pattern.test(value)) {
+                    setFormData({ ...formData, [e.target.name]: value });
+                    }
+                }}
+                placeholder="ဥပမာ - 5000"
+                className="input input-bordered w-full focus:outline-offset-0"
+                required
+            />
+          </div> */}
 
           <Link to='/admin/dashboard' className='text-sm hover:underline text-green-600 hover:text-blue-700 inline-block'>ဈေးတာ၀န်ခံဒက်ရှ်ဘုတ် သို့သွားရန်</Link>
           <button

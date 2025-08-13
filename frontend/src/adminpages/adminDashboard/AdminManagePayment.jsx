@@ -156,7 +156,7 @@ const AdminManagePayments = () => {
                         <th className="px-6 py-3 text-left font-medium">ဆိုင်</th>
                         <th className="px-6 py-3 text-left font-medium whitespace-nowrap">ငွေပေးချေမှုအမျိုးအစား</th>
                         <th className="px-6 py-0 text-left font-medium whitespace-nowrap">ငွေပေးချေမှုဓာတ်ပုံ</th>
-                        <th className="px-6 py-3 text-left font-medium">ဆိုင်ဌားခ</th>
+                        <th className="px-6 py-3 text-left font-medium whitespace-nowrap">ဆိုင်ဌားခ+ရေအခွန်</th>
                         <th className="px-6 py-3 text-left font-medium">ရက်ကျော်ခ</th>
                         <th className="px-6 py-3 text-left font-medium">စုစုပေါင်းငွေပမာဏ</th>
                         <th className="px-6 py-3 text-left font-medium whitespace-nowrap">စုစုပေါင်း ကျော်သည့်ရက်</th>

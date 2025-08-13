@@ -27,7 +27,7 @@ import AdminViewOverdues from "./adminpages/adminDashboard/AdminViewOverdues"
 import UserViewShops from "./pages/userDashboard/UserViewShops"
 import 'leaflet/dist/leaflet.css';
 import { SocketContextProvider } from "./context/socketContext"
-import AdminViewPieChart from "./adminpages/adminDashboard/AdminViewPieChart"
+import AdminViewBarChart from "./adminpages/adminDashboard/AdminViewBarChart"
 import UserChangePassword from "./pages/userDashboard/UserChangePassword"
 
 // import SocketTest from "./Test"
@@ -90,7 +90,7 @@ function App() {
               <Route path="/admin/manageshop" element={<AdminManageShops />} />
               <Route path="/admin/manageshop/create-shop" element={<AdminCreateShop />} />
               <Route path="/admin/managepayment" element={<AdminManagePayments />} />
-              <Route path="/admin/viewmonthly" element={<AdminViewPieChart />} />
+              <Route path="/admin/viewmonthly" element={<AdminViewBarChart />} />
               <Route path="/admin/sendwarning" element={<AdminSendWarning />} />
               <Route path="/admin/viewreceipt" element={<AdminManageReceipts />} />
               <Route path="/admin/viewwarning" element={<AdminViewWarnings />} />

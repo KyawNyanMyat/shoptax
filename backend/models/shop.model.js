@@ -19,6 +19,10 @@ const shopSchema = new mongoose.Schema({
         ref: 'User',
         default: null
     },
+    // waterFee: {
+    //     type: Number,
+    //     required: true
+    // }
     // status: {
     //     type: String,
     //     enum: ["Available", "Occupied"],

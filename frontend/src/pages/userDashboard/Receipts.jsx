@@ -140,7 +140,7 @@ const Receipts = () => {
                     ကျော်သည့်ရက် - {r.paymentId.overDueDays} ရက်
                   </p>
                   <p className="text-sm text-gray-500 mb-1">
-                    ဆိုင်ဌားခ - {r.paymentId.shopFee} ကျပ်
+                    ဆိုင်ဌားခ+ရေအခွန် - {r.paymentId.shopFee} ကျပ်
                   </p>
                   <p className="text-sm text-gray-500 mb-1">
                     ရက်ကျော်ခ - {r.paymentId.overDueFee} ကျပ်

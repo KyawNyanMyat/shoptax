@@ -178,7 +178,8 @@ const AdminManageShops = () => {
                                         <th>ဈေးရုံအမှတ်</th>
                                         <th>ဆိုင်နံပါတ်</th>
                                         <th>အပ်နှင်းထားသူ</th>
-                                        <th>အခွန်နှုန်း</th>
+                                        <th>ဆိုင်အခွန်+ရေအခွန် နှုန်း</th>
+                                        {/* <th>ရေအခွန်နှုန်း</th> */}
                                         <th>လုပ်ဆောင်ချက်</th>
                                     </tr>
                                 </thead>
@@ -212,6 +213,7 @@ const AdminManageShops = () => {
                                                 )}
                                             </td>
                                             <td>{s.chargeRate}</td>
+                                            {/* <td>{s.waterFee}</td> */}
                                             <td>
                                                 <button 
                                                     className="btn btn-primary whitespace-nowrap"
@@ -221,7 +223,7 @@ const AdminManageShops = () => {
                                                         setTaxValue({"_id":s._id, "value":s.chargeRate})
                                                     }}
                                                 >
-                                                    အခွန်နှုန်းပြောင်းလဲရန်
+                                                    ဆိုင်အခွန်နှုန်းပြောင်းလဲရန်
                                                 </button>
                                             </td>
                                         </tr>

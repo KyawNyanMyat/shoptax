@@ -8,8 +8,10 @@ import { getOverdueUsersData } from '../utils/overdueHelpers.js';
 // Create a new shop
 export const createShop = async (req, res) => {
   try {
+    // const { marketHallNo, shopNo, chargeRate, waterFee } = req.body;
     const { marketHallNo, shopNo, chargeRate } = req.body;
 
+    // if (!marketHallNo || !shopNo || !chargeRate || !waterFee)
     if (!marketHallNo || !shopNo || !chargeRate) {
       return res.status(400).json({ message: "လိုအပ်သောအချက်အလက်များ ဖြည့်စွက်ပါ။" });
     }
@@ -19,6 +21,7 @@ export const createShop = async (req, res) => {
       return res.status(400).json({ message: "ဈေးရုံတွင် ဤဆိုင် နံပါတ်သည် ရှိပြီးသား ဖြစ်ပါသည်။" });
     }
 
+    // const newShop = new Shop({ marketHallNo, shopNo, chargeRate, waterFee });
     const newShop = new Shop({ marketHallNo, shopNo, chargeRate });
     await newShop.save();
 

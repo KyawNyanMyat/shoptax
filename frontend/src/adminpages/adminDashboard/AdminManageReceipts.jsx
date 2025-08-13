@@ -23,7 +23,6 @@ const AdminManageReceipts = () => {
       try {
         const res = await fetch("/api/receipts");
         const data = await res.json();
-
         if (!res.ok) {
           throw new Error(data.message || "ငွေလက်ခံဖြတ်ပိုင်းအချက်အလက်များ ရယူရာတွင် ပြဿနာတစ်ခု ဖြစ်ပွားနေသည်။");
         }
@@ -86,7 +85,7 @@ const AdminManageReceipts = () => {
                     <th>ငွေပေးချေမှုအမျိုးအစား</th>
                     <th>အသုံးပြုသူအမည်</th>
                     <th>ရုံ/ဆိုင်နံပါတ်</th>
-                    <th>ဆိုင်ဌားခ</th>
+                    <th>ဆိုင်ဌားခ+ရေအခွန်</th>
                     <th>ရက်ကျော်ခ</th>
                     <th>စုစုပေါင်းငွေပမာဏ</th>
                     <th>စုစုပေါင်း ကျော်သည့်ရက်</th>

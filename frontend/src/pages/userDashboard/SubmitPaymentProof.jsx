@@ -99,6 +99,19 @@ const SubmitPaymentProof = () => {
     }
   },[socket, shopId])
 
+
+  // useEffect(() => {
+  //   if (paymentType === "Shop Rent Cost") {
+  //     const total = (parseInt(shopFee) || 0) + (parseInt(overDueFee) || 0);
+  //     setTotalAmount(String(total));
+  //   } else if (paymentType === "Water Fee") {
+  //     const selectedShop = ownedShops.find(shop => shop._id === shopId);
+  //     const waterFee = selectedShop?.waterFee || 0;
+  //     setTotalAmount(String(waterFee));
+  //   }
+  // }, [paymentType, shopFee, overDueFee, shopId, ownedShops]);
+  
+  
   // For select option only
   const handleShopChange = async (e) => {
     try{
@@ -115,15 +128,18 @@ const SubmitPaymentProof = () => {
       const overDueForSelectedShop = data.find((d)=> d.shopId._id == selectedShopId)
       const totalOverDueFee = isNaN(overDueForSelectedShop?.overdueDays) ? 0 : overDueForSelectedShop?.overdueDays * 100
 
+      //if (selectedShop && selectedShop.chargeRate && paymentType === "Shop Rent Cost")
       if (selectedShop && selectedShop.chargeRate) {
         setShopFee(String(selectedShop.chargeRate))
         setOverDueFee(String(totalOverDueFee))
         setTotalOverDueDays(String(isNaN(overDueForSelectedShop?.overdueDays) ? 0 : overDueForSelectedShop?.overdueDays))
         setTotalAmount(String(selectedShop.chargeRate + totalOverDueFee));
       } else {
+        //const waterFee = selectedShop.waterFee || 0;
         setShopFee("");
         setOverDueFee(0);
-        setTotalOverDueDays(0)
+        setTotalOverDueDays(0);
+        //setTotalAmount(String(waterFee));
         setTotalAmount(0);
       }
     }catch(error){
@@ -209,7 +225,7 @@ const SubmitPaymentProof = () => {
               />
             </div>
   
-            <div className="flex flex-col">
+            <div className={`flex flex-col`}>
               <label className="label">ဆိုင် ရွေးချယ်ရန်</label>
               <select
                 className="select select-bordered w-full focus:outline-offset-0"
@@ -235,14 +251,14 @@ const SubmitPaymentProof = () => {
               <select
                 className="select select-bordered w-full focus:outline-offset-0"
                 value={paymentType}
-                onChange={(e) => setPaymentType(e.target.value)}
+                onChange={(e) => {setPaymentType(e.target.value)}}
                 required
               >
                 <option value="" disabled>ငွေ ပေးချေမှု အမျိုးအစား ရွေးပါ</option>
-                  {/* <option value="Shop Rent Cost">ဆိုင်ဌားခ အခကြေးငွေ</option>
-                  <option value="Overdue Fee">ရက်ကျော်ကြေး</option> */}
-              {/* </select> */}
-            {/* </div>  */}
+                <option value="Shop Rent Cost">ဆိုင်ဌားခ အခကြေးငွေ</option>
+                <option value="Water Fee">ရေ အခွန်</option>
+              </select>
+            </div>  */}
             {/* Before Ones End */}
   
             <div className="mb-0 flex flex-col">
@@ -271,8 +287,8 @@ const SubmitPaymentProof = () => {
             <div className="text-red-500 text-sm">(ဓာတ်ပုံသည် 2MB ထက်မကျော်ရပါ)</div>
 
              {/* After Ones Start */}
-            <div className="flex flex-col">
-              <label className="label">ဆိုင်ဌားခ</label>
+            <div className={`flex flex-col ${paymentType !== "Shop Rent Cost" ? 'hidden' : ''}`}>
+              <label className="label">ဆိုင်ဌားခ+ရေအခွန်</label>
               <input
                 type="text"
                 value={shopFee}
@@ -281,7 +297,7 @@ const SubmitPaymentProof = () => {
               />
             </div>
 
-            <div className="flex flex-wrap">
+            <div className={`${paymentType !== "Shop Rent Cost" ? 'hidden' : 'flex flex-wrap'}`}>
               <div className="flex flex-col w-[300px]">
                 <label className="label">ရက်ကျော်ကြေး</label>
                 <input

@@ -49,7 +49,7 @@ export const createPayment = async (req, res) => {
     //   return res.status(400).json({ message: "ရက်ကျော်ခသည် ဂဏာန်းဖြစ်ပြီး သုညထက်ကြီးရမည်။" });
     // }
 
-    const validTypes = ["Shop Rent Cost"];
+    const validTypes = ["Shop Rent Cost", "Water Fee"];
     if (!validTypes.includes(paymentType)) {
       return res.status(400).json({ message: "ငွေပေးချေမှု အမျိုးအစား မမှန်ကန်ပါ။" });
     }
@@ -346,31 +346,27 @@ export const updatePaymentStatus = async (req, res) => {
 
 export const getMonthlyPaymentReport = async (req, res) => {
   try {
+    const year = parseInt(req.query.year)
+
     const result = await Payment.aggregate([
       {
         $match: {
           status: "Finished",
           paidDate: {
-            $gte: new Date('2024-01-01'),
-            $lte: new Date(), // today
+            $gte: new Date(`${year}-01-01`),
+            $lte: new Date(`${year}-12-31`),
           },
         },
       },
       {
         $group: {
-          _id: {
-            year: { $year: "$paidDate" },
-            month: { $month: "$paidDate" },
-          },
+          _id: { month: { $month: "$paidDate" } },
           totalShopFee: { $sum: "$shopFee" },
           totalOverDueFee: { $sum: "$overDueFee" },
           totalAmount: { $sum: "$amount" },
-          count: { $sum: 1 },
-        }
-      },      
-      {
-        $sort: { "_id.year": 1, "_id.month": 1 }
-      }
+        },
+      },
+      { $sort: { "_id.month": 1 } },
     ]);
 
     res.json(result);

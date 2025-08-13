@@ -1,0 +1,562 @@
+db.admins.find()
+[
+  {
+    _id: ObjectId('6877e4c6f9a64664c320a92f'),
+    adminName: 'ကျော်ဉာဏ်မြတ်',
+    adminPassword: 'kyaw1234',
+    profilePhoto: 'https://ui-avatars.com/api/?name=KyawNyanMyat&background=random',
+    phoneNo: '09-973229887',
+    section: 'ဈေးနှင့်သားသတ်ဌာနစိတ်',
+    position: 'အကြီးတန်းစာရေး'
+  },
+  {
+    _id: ObjectId('6885eb9556aa5cabae4abb84'),
+    adminName: 'ဒေါ်မော်မော်လှိုင်',
+    adminPassword: 'maw1234',
+    profilePhoto: 'https://ui-avatars.com/api/?name=DMMLN&background=random',
+    phoneNo: '09-449870115',
+    section: 'စျေးနှင့်သားသတ်ဌာနစိတ်',
+    position: 'ဒုဦးစီးမှူး',
+    createdAt: ISODate('2025-07-27T09:04:21.474Z'),
+    updatedAt: ISODate('2025-07-27T09:04:21.474Z'),
+    __v: 0
+  },
+  {
+    _id: ObjectId('6895add471e482e7571c5b36'),
+    adminName: 'အောင်',
+    adminPassword: '1234',
+    profilePhoto: 'https://ui-avatars.com/api/?name=AN&background=random',
+    phoneNo: '09-123456789',
+    section: 'စျေးနှင့်သားသတ်ဌာနစိတ်',
+    position: 'ဒုဦးစီးမှူး',
+    createdAt: ISODate('2025-08-08T07:57:08.555Z'),
+    updatedAt: ISODate('2025-08-08T07:57:08.555Z'),
+    __v: 0
+  }
+]
+
+
+db.payments.find()
+[
+  {
+    _id: ObjectId('6894fdfab1d5489a02d1f771'),
+    userId: ObjectId('6877ed0b5a69070d81b0aa3d'),
+    shopId: ObjectId('6877f0c277a976a09efe10a5'),
+    paymentType: 'Shop Rent Cost',
+    paymentPhoto: 'https://ik.imagekit.io/see06p2fm/payment-photos/1754594805571-Kpay_5500_R3c3ScafC.png',
+    amount: 5500,
+    nextPaymentDueDate: ISODate('2025-02-10T19:26:45.262Z'),
+    shopFee: 5500,
+    overDueFee: 0,
+    overDueDays: 0,
+    status: 'Finished',
+    paidDate: ISODate('2025-01-07T19:26:50.181Z'),
+    __v: 0
+  },
+  {
+    _id: ObjectId('68950a5e57bb9ecc51e9496b'),
+    userId: ObjectId('6877ed0b5a69070d81b0aa3d'),
+    shopId: ObjectId('6877f0c277a976a09efe10a5'),
+    paymentType: 'Shop Rent Cost',
+    paymentPhoto: 'https://ik.imagekit.io/see06p2fm/payment-photos/Kpay_5600.png',
+    amount: 5600,
+    shopFee: 5500,
+    overDueFee: 100,
+    overDueDays: 1,
+    status: 'Finished',
+    paidDate: ISODate('2025-03-11T10:00:00.000Z'),
+    nextPaymentDueDate: ISODate('2025-04-10T00:00:00.000Z')
+  },
+  {
+    _id: ObjectId('68950a5e57bb9ecc51e9496d'),
+    userId: ObjectId('6877ed0b5a69070d81b0aa3d'),
+    shopId: ObjectId('6877f0c277a976a09efe10a5'),
+    paymentType: 'Shop Rent Cost',
+    paymentPhoto: 'https://ik.imagekit.io/see06p2fm/payment-photos/Kpay_5800.png',
+    amount: 5800,
+    shopFee: 5500,
+    overDueFee: 300,
+    overDueDays: 3,
+    status: 'Finished',
+    paidDate: ISODate('2025-05-13T10:00:00.000Z'),
+    nextPaymentDueDate: ISODate('2025-06-10T00:00:00.000Z')
+  },
+  {
+    _id: ObjectId('68950a5e57bb9ecc51e9496a'),
+    userId: ObjectId('6877ed0b5a69070d81b0aa3d'),
+    shopId: ObjectId('6877f0c277a976a09efe10a5'),
+    paymentType: 'Shop Rent Cost',
+    paymentPhoto: 'https://ik.imagekit.io/see06p2fm/payment-photos/Kpay_5500.png',
+    amount: 5500,
+    shopFee: 5500,
+    overDueFee: 0,
+    overDueDays: 0,
+    status: 'Finished',
+    paidDate: ISODate('2025-02-01T10:00:00.000Z'),
+    nextPaymentDueDate: ISODate('2025-03-10T00:00:00.000Z')
+  },
+  {
+    _id: ObjectId('68950a5e57bb9ecc51e9496c'),
+    userId: ObjectId('6877ed0b5a69070d81b0aa3d'),
+    shopId: ObjectId('6877f0c277a976a09efe10a5'),
+    paymentType: 'Shop Rent Cost',
+    paymentPhoto: 'https://ik.imagekit.io/see06p2fm/payment-photos/Kpay_5700.png',
+    amount: 5700,
+    shopFee: 5500,
+    overDueFee: 200,
+    overDueDays: 2,
+    status: 'Finished',
+    paidDate: ISODate('2025-04-12T10:00:00.000Z'),
+    nextPaymentDueDate: ISODate('2025-05-10T00:00:00.000Z')
+  },
+  {
+    _id: ObjectId('68950a5e57bb9ecc51e9496e'),
+    userId: ObjectId('6877ed0b5a69070d81b0aa3d'),
+    shopId: ObjectId('6877f0c277a976a09efe10a5'),
+    paymentType: 'Shop Rent Cost',
+    paymentPhoto: 'https://ik.imagekit.io/see06p2fm/payment-photos/Kpay_5900.png',
+    amount: 5900,
+    shopFee: 5500,
+    overDueFee: 400,
+    overDueDays: 4,
+    status: 'Finished',
+    paidDate: ISODate('2025-06-14T10:00:00.000Z'),
+    nextPaymentDueDate: ISODate('2025-07-10T00:00:00.000Z')
+  },
+  {
+    _id: ObjectId('6895101f57bb9ecc51e9496f'),
+    userId: ObjectId('6877ed0b5a69070d81b0aa3d'),
+    shopId: ObjectId('6877f0c277a976a09efe10a5'),
+    paymentType: 'Shop Rent Cost',
+    paymentPhoto: 'https://ik.imagekit.io/see06p2fm/payment-photos/Kpay_5500.png',
+    amount: 5500,
+    shopFee: 5500,
+    overDueFee: 0,
+    overDueDays: 0,
+    status: 'Finished',
+    paidDate: ISODate('2025-07-03T10:00:00.000Z'),
+    nextPaymentDueDate: ISODate('2025-08-06T00:00:00.000Z')
+  },
+  {
+    _id: ObjectId('68955a254336b48cece94973'),
+    userId: ObjectId('687d267652121e903c294696'),
+    shopId: ObjectId('687d2a9a3fd556cfaff1bf47'),
+    paymentType: 'Shop Rent Cost',
+    paymentPhoto: 'https://ik.imagekit.io/see06p2fm/payment-photos/Kpay_3500.png',
+    amount: 3500,
+    shopFee: 3500,
+    overDueFee: 0,
+    overDueDays: 0,
+    status: 'Finished',
+    paidDate: ISODate('2025-02-01T10:00:00.000Z'),
+    nextPaymentDueDate: ISODate('2025-03-10T00:00:00.000Z')
+  },
+  {
+    _id: ObjectId('68955a254336b48cece94976'),
+    userId: ObjectId('687d267652121e903c294696'),
+    shopId: ObjectId('687d2a9a3fd556cfaff1bf47'),
+    paymentType: 'Shop Rent Cost',
+    paymentPhoto: 'https://ik.imagekit.io/see06p2fm/payment-photos/Kpay_3800.png',
+    amount: 3800,
+    shopFee: 3500,
+    overDueFee: 300,
+    overDueDays: 3,
+    status: 'Finished',
+    paidDate: ISODate('2025-05-13T10:00:00.000Z'),
+    nextPaymentDueDate: ISODate('2025-06-10T00:00:00.000Z')
+  },
+  {
+    _id: ObjectId('68955a254336b48cece94974'),
+    userId: ObjectId('687d267652121e903c294696'),
+    shopId: ObjectId('687d2a9a3fd556cfaff1bf47'),
+    paymentType: 'Shop Rent Cost',
+    paymentPhoto: 'https://ik.imagekit.io/see06p2fm/payment-photos/Kpay_3600.png',
+    amount: 3600,
+    shopFee: 3500,
+    overDueFee: 100,
+    overDueDays: 1,
+    status: 'Finished',
+    paidDate: ISODate('2025-03-11T10:00:00.000Z'),
+    nextPaymentDueDate: ISODate('2025-04-10T00:00:00.000Z')
+  },
+  {
+    _id: ObjectId('68955a254336b48cece94975'),
+    userId: ObjectId('687d267652121e903c294696'),
+    shopId: ObjectId('687d2a9a3fd556cfaff1bf47'),
+    paymentType: 'Shop Rent Cost',
+    paymentPhoto: 'https://ik.imagekit.io/see06p2fm/payment-photos/Kpay_3700.png',
+    amount: 3700,
+    shopFee: 3500,
+    overDueFee: 200,
+    overDueDays: 2,
+    status: 'Finished',
+    paidDate: ISODate('2025-04-12T10:00:00.000Z'),
+    nextPaymentDueDate: ISODate('2025-05-10T00:00:00.000Z')
+  },
+  {
+    _id: ObjectId('68955a254336b48cece94977'),
+    userId: ObjectId('687d267652121e903c294696'),
+    shopId: ObjectId('687d2a9a3fd556cfaff1bf47'),
+    paymentType: 'Shop Rent Cost',
+    paymentPhoto: 'https://ik.imagekit.io/see06p2fm/payment-photos/Kpay_3900.png',
+    amount: 3900,
+    shopFee: 3500,
+    overDueFee: 400,
+    overDueDays: 4,
+    status: 'Finished',
+    paidDate: ISODate('2025-06-14T10:00:00.000Z'),
+    nextPaymentDueDate: ISODate('2025-07-10T00:00:00.000Z')
+  },
+  {
+    _id: ObjectId('689561f97a3eeb4556dd6078'),
+    userId: ObjectId('687d267652121e903c294696'),
+    shopId: ObjectId('687d2a9a3fd556cfaff1bf47'),
+    paymentType: 'Shop Rent Cost',
+    paymentPhoto: 'https://ik.imagekit.io/see06p2fm/payment-photos/1754620403301-Kpay_5500_P1qnoRG3B.png',
+    amount: 3500,
+    nextPaymentDueDate: ISODate('2025-08-06T02:33:23.173Z'),
+    shopFee: 3500,
+    overDueFee: 0,
+    overDueDays: 0,
+    status: 'Finished',
+    paidDate: ISODate('2025-07-07T02:33:29.915Z'),
+    __v: 0
+  },
+  {
+    _id: ObjectId('689b3f240f1f2a01ace9496a'),
+    userId: ObjectId('6877ed0b5a69070d81b0aa3d'),
+    shopId: ObjectId('6877f0c277a976a09efe10a5'),
+    paymentType: 'Water Fee',
+    paymentPhoto: 'https://ik.imagekit.io/see06p2fm/payment-photos/Kpay_5500.png',
+    amount: 5500,
+    shopFee: 5500,
+    overDueFee: 0,
+    overDueDays: 0,
+    status: 'Finished',
+    paidDate: ISODate('2025-07-03T10:00:00.000Z'),
+    nextPaymentDueDate: ISODate('2025-08-06T00:00:00.000Z')
+  }
+]
+
+
+db.receipts.find()
+[
+  {
+    _id: ObjectId('6894fe92b1d5489a02d1f78c'),
+    paymentId: ObjectId('6894fdfab1d5489a02d1f771'),
+    adminId: ObjectId('6877e4c6f9a64664c320a92f'),
+    amount: 5500,
+    issueDate: ISODate('2025-01-07T19:29:22.216Z'),
+    isRead: false,
+    __v: 0
+  },
+  {
+    _id: ObjectId('689513ca57bb9ecc51e94974'),
+    paymentId: ObjectId('68950a5e57bb9ecc51e9496e'),
+    adminId: ObjectId('6885eb9556aa5cabae4abb84'),
+    amount: 5900,
+    issueDate: ISODate('2025-06-14T10:00:00.000Z'),
+    isRead: false
+  },
+  {
+    _id: ObjectId('689513ca57bb9ecc51e94970'),
+    paymentId: ObjectId('68950a5e57bb9ecc51e9496a'),
+    adminId: ObjectId('6885eb9556aa5cabae4abb84'),
+    amount: 5500,
+    issueDate: ISODate('2025-02-01T10:00:00.000Z'),
+    isRead: false
+  },
+  {
+    _id: ObjectId('689513ca57bb9ecc51e94973'),
+    paymentId: ObjectId('68950a5e57bb9ecc51e9496d'),
+    adminId: ObjectId('6877e4c6f9a64664c320a92f'),
+    amount: 5800,
+    issueDate: ISODate('2025-05-13T10:00:00.000Z'),
+    isRead: false
+  },
+  {
+    _id: ObjectId('689513ca57bb9ecc51e94972'),
+    paymentId: ObjectId('68950a5e57bb9ecc51e9496c'),
+    adminId: ObjectId('6885eb9556aa5cabae4abb84'),
+    amount: 5700,
+    issueDate: ISODate('2025-04-12T10:00:00.000Z'),
+    isRead: false
+  },
+  {
+    _id: ObjectId('689513ca57bb9ecc51e94971'),
+    paymentId: ObjectId('68950a5e57bb9ecc51e9496b'),
+    adminId: ObjectId('6877e4c6f9a64664c320a92f'),
+    amount: 5600,
+    issueDate: ISODate('2025-03-11T10:00:00.000Z'),
+    isRead: false
+  },
+  {
+    _id: ObjectId('689513ca57bb9ecc51e94975'),
+    paymentId: ObjectId('6895101f57bb9ecc51e9496f'),
+    adminId: ObjectId('6877e4c6f9a64664c320a92f'),
+    amount: 5500,
+    issueDate: ISODate('2025-07-03T10:00:00.000Z'),
+    isRead: false
+  },
+  {
+    _id: ObjectId('68955b9b4336b48cece9497e'),
+    paymentId: ObjectId('68955a254336b48cece94974'),
+    adminId: ObjectId('6885eb9556aa5cabae4abb84'),
+    amount: 3600,
+    issueDate: ISODate('2025-03-11T10:00:00.000Z'),
+    isRead: false
+  },
+  {
+    _id: ObjectId('68955b9b4336b48cece94980'),
+    paymentId: ObjectId('68955a254336b48cece94976'),
+    adminId: ObjectId('6885eb9556aa5cabae4abb84'),
+    amount: 3800,
+    issueDate: ISODate('2025-05-13T10:00:00.000Z'),
+    isRead: false
+  },
+  {
+    _id: ObjectId('68955b9b4336b48cece9497f'),
+    paymentId: ObjectId('68955a254336b48cece94975'),
+    adminId: ObjectId('6877e4c6f9a64664c320a92f'),
+    amount: 3700,
+    issueDate: ISODate('2025-04-12T10:00:00.000Z'),
+    isRead: false
+  },
+  {
+    _id: ObjectId('68955b9b4336b48cece94981'),
+    paymentId: ObjectId('68955a254336b48cece94977'),
+    adminId: ObjectId('6877e4c6f9a64664c320a92f'),
+    amount: 3900,
+    issueDate: ISODate('2025-06-14T10:00:00.000Z'),
+    isRead: true
+  },
+  {
+    _id: ObjectId('68955b9b4336b48cece9497d'),
+    paymentId: ObjectId('68955a254336b48cece94973'),
+    adminId: ObjectId('6877e4c6f9a64664c320a92f'),
+    amount: 3500,
+    issueDate: ISODate('2025-02-01T10:00:00.000Z'),
+    isRead: true
+  },
+  {
+    _id: ObjectId('689562177a3eeb4556dd608b'),
+    paymentId: ObjectId('689561f97a3eeb4556dd6078'),
+    adminId: ObjectId('6877e4c6f9a64664c320a92f'),
+    amount: 3500,
+    issueDate: ISODate('2025-07-07T02:33:59.188Z'),
+    isRead: false,
+    __v: 0
+  }
+]
+
+db.shops.find()
+[
+  {
+    _id: ObjectId('6877f0c277a976a09efe10a5'),
+    marketHallNo: 'A1',
+    shopNo: 'S1',
+    chargeRate: 6500,
+    userId: ObjectId('6877ed0b5a69070d81b0aa3d'),
+    __v: 0
+  },
+  {
+    _id: ObjectId('6878816f2d3ba98495548b69'),
+    marketHallNo: 'A1',
+    shopNo: 'S2',
+    chargeRate: 3500,
+    userId: ObjectId('6895ab0071e482e7571c5aec'),
+    __v: 0
+  },
+  {
+    _id: ObjectId('687882d15a79c141f2609953'),
+    marketHallNo: 'A1',
+    shopNo: 'S3',
+    chargeRate: 5500,
+    userId: ObjectId('6877ed0b5a69070d81b0aa3d'),
+    __v: 0
+  },
+  {
+    _id: ObjectId('687d2a9a3fd556cfaff1bf47'),
+    marketHallNo: 'A2',
+    shopNo: 'S4',
+    chargeRate: 3500,
+    userId: ObjectId('687d267652121e903c294696'),
+    __v: 0
+  },
+  {
+    _id: ObjectId('6885f03e1280c6e68f458b0b'),
+    marketHallNo: 'A2',
+    shopNo: 'S5',
+    chargeRate: 3500,
+    userId: null,
+    __v: 0
+  },
+  {
+    _id: ObjectId('6885f0491280c6e68f458b0f'),
+    marketHallNo: 'A2',
+    shopNo: 'S6',
+    chargeRate: 3500,
+    userId: null,
+    __v: 0
+  },
+  {
+    _id: ObjectId('688f0e69376d80b0b4bb4423'),
+    marketHallNo: 'A3',
+    shopNo: 'S7',
+    chargeRate: 3500,
+    userId: null,
+    __v: 0
+  },
+  {
+    _id: ObjectId('688f0e75376d80b0b4bb4427'),
+    marketHallNo: 'A3',
+    shopNo: 'S8',
+    chargeRate: 3500,
+    userId: null,
+    __v: 0
+  },
+  {
+    _id: ObjectId('688f0e81376d80b0b4bb442b'),
+    marketHallNo: 'A3',
+    shopNo: 'S9',
+    chargeRate: 3500,
+    userId: null,
+    __v: 0
+  },
+  {
+    _id: ObjectId('68932419bc3718b57a66875a'),
+    marketHallNo: 'A4',
+    shopNo: 'S10',
+    chargeRate: 3500,
+    userId: null,
+    __v: 0
+  }
+]
+
+
+db.users.find()
+[
+  {
+    _id: ObjectId('6877ed0b5a69070d81b0aa3d'),
+    username: 'ဦးအေးထွန်း',
+    password: '1234',
+    profilePhoto: 'https://ui-avatars.com/api/?name=UAT&background=random',
+    NRC: '၉/ရမသ(နိုင်)၀၂၅၄၃၇',
+    phoneNo: '09-996756544',
+    gender: 'Male',
+    createdAt: ISODate('2025-07-16T18:18:51.961Z'),
+    updatedAt: ISODate('2025-08-08T07:40:16.008Z'),
+    __v: 0
+  },
+  {
+    _id: ObjectId('687d267652121e903c294696'),
+    username: 'ဒေါ်နီနီဆွေ',
+    password: 'swe8967',
+    profilePhoto: 'https://ui-avatars.com/api/?name=NNH&background=random',
+    NRC: '၉/မရန(နိုင်)၀၁၃၄၅၆',
+    phoneNo: '09-958812345',
+    gender: 'Female',
+    createdAt: ISODate('2025-07-27T05:30:00.000Z'),
+    updatedAt: ISODate('2025-08-08T05:54:18.898Z'),
+    __v: 0
+  },
+  {
+    _id: ObjectId('6895ab0071e482e7571c5aec'),
+    username: 'ဦးမင်းအေး',
+    password: 'umin123',
+    profilePhoto: 'https://ui-avatars.com/api/?name=MNA&background=random',
+    NRC: '၁၂/အစန(နိုင်)၀၃၇၇၅၈',
+    phoneNo: '09-123456789',
+    gender: 'Male',
+    createdAt: ISODate('2025-08-08T07:45:04.310Z'),
+    updatedAt: ISODate('2025-08-08T07:45:04.310Z'),
+    __v: 0
+  }
+]
+
+
+db.warnings.find()
+[
+  {
+    _id: ObjectId('6895581f4336b48cece9496b'),
+    warningTitle: 'ရက်ကျော်ချင်း',
+    warningContent: 'သင့် A1 S1 သည် ငွေပေးချေရန် 2 ရက်ကျော်နေပါသည်.',
+    userId: ObjectId('6877ed0b5a69070d81b0aa3d'),
+    issueDate: ISODate('2025-04-12T10:00:00.000Z'),
+    overdueFee: 200,
+    isRead: false
+  },
+  {
+    _id: ObjectId('6895581f4336b48cece9496c'),
+    warningTitle: 'ရက်ကျော်ချင်း',
+    warningContent: 'သင့် A1 S1 သည် ငွေပေးချေရန် 3 ရက်ကျော်နေပါသည်.',
+    userId: ObjectId('6877ed0b5a69070d81b0aa3d'),
+    issueDate: ISODate('2025-05-13T10:00:00.000Z'),
+    overdueFee: 300,
+    isRead: true
+  },
+  {
+    _id: ObjectId('6895581f4336b48cece9496a'),
+    warningTitle: 'ရက်ကျော်ချင်း',
+    warningContent: 'သင့် A1 S1 သည် ငွေပေးချေရန် 1 ရက်ကျော်နေပါသည်.',
+    userId: ObjectId('6877ed0b5a69070d81b0aa3d'),
+    issueDate: ISODate('2025-03-11T10:00:00.000Z'),
+    overdueFee: 100,
+    isRead: false
+  },
+  {
+    _id: ObjectId('6895581f4336b48cece9496d'),
+    warningTitle: 'ရက်ကျော်ချင်း',
+    warningContent: 'သင့် A1 S1 သည် ငွေပေးချေရန် 4 ရက်ကျော်နေပါသည်.',
+    userId: ObjectId('6877ed0b5a69070d81b0aa3d'),
+    issueDate: ISODate('2025-06-14T10:00:00.000Z'),
+    overdueFee: 400,
+    isRead: true
+  },
+  {
+    _id: ObjectId('68955d904336b48cece94986'),
+    warningTitle: 'ရက်ကျော်ချင်း',
+    warningContent: 'သင့် A1 S4 သည် ငွေပေးချေရန် 1 ရက်ကျော်နေပါသည်.',
+    userId: ObjectId('687d267652121e903c294696'),
+    issueDate: ISODate('2025-03-11T10:00:00.000Z'),
+    overdueFee: 100,
+    isRead: false
+  },
+  {
+    _id: ObjectId('68955d904336b48cece94987'),
+    warningTitle: 'ရက်ကျော်ချင်း',
+    warningContent: 'သင့် A1 S4 သည် ငွေပေးချေရန် 2 ရက်ကျော်နေပါသည်.',
+    userId: ObjectId('687d267652121e903c294696'),
+    issueDate: ISODate('2025-04-12T10:00:00.000Z'),
+    overdueFee: 200,
+    isRead: true
+  },
+  {
+    _id: ObjectId('68955d904336b48cece94988'),
+    warningTitle: 'ရက်ကျော်ချင်း',
+    warningContent: 'သင့် A1 S4 သည် ငွေပေးချေရန် 3 ရက်ကျော်နေပါသည်.',
+    userId: ObjectId('687d267652121e903c294696'),
+    issueDate: ISODate('2025-05-13T10:00:00.000Z'),
+    overdueFee: 300,
+    isRead: true
+  },
+  {
+    _id: ObjectId('68955d904336b48cece94989'),
+    warningTitle: 'ရက်ကျော်ချင်း',
+    warningContent: 'သင့် A1 S4 သည် ငွေပေးချေရန် 4 ရက်ကျော်နေပါသည်.',
+    userId: ObjectId('687d267652121e903c294696'),
+    issueDate: ISODate('2025-06-14T10:00:00.000Z'),
+    overdueFee: 400,
+    isRead: false
+  },
+  {
+    _id: ObjectId('6895af0671e482e7571c5b93'),
+    warningTitle: 'စမ်းသပ်',
+    warningContent: 'စမ်း',
+    userId: ObjectId('6895ab0071e482e7571c5aec'),
+    overdueFee: 0,
+    isRead: false,
+    issueDate: ISODate('2025-08-08T08:02:14.475Z'),
+    __v: 0
+  }
+]
