@@ -15,7 +15,7 @@ const AdminViewBarChart= ()=> {
   // Build year options dynamically from 2024 to current year
   const currentYear = new Date().getFullYear();
   const yearOptions = [];
-  for (let y = 2024; y <= currentYear; y++) {
+  for (let y = 2025; y <= currentYear; y++) {
     yearOptions.push(y);
   }
 
