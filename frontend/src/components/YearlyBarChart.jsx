@@ -38,17 +38,17 @@ export default function MonthlyPaymentsChart({ selectedYear }) {
         labels: monthLabels,
         datasets: [
           {
-            label: "ဆိုင်ဌားခ+ေရအခွန်",
+            label: "ဆိုင်ဌားခ+ရေအခွန်",
             data: shopFees,
             backgroundColor: "#F97316", // Orange
           },
           {
-            label: "ရက်ေကျာ်ေြကး",
+            label: "ရက်ကျော်ခ",
             data: overdueFees,
             backgroundColor: "#3B82F6", // Blue
           },
           {
-            label: "စုစုေပါင်း",
+            label: "စုစုပေါင်း",
             data: totals,
             backgroundColor: "#10B981", // Green
           },
