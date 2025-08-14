@@ -101,7 +101,7 @@ const AdminManageReceipts = () => {
                       <td>{index + 1}</td>
                       <td>{r._id}</td>
                       <td>{r.adminId?.adminName}</td>
-                      <td>{r.paymentId?.paymentType === "Shop Rent Cost" ? "ဆိုင်ဌားခ" : "-"}</td>
+                      <td>{r.paymentId?.paymentType === "Shop Rent Cost" ? "ဆိုင်ဌားခ+ရေအခွန်" : "-"}</td>
                       <td>{r.paymentId?.userId?.username}</td>
                       <td>{r.paymentId?.shopId?.marketHallNo} / {r.paymentId?.shopId?.shopNo}</td>
                       <td>{r.paymentId?.shopFee} ကျပ်</td>

@@ -176,7 +176,7 @@ const AdminManagePayments = () => {
                             {payment.shopId.marketHallNo} / {payment.shopId.shopNo}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {payment.paymentType === "Shop Rent Cost" ? "ဆိုင်ဌားခ" : "ရက်ကျော်ကြေး" }
+                            {payment.paymentType === "Shop Rent Cost" ? "ဆိုင်ဌားခ+ရေအခွန်" : "ရက်ကျော်ကြေး" }
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <img
