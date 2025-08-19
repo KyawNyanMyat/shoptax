@@ -159,6 +159,9 @@ export const deleteUser = async (req, res) => {
 
 export const loginUser = async (req, res) => {
   const { username, password } = req.body;
+  if(req?.cookies?.usertoken){
+    return res.status(401).json({message: "အရင်အကောင့် မှထွက်ပါ"})
+  }
 
   try {
     const user = await User.findOne({ username });

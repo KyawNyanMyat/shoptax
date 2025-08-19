@@ -134,6 +134,9 @@ export const deleteAdmin = async (req, res) => {
 
 
 export const loginAdmin = async (req, res) => {
+  if(req?.cookies?.admintoken){
+    return res.status(401).json({message: "အရင်အကောင့် မှထွက်ပါ"})
+  }
   try {
     const { adminName, adminPassword, position } = req.body;
 
