@@ -9,6 +9,7 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import { useSocketContext } from "../context/socketContext";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -16,48 +17,64 @@ const monthLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Se
 
 export default function MonthlyPaymentsChart({ selectedYear }) {
   const [chartData, setChartData] = useState(null);
+  const socket = useSocketContext() 
+
+  const fetchReport = async () => {
+    const res = await fetch(`/api/payments/monthly?year=${selectedYear}`);
+    const data = await res.json();
+
+    // Prepare arrays for 12 months
+    const shopFees = Array(12).fill(0);
+    const overdueFees = Array(12).fill(0);
+    const totals = Array(12).fill(0);
+
+    data.forEach((item) => {
+      const monthIndex = item._id.month - 1;
+      shopFees[monthIndex] = item.totalShopFee || 0;
+      overdueFees[monthIndex] = item.totalOverDueFee || 0;
+      totals[monthIndex] = item.totalAmount || 0;
+    });
+
+    setChartData({
+      labels: monthLabels,
+      datasets: [
+        {
+          label: "ဆိုင်ဌားခ+ရေအခွန်",
+          data: shopFees,
+          backgroundColor: "#F97316", // Orange
+        },
+        {
+          label: "ရက်ကျော်ခ",
+          data: overdueFees,
+          backgroundColor: "#3B82F6", // Blue
+        },
+        {
+          label: "စုစုပေါင်း",
+          data: totals,
+          backgroundColor: "#10B981", // Green
+        },
+      ],
+    });
+  };
 
   useEffect(() => {
-    const fetchReport = async () => {
-      const res = await fetch(`/api/payments/monthly?year=${selectedYear}`);
-      const data = await res.json();
-
-      // Prepare arrays for 12 months
-      const shopFees = Array(12).fill(0);
-      const overdueFees = Array(12).fill(0);
-      const totals = Array(12).fill(0);
-
-      data.forEach((item) => {
-        const monthIndex = item._id.month - 1;
-        shopFees[monthIndex] = item.totalShopFee || 0;
-        overdueFees[monthIndex] = item.totalOverDueFee || 0;
-        totals[monthIndex] = item.totalAmount || 0;
-      });
-
-      setChartData({
-        labels: monthLabels,
-        datasets: [
-          {
-            label: "ဆိုင်ဌားခ+ရေအခွန်",
-            data: shopFees,
-            backgroundColor: "#F97316", // Orange
-          },
-          {
-            label: "ရက်ကျော်ခ",
-            data: overdueFees,
-            backgroundColor: "#3B82F6", // Blue
-          },
-          {
-            label: "စုစုပေါင်း",
-            data: totals,
-            backgroundColor: "#10B981", // Green
-          },
-        ],
-      });
-    };
 
     fetchReport();
   }, [selectedYear]);
+
+  useEffect(()=>{
+    if(!socket) return;
+
+    const handleFinishedPayment = (updatedPayment) => {
+      fetchReport()
+    }
+
+    socket.on("finishedPayment", handleFinishedPayment)
+
+    return ()=> {
+      socket.off("finishedPayment", handleFinishedPayment)
+    }
+  },[selectedYear])
 
   if (!chartData) return <div>Loading...</div>;
 
@@ -68,6 +85,7 @@ export default function MonthlyPaymentsChart({ selectedYear }) {
           data={chartData}
           options={{
             responsive: true,
+            animation: false,
             maintainAspectRatio: false,
             plugins: {
               legend: { position: "top" },

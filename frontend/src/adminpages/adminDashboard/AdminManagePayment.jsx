@@ -221,7 +221,9 @@ const AdminManagePayments = () => {
                               <div>
                                 <button
                                   className="btn bg-success text-white"
-                                  disabled={payment.status === "Pending" ? false : true}
+                                  disabled={
+                                    updatingPaymentId !== null || payment.status !== "Pending"
+                                  }
                                   onClick={async () => {
                                     setUpdatingPaymentId(payment._id); // for spinner to start
                                     await updateStatus(payment._id, "Finished", payment.userId._id);
@@ -233,7 +235,9 @@ const AdminManagePayments = () => {
 
                                 <button
                                   className="btn btn-error text-white"
-                                  disabled={payment.status === "Pending" ? false : true}
+                                  disabled={
+                                    updatingPaymentId !== null || payment.status !== "Pending"
+                                  }
                                   onClick={()=>{
                                     setSelectedReject(payment);
                                     setRejectionReason("");

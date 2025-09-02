@@ -345,7 +345,7 @@ const SubmitPaymentProof = () => {
               />
             </div>
   
-            <button type="submit" className="btn btn-primary w-full">
+            <button type="submit" className="btn btn-primary w-full" disabled={loading}>
               {loading ? (
                 <span className="loading loading-spinner loading-xs"></span>
               ) : (
