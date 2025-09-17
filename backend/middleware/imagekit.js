@@ -1,10 +1,13 @@
 // utils/imageKit.js
+import dotenv from "dotenv"
+dotenv.config()
+
 import ImageKit from "imagekit";
 
 const imagekit = new ImageKit({
-    publicKey : "public_TfAXw4Ya7g0VpBmb0bxaun5cMeg=",
-    privateKey : "private_ymnx73+VPOmxY1EHqeZKQ/sqRgI=",
-    urlEndpoint : "https://ik.imagekit.io/see06p2fm"
+    publicKey : process.env.IMAGEKIT_PUBLIC_KEY,
+    privateKey : process.env.IMAGEKIT_PRIVATE_KEY,
+    urlEndpoint : process.env.IMAGE_CDN_URL
 });
 
 // utils/imageKit.js
