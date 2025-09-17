@@ -22,7 +22,7 @@ router.get('/', adminProtectRoute, getAllPayments); // used by admin
 
 router.get("/monthly", getMonthlyPaymentReport)
 
-router.get("/user/getmyoverude", userProtectRoute, getOverdueUsers)
+router.get("/user/getmyoverdue", userProtectRoute, getOverdueUsers) // used by user
 
 router.get('/user/overdue', adminProtectRoute, getOverdueUsers); // used by admin
 

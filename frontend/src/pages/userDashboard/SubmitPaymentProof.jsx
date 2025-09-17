@@ -117,7 +117,7 @@ const SubmitPaymentProof = () => {
     try{
       const selectedShopId = e.target.value;
 
-      const res = await fetch("/api/payments/user/overdue")
+      const res = await fetch("/api/payments/user/getmyoverdue")
       const data = await res.json();
       if (!res.ok) {
         throw new Error(data.message || "အကြွေးတင်ဆိုင်များကို ရယူရာတွင် ပြဿနာတစ်ခု ဖြစ်ပွားနေသည်။");
